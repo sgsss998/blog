@@ -28,12 +28,12 @@ heroImage: https://mmbiz.qpic.cn/mmbiz_jpg/BoK1f5xsXyoQQpuX9zyJArR3UzazXwpmEV6u0
 在给 openclaw 安装 skill 时，强烈推荐先安装一个审查技能是否安全的技能——skill-vetter。有很多 skill 都是有毒的，比如窃取你的隐私，等等，不要安装这些毒 skill。
 
 > 地址：https://clawhub.ai/spclaudehome/skill-vetter
-
-这东西，基本就是任何朋友问我怎么把控安全问题，或者要装什么skills，我永远推荐的第一个必备的SKills。
-
-它的作用特别简单，就是在你装任何Skill之前，先帮你把那个Skill审查一遍，给你出一份报告，告诉你这东西能不能装。
-
-相当于给你的小龙虾装了一个 360 安全卫士。
+>
+> 这东西，基本就是任何朋友问我怎么把控安全问题，或者要装什么skills，我永远推荐的第一个必备的SKills。
+>
+> 它的作用特别简单，就是在你装任何Skill之前，先帮你把那个Skill审查一遍，给你出一份报告，告诉你这东西能不能装。
+>
+> 相当于给你的小龙虾装了一个 360 安全卫士。
 
 ## 4. 数据多中心备份
 
