@@ -1,0 +1,142 @@
+---
+import BaseHead from '../components/BaseHead.astro';
+import Footer from '../components/Footer.astro';
+import Header from '../components/Header.astro';
+import { SITE_DESCRIPTION, SITE_TITLE } from '../consts';
+---
+
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
+  </head>
+  <body>
+    <Header />
+    <main>
+      <section class="hero">
+        <h1>你好，我是老明</h1>
+        <p class="tagline">AI实战派 | 效率工具狂魔 | 自我进化中</p>
+      </section>
+
+      <section class="intro">
+        <p>
+          这里是我的个人博客，记录我在 AI 领域的实战经验、效率工具的使用心得，以及个人成长路上的思考。
+        </p>
+        <p>
+          我相信：工具服务于人，AI 是杠杆。用好它们，放大自己的能力。
+        </p>
+      </section>
+
+      <section class="highlights">
+        <h2>最近在折腾什么</h2>
+        <div class="card-grid">
+          <div class="card">
+            <h3>🤖 OpenClaw 本地 AI</h3>
+            <p>7×24 小时在线的 AI 助手，像微信好友一样随时响应。已稳定运行 25 天，消耗 5 亿 tokens。</p>
+          </div>
+          <div class="card">
+            <h3>🧠 AI 复利飞轮</h3>
+            <p>构建个人内容引擎：一个 idea → 文章 → 多平台分发 → 反馈闭环。让内容产生复利。</p>
+          </div>
+          <div class="card">
+            <h3>📝 公众号写作</h3>
+            <p>「AI干货家老明」主理人。专注 AI 实战、效率提升、个人系统搭建。</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="cta">
+        <p>想交流？加我微信：<strong>soplaoming</strong>，备注「博客」</p>
+      </section>
+    </main>
+    <Footer />
+  </body>
+</html>
+
+<style>
+  .hero {
+    text-align: center;
+    padding: 3em 0 2em;
+  }
+  .hero h1 {
+    font-size: 2.8em;
+    margin-bottom: 0.3em;
+  }
+  .tagline {
+    color: rgb(var(--gray));
+    font-size: 1.2em;
+    margin: 0;
+  }
+
+  .intro {
+    margin: 2em 0 3em;
+  }
+  .intro p {
+    font-size: 1.1em;
+    color: rgb(var(--gray-dark));
+  }
+
+  .highlights {
+    margin: 3em 0;
+  }
+  .highlights h2 {
+    margin-bottom: 1.5em;
+    font-size: 1.5em;
+  }
+
+  .card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5em;
+  }
+
+  .card {
+    padding: 1.5em;
+    background: white;
+    border-radius: var(--radius);
+    box-shadow: var(--box-shadow);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+  .card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+  }
+  .card h3 {
+    margin: 0 0 0.5em;
+    font-size: 1.1em;
+  }
+  .card p {
+    margin: 0;
+    color: rgb(var(--gray));
+    font-size: 0.95em;
+    line-height: 1.6;
+  }
+
+  .cta {
+    margin: 3em 0;
+    padding: 2em;
+    background: linear-gradient(135deg, rgba(var(--accent), 0.05) 0%, rgba(var(--accent), 0.1) 100%);
+    border-radius: var(--radius);
+    text-align: center;
+    border: 1px solid rgba(var(--accent), 0.2);
+  }
+  .cta p {
+    margin: 0;
+    font-size: 1.1em;
+  }
+  .cta strong {
+    color: var(--accent);
+  }
+
+  @media (max-width: 720px) {
+    .hero h1 {
+      font-size: 2em;
+    }
+    .tagline {
+      font-size: 1em;
+    }
+    .card-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

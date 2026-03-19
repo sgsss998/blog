@@ -1,0 +1,48 @@
+---
+import { SITE_TITLE, WECHAT } from '../consts';
+const today = new Date();
+---
+
+<footer>
+  <div class="footer-content">
+    <p class="copyright">&copy; {today.getFullYear()} {SITE_TITLE}. All rights reserved.</p>
+    <p class="wechat">微信: {WECHAT}</p>
+    <p class="powered">
+      Powered by <a href="https://astro.build" target="_blank">Astro</a>
+    </p>
+  </div>
+</footer>
+
+<style>
+  footer {
+    padding: 3em 1em;
+    background: linear-gradient(180deg, transparent 0%, rgba(var(--gray-light), 0.5) 100%);
+    text-align: center;
+    margin-top: 4em;
+  }
+  .footer-content {
+    max-width: 720px;
+    margin: 0 auto;
+  }
+  .copyright {
+    color: rgb(var(--gray));
+    font-size: 0.9em;
+    margin: 0;
+  }
+  .wechat {
+    color: var(--accent);
+    font-size: 0.9em;
+    margin: 0.5em 0;
+  }
+  .powered {
+    color: rgb(var(--gray));
+    font-size: 0.85em;
+    margin-top: 1em;
+  }
+  .powered a {
+    color: rgb(var(--gray));
+  }
+  .powered a:hover {
+    color: var(--accent);
+  }
+</style>
