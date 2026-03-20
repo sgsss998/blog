@@ -2,7 +2,7 @@
 title: Gemini CLI 细颗粒度安装指南（0 基础，免费）
 description: 安装 gemini cli 非常简单
 pubDate: 2025-03-15
-heroImage: https://mmbiz.qpic.cn/sz_mmbiz_jpg/BoK1f5xsXyp1OZiaByeWhNtiaaDT10uUz9TcMr6SuBpMZR8fJ0ibaZOIJZtLTxRoX2ibs4g53bSO7mq1Oia6mIp6MlfvaEloNXOy5iaNknicQZn7bE/0?wx_fmt=jpeg
+heroImage: https://mmbiz.qpic.cn/sz_mmbiz_jpg/BoK1f5xsXypmvufhqib928JekEwZ447A8Hguvhs7X2wz9AgAFXKkaFSXy7PjlwbReURk4b08CM4Vbg0aiajRLQ5O0SR31KGlKug3CXNRGicag8/0?wx_fmt=jpeg
 ---
 
 Gemini CLI 是 Google 的一款命令行工具，可以帮你修改文件、改代码、执行操作。是根植于终端命令行里面的 agent 助手。

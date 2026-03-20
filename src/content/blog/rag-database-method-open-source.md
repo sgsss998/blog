@@ -2,7 +2,7 @@
 title: 再细颗粒度说说我的RAG数据库搭建方法-全部开源，含Github链接
 description: 项目已开源
 pubDate: 2025-03-08
-heroImage: https://mmbiz.qpic.cn/mmbiz_jpg/BoK1f5xsXyod60mOOV2hgwcVLK8PMJYCIR1Xb1jHEzDz9zh9p8xra7m3RqR7N11tndnMzoQMzF3QcZxDdqLic5Z0Gqszia7H13s1FfwDuCDiak/0?wx_fmt=jpeg
+heroImage: https://mmbiz.qpic.cn/sz_mmbiz_jpg/BoK1f5xsXyr0sibtcmCdfQOLDL2GiayV7DJP9CdGA0tYDZl2ib4vEJBKB50TlOveUbT7VSVKwV4OV0iaSNiacbRoj95SU9PR6DgfleAGw1gzOLvA/0?wx_fmt=jpeg
 ---
 
 项目已开源至：https://github.com/sgsss998/RAG_Memory_System
@@ -32,12 +32,12 @@ heroImage: https://mmbiz.qpic.cn/mmbiz_jpg/BoK1f5xsXyod60mOOV2hgwcVLK8PMJYCIR1Xb
 
 ## 混合检索引擎
 
-那个「检索引擎」是怎么工作的？
+那个"检索引擎"是怎么工作的？
 
-- **向量检索**：能理解语义，但对具体的字眼「脸盲」
+- **向量检索**：能理解语义，但对具体的字眼"脸盲"
 - **BM25 检索**：不懂你在问什么，但字面匹配极其精准
 - **RRF 融合**：让两个方法分头找，然后把结果拼起来
-- **Reranker 精排**：请一个「法官」重新打分，捕捉更细粒度的信号
+- **Reranker 精排**：请一个"法官"重新打分，捕捉更细粒度的信号
 
 ## 切片策略
 
@@ -59,17 +59,17 @@ heroImage: https://mmbiz.qpic.cn/mmbiz_jpg/BoK1f5xsXyod60mOOV2hgwcVLK8PMJYCIR1Xb
 
 最容易被忽略、但最关键的一环。
 
-一开始用的 Prompt：「请基于以下参考资料回答。如果参考资料中没有，请回答不知道。」结果 AI 变成了「复读机」。
+一开始用的 Prompt："请基于以下参考资料回答。如果参考资料中没有，请回答不知道。"结果 AI 变成了"复读机"。
 
-后来改成：「你是我的赛博外脑。以下是你唤起的记忆切片，就把它们当做你脑子里自然浮现的信息。该推理推理，该回答回答，别老是把「根据知识库」挂在嘴边。」
+后来改成："你是我的赛博外脑。以下是你唤起的记忆切片，就把它们当做你脑子里自然浮现的信息。该推理推理，该回答回答，别老是把「根据知识库」挂在嘴边。"
 
 那个聪明的、有灵性的 AI，瞬间就回来了。
 
 ## 局限性
 
-它本质上还是一个检索增强工具，不是什么「全知外脑」。
+它本质上还是一个检索增强工具，不是什么"全知外脑"。
 
-**数据永远不等于知识，RAG 能给你数据，但它给不了你「理解」。** 没有大纲，碎片就永远只是碎片；没有骨架，血肉就无法站立。
+**数据永远不等于知识，RAG 能给你数据，但它给不了你"理解"。** 没有大纲，碎片就永远只是碎片；没有骨架，血肉就无法站立。
 
 ---
 

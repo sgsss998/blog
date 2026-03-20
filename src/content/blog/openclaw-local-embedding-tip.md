@@ -2,7 +2,7 @@
 title: Openclaw养小龙虾省钱小 tip——把 embedding 放在本地
 description: 最近"养小龙虾"火了。但养过小龙虾的都知道，这玩意儿吃 token，吃得凶。
 pubDate: 2025-03-10
-heroImage: https://mmbiz.qpic.cn/sz_mmbiz_jpg/BoK1f5xsXyqcibdic0j4fMAiaC1ia731wH9zZr234h6BniakEVTuqT2gphsmAYtiaYQY6hLvdxicQzTFteRC80j7kWziachm63lga3ibMzju2nIPRmOM/0?wx_fmt=jpeg
+heroImage: https://mmbiz.qpic.cn/sz_mmbiz_jpg/BoK1f5xsXyoaOTQibES1sZs4KAsyZj0Jzz0wnxSsyQDO8ibVjEYpppAPbaCjsg8FO2PjAXZjib0qcN5nvIb1sEmvQqQrt5KUibtM4ucOhceyHUc/0?wx_fmt=jpeg
 ---
 
 最近"养小龙虾"火了。
