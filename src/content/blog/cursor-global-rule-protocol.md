@@ -2,7 +2,7 @@
 title: 分享一个Cursor全局Rule——严格操作协议，让你的AI使用体验上一个台阶
 description: 给大家介绍我的 cursor 根目录下的全局 rule.md文件。
 pubDate: 2025-03-16
-heroImage: https://mmbiz.qpic.cn/sz_mmbiz_jpg/BoK1f5xsXypN5XC2tYgJVdJs9EaYcy8wxHEv5cfJEFtgte4NOgf2TT3UExvum57nWmuxnGZiaoxCcx5JphQTibuycNPIxAPqLV6e2CpicCBlx0/0?wx_fmt=jpeg
+heroImage: /images/blog/cursor-global-rule-protocol.jpg
 ---
 
 给大家介绍我的 cursor 根目录下的全局 rule.md文件。

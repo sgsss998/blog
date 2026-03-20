@@ -2,7 +2,7 @@
 title: 为什么我们需要建立 AI 的记忆库
 description: 这里引用公众号"大个青椒"的一段原文：未来的 AI 竞争，不在于谁的模型参数更大，而在于谁更了解你。
 pubDate: 2025-03-09
-heroImage: https://mmbiz.qpic.cn/sz_mmbiz_jpg/BoK1f5xsXypF7XCgYukxaBwbxrWMRqhROUo1MctZwrv8okhfCy9qXicpsiaWcrcS2fiaUb0VaaqFu63GvjZk1ibk4LfpBEquWrUY0Eo5Fcz0LX4/0?wx_fmt=jpeg
+heroImage: /images/blog/why-we-need-ai-memory-library.jpg
 ---
 
 这里引用公众号"大个青椒"的一段原文：

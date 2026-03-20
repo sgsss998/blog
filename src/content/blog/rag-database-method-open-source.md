@@ -2,7 +2,7 @@
 title: 再细颗粒度说说我的RAG数据库搭建方法-全部开源，含Github链接
 description: 项目已开源
 pubDate: 2025-03-08
-heroImage: https://mmbiz.qpic.cn/sz_mmbiz_jpg/BoK1f5xsXyr0sibtcmCdfQOLDL2GiayV7DJP9CdGA0tYDZl2ib4vEJBKB50TlOveUbT7VSVKwV4OV0iaSNiacbRoj95SU9PR6DgfleAGw1gzOLvA/0?wx_fmt=jpeg
+heroImage: /images/blog/rag-database-method-open-source.jpg
 ---
 
 项目已开源至：https://github.com/sgsss998/RAG_Memory_System

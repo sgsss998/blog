@@ -2,7 +2,7 @@
 title: 基于本地的个人RAG数据库实践：效果不尽如人意
 description: 全程 Vibe-coding 的个人 rag 数据库，做完了。
 pubDate: 2025-03-07
-heroImage: https://mmbiz.qpic.cn/sz_mmbiz_jpg/BoK1f5xsXyp2N573SmGkuwEdafHIMoJibDPDQzXMU764CBEj9RU8uz6Qp5dEtdfLZ7fSAV9CTiaBJda5raJCCCtZITFsZdtKuSiaGmUia8FkVia8/0?wx_fmt=jpeg
+heroImage: /images/blog/local-rag-database-practice.jpg
 ---
 
 折腾了大半个月，我不得不承认一个让我有点沮丧的事实：我花大力气搭建的那套本地 RAG 记忆系统，效果并没有我想象中那么好。写这篇文章的时候，我坐在屏幕前，脑子里反复闪过的不是那些终于跑通的绿色日志，而是好几次想砸键盘的瞬间、对着空荡荡的检索结果发愣的夜晚，以及最后发现真正的问题根本不在算法而在那句该死的提示词时的荒诞感。技术人总爱在「调参」「加模块」里找答案，结果最致命的那一刀，是当初写进网关的那句「请严格基于参考资料回答」——后来才知道是 Gemini 给的示例式提示词，被我原样用上了。想想也挺讽刺的。顺便说一句，整条路我几乎没看过任何技术论坛或教程，顶多刷过几个小红书博主讲 RAG 的视频，有个大概概念；从向量化到 BM25、Reranker、黑名单、权重、控制台，全是 Gemini 在对面给方案、给思路，我这头用 Claude Code 在 Mac Mini 上执行、改代码，现学现卖。所以如果你也在琢磨要不要给自己搞一个「全知外脑」，或者已经踩进了 RAG 的坑里，希望下面这些碎碎念能帮你少走一点弯路，或者至少让你知道，你不是一个人在被现实打脸。

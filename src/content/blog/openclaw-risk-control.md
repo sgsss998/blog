@@ -2,7 +2,7 @@
 title: 我的 Openclaw 风控措施（四层风控体系，纯干货）
 description: 风控不是靠"技术"或"能力"，而是靠"隔离"。
 pubDate: 2025-03-13
-heroImage: https://mmbiz.qpic.cn/mmbiz_jpg/BoK1f5xsXyp67zpweTJlx5hOYYZEQgOgXsl5gRMkUCUzlXzhpebsmFU7ueyoZRZqlmTKEkKwl84uwntzGDtVY5VAsP6bwsQS0H7904iaMe2Q/0?wx_fmt=jpeg
+heroImage: /images/blog/openclaw-risk-control.jpg
 ---
 
 大家都知道 Openclaw 风险极大，为什么？那是因为它几乎具备你计算机的一切权限，可以访问、读取、修改文件，改代码，上传资料，几乎一切的一切它都具备权限——所以，一旦他发抽，或者发疯，很容易就造成不可逆的后果。也因此，我们在使用小龙虾时，一定要提前做好风控措施。

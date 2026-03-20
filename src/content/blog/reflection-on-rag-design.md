@@ -2,7 +2,7 @@
 title: 反思我的RAG设计-为什么OpenClaw更优雅
 description: 我那套"精心设计"的 RAG 系统，在 OpenClaw 面前，就像一个过度焦虑的父母，对孩子管得太多、太细，反而绑住了孩子的手脚。OpenClaw 像一个开明的父母，给孩子一个工具、一个简单的说明，然后放手让它自己去探索。高下立判。
 pubDate: 2025-03-14
-heroImage: https://mmbiz.qpic.cn/mmbiz_jpg/BoK1f5xsXyqOAP4eycF50p7LvBMBrzKRQ6cJ39IwjS1G7icwibwMk1OTFx3aog1tGPKxO33VcwwxdEG5vwpKADf4cFFvmQW4cP7nkoTWFfLiaE/0?wx_fmt=jpeg
+heroImage: /images/blog/reflection-on-rag-design.jpg
 ---
 
 我在 GitHub 上开源了一套 RAG 记忆系统（https://github.com/sgsss998/RAG_Memory_System_Public）
