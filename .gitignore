@@ -3,3 +3,5 @@ dist/
 .DS_Store
 
 .vercel
+.venv-wechat/
+scripts/__pycache__/
