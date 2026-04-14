@@ -20,14 +20,24 @@ const { title, description, pubDate, updatedDate, heroImage, keywords = [] } = A
 				max-width: 100%;
 				margin: 0;
 			}
+			/* 微信公众号头条封面 900×383（2.35:1）；object-fit: cover 对齐后台裁切逻辑 */
 			.hero-image {
 				width: 100%;
+				max-width: 900px;
+				margin: 0 auto 1rem;
+				aspect-ratio: 900 / 383;
+				border-radius: 12px;
+				overflow: hidden;
+				box-shadow: var(--box-shadow);
 			}
 			.hero-image img {
 				display: block;
-				margin: 0 auto;
-				border-radius: 12px;
-				box-shadow: var(--box-shadow);
+				width: 100%;
+				height: 100%;
+				margin: 0;
+				border-radius: 0;
+				object-fit: cover;
+				object-position: center;
 			}
 			.prose {
 				width: 720px;
