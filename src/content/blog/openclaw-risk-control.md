@@ -1,8 +1,9 @@
 ---
-title: 我的 Openclaw 风控措施（四层风控体系，纯干货）
-description: 风控不是靠"技术"或"能力"，而是靠"隔离"。
-pubDate: 2025-03-13
+title: OpenClaw风控措施｜四层安全体系防止AI误删文件
+description: OpenClaw风控完整方案：硬件隔离、云端隔离、技能审查、多中心备份。教你如何安全使用AI Agent，防止误操作造成数据损失。
+pubDate: 2026-03-13
 heroImage: /images/blog/openclaw-risk-control.jpg
+keywords: [OpenClaw, 风控, AI安全, 数据备份, skill-vetter, Mac Mini, AI Agent安全, 本地部署]
 ---
 
 大家都知道 Openclaw 风险极大，为什么？那是因为它几乎具备你计算机的一切权限，可以访问、读取、修改文件，改代码，上传资料，几乎一切的一切它都具备权限——所以，一旦他发抽，或者发疯，很容易就造成不可逆的后果。也因此，我们在使用小龙虾时，一定要提前做好风控措施。
@@ -11,9 +12,13 @@ heroImage: /images/blog/openclaw-risk-control.jpg
 
 ## 1. 硬件隔离
 
+![硬件隔离](/images/blog/risk-control-1.png)
+
 我买了一台独立的 mac mini，专门用来跑小龙虾。我赋予小龙虾一切的权限，但也仅限于在这台 mac mini 上，我绝不会把小龙虾部署在我的主力机上。这是硬件上的隔离——随便小龙虾怎么折腾，折腾死了，也仅限于在我的 mac mini 里面折腾，不会影响到我的主力设备。
 
 ## 2. 云端隔离
+
+![云端隔离](/images/blog/risk-control-2.png)
 
 **我不允许 OpenClaw 登录我的任何云端账号。更不可能开启 icloud 云同步。**
 
@@ -24,6 +29,8 @@ heroImage: /images/blog/openclaw-risk-control.jpg
 这样我能确保我云端的数据一定是安全的。
 
 ## 3. 技能审查
+
+![技能审查](/images/blog/risk-control-3.jpg)
 
 在给 openclaw 安装 skill 时，强烈推荐先安装一个审查技能是否安全的技能——skill-vetter。有很多 skill 都是有毒的，比如窃取你的隐私，等等，不要安装这些毒 skill。
 
@@ -52,6 +59,8 @@ heroImage: /images/blog/openclaw-risk-control.jpg
 > 相当于给你的小龙虾装了一个 360 安全卫士。
 
 ## 4. 数据多中心备份
+
+![多中心备份](/images/blog/risk-control-4.png)
 
 我把最珍贵的资料复制了很多份：
 

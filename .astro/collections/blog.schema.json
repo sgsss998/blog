@@ -19,6 +19,13 @@
     "heroImage": {
       "type": "string"
     },
+    "keywords": {
+      "default": [],
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
     "$schema": {
       "type": "string"
     }

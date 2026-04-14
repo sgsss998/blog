@@ -1,8 +1,9 @@
 ---
-title: 分享一个Cursor全局Rule——严格操作协议，让你的AI使用体验上一个台阶
-description: 给大家介绍我的 cursor 根目录下的全局 rule.md文件。
-pubDate: 2025-03-16
+title: Cursor全局Rule配置教程｜严格操作协议让AI更可控
+description: 分享Cursor全局Rule最佳实践，通过五模式操作协议（研究/创新/计划/执行/回顾）让AI编程更系统化、工程化，避免擅自修改代码。
+pubDate: 2026-03-16
 heroImage: /images/blog/cursor-global-rule-protocol.jpg
+keywords: [Cursor, Cursor Rule, AI编程, 全局规则, 操作协议, Cursor配置, AI开发工具, 代码助手]
 ---
 
 给大家介绍我的 cursor 根目录下的全局 rule.md文件。

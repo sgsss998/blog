@@ -1,8 +1,9 @@
 ---
-title: Openclaw养小龙虾省钱小 tip——把 embedding 放在本地
-description: 最近"养小龙虾"火了。但养过小龙虾的都知道，这玩意儿吃 token，吃得凶。
-pubDate: 2025-03-10
+title: OpenClaw省钱技巧：本地Embedding部署指南｜节省Token费用
+description: OpenClaw本地部署embedding教程，使用Ollama+bge-m3替代云端API，每天节省90%的Token费用。包含完整配置步骤和性能对比。
+pubDate: 2026-03-10
 heroImage: /images/blog/openclaw-local-embedding-tip.jpg
+keywords: [OpenClaw, Embedding本地化, Ollama, bge-m3, Token省钱, AI记忆系统, 向量化, Claude Code]
 ---
 
 最近"养小龙虾"火了。

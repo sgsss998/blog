@@ -1,8 +1,9 @@
 ---
-title: Gemini CLI 细颗粒度安装指南（0 基础，免费）
-description: 安装 gemini cli 非常简单
-pubDate: 2025-03-15
+title: Gemini CLI安装教程｜零基础免费使用Google AI命令行工具
+description: Gemini CLI安装完整指南，零基础小白也能10分钟搞定。免费使用Google Gemini AI，支持代码修改、文件操作、命令执行，AI入门必装工具。
+pubDate: 2026-03-15
 heroImage: /images/blog/gemini-cli-installation-guide.jpg
+keywords: [Gemini CLI, Google AI, 命令行AI工具, 免费AI, AI安装教程, 终端AI, Gemini API, AI入门]
 ---
 
 Gemini CLI 是 Google 的一款命令行工具，可以帮你修改文件、改代码、执行操作。是根植于终端命令行里面的 agent 助手。

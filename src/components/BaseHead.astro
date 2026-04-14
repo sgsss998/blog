@@ -10,11 +10,13 @@ interface Props {
 	title: string;
 	description: string;
 	image?: ImageMetadata;
+	keywords?: string[];
+	author?: string;
 }
 
 const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 
-const { title, description, image = FallbackImage } = Astro.props;
+const { title, description, image = FallbackImage, keywords = [], author = '老明' } = Astro.props;
 ---
 
 <!-- Global Metadata -->
@@ -42,6 +44,11 @@ const { title, description, image = FallbackImage } = Astro.props;
 <title>{title}</title>
 <meta name="title" content={title} />
 <meta name="description" content={description} />
+<meta name="author" content={author} />
+{keywords.length > 0 && <meta name="keywords" content={keywords.join(', ')} />}
+
+<!-- Google Search Console 验证（如需要可添加） -->
+<!-- <meta name="google-site-verification" content="YOUR_VERIFICATION_CODE" />-->
 
 <!-- Open Graph / Facebook -->
 <meta property="og:type" content="website" />

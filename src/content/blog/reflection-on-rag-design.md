@@ -1,11 +1,12 @@
 ---
-title: 反思我的RAG设计-为什么OpenClaw更优雅
-description: 我那套"精心设计"的 RAG 系统，在 OpenClaw 面前，就像一个过度焦虑的父母，对孩子管得太多、太细，反而绑住了孩子的手脚。OpenClaw 像一个开明的父母，给孩子一个工具、一个简单的说明，然后放手让它自己去探索。高下立判。
-pubDate: 2025-03-14
+title: RAG系统设计反思｜为什么OpenClaw的方案更优雅
+description: 对比自建RAG系统与OpenClaw记忆模块的设计差异：控制vs信任、强制检索vs按需调用、复杂规则vs简单工具。AI系统设计的哲学思考。
+pubDate: 2026-03-14
 heroImage: /images/blog/reflection-on-rag-design.jpg
+keywords: [RAG设计, OpenClaw, AI系统设计, Prompt工程, 记忆系统, 向量检索, AI架构, Claude Code]
 ---
 
-我在 GitHub 上开源了一套 RAG 记忆系统（https://github.com/sgsss998/RAG_Memory_System_Public）
+我在 GitHub 上开源了一套 [RAG 记忆系统](https://github.com/sgsss998/RAG_Memory_System_Public)
 
 折腾了大半个月，功能齐备：混合检索、权重系统、身份锚点、角色辨别、推理边界……代码写了小两千行，prompt 磨了几十版，自以为挺完善了。
 

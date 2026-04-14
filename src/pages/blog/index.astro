@@ -62,6 +62,11 @@ const posts = (await getCollection('blog')).sort(
 				margin: 0;
 				color: rgb(var(--gray));
 			}
+			.view-count {
+				margin: 0.25em 0 0 0;
+				color: rgb(var(--gray));
+				font-size: 0.85em;
+			}
 			ul li a:hover h4,
 			ul li a:hover .date {
 				color: rgb(var(--accent));
@@ -102,6 +107,9 @@ const posts = (await getCollection('blog')).sort(
 									<p class="date">
 										<FormattedDate date={post.data.pubDate} />
 									</p>
+									<p class="view-count" data-page-url={`/blog/${post.id}/`}>
+										👁️ <span class="busuanzi-value">-</span> 次阅读
+									</p>
 								</a>
 							</li>
 						))
@@ -110,5 +118,31 @@ const posts = (await getCollection('blog')).sort(
 			</section>
 		</main>
 		<Footer />
+		<script>
+			// 获取每篇文章的阅读量
+			document.addEventListener('DOMContentLoaded', function() {
+				const viewCountElements = document.querySelectorAll('.view-count');
+
+				viewCountElements.forEach(function(el) {
+					const pageUrl = el.getAttribute('data-page-url');
+					if (!pageUrl) return;
+
+					// 使用 JSONP 获取阅读量
+					const callbackName = 'busuanzi_callback_' + Math.random().toString(36).substr(2, 9);
+
+					window[callbackName] = function(data) {
+						const valueSpan = el.querySelector('.busuanzi-value');
+						if (valueSpan && data && data.page_pv !== undefined) {
+							valueSpan.textContent = data.page_pv;
+						}
+						delete window[callbackName];
+					};
+
+					const script = document.createElement('script');
+					script.src = 'https://busuanzi.ibruce.info/busuanzi?jsonpCallback=' + callbackName + '&uriPath=' + encodeURIComponent(pageUrl);
+					document.body.appendChild(script);
+				});
+			});
+		</script>
 	</body>
 </html>
