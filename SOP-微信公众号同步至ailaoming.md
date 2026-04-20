@@ -129,6 +129,28 @@ python scripts/fetch_wechat_full.py
 
 ### 4.6 构建与图片完整性校验（升级）
 
+先跑自动验收脚本（强制）：
+
+```bash
+npm run validate:wechat
+```
+
+如仅校验本次新增文章，可按 slug 指定：
+
+```bash
+python3 scripts/validate_wechat_sync.py --slugs slug-a slug-b
+```
+
+校验项（硬性）：
+
+- 有 `原文首发` 微信链接；
+- 无 `mmbiz.qpic.cn` 残留外链；
+- `heroImage` 存在且文件落地；
+- 正文图片全部是站内路径且文件存在；
+- 正文长度不过短（防摘要化落盘）。
+
+通过后再执行构建：
+
 ```bash
 nvm use 22   # 或等价方式
 npm run build
@@ -182,9 +204,10 @@ git push origin master
 4. [ ] 图片已本地化到 `public/images/blog/`（无微信外链残留）  
 5. [ ] `heroImage` 已配置（有图文章）  
 6. [ ] `nvm use 22` 后 `npm run build` 通过  
-7. [ ] `git add` 包含对应 `.md`、`public/images/blog/` 下新图及必要代码  
-8. [ ] `git commit` + `git push origin master`  
-9. [ ] Vercel 构建成功，ailaoming.com 抽查文章与头图比例  
+7. [ ] 运行 `npm run validate:wechat` 通过（或按 slug 校验）  
+8. [ ] `git add` 包含对应 `.md`、`public/images/blog/` 下新图及必要代码  
+9. [ ] `git commit` + `git push origin master`  
+10. [ ] Vercel 构建成功，ailaoming.com 抽查文章与头图比例  
 
 ---
 
@@ -194,6 +217,7 @@ git push origin master
 - 博客内容：`src/content/blog/*.md`  
 - 静态图：`public/images/blog/`  
 - 微信抓取：`scripts/fetch_wechat_full.py`  
+- 自动验收：`scripts/validate_wechat_sync.py`  
 
 ---
 

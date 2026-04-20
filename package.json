@@ -9,7 +9,8 @@
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "astro": "astro"
+    "astro": "astro",
+    "validate:wechat": "python3 scripts/validate_wechat_sync.py"
   },
   "dependencies": {
     "@astrojs/mdx": "^5.0.2",
