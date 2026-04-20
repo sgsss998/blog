@@ -1,6 +1,6 @@
 # SOP：微信公众号全文同步至 ailaoming.com
 
-> **最后更新**：2026-04-14  
+> **最后更新**：2026-04-20  
 > **适用**：本目录 Astro 博客（部署仓库 `https://github.com/sgsss998/blog`）
 
 ---
@@ -54,7 +54,62 @@
 - 脚本：`scripts/fetch_wechat_full.py`
 - 在文件内维护 **`ARTICLES`**：`(slug,微信短链 id)`，例如 `("scold-ai-rl-de-ai-flavor-compare", "NmFn-U2RbCsS4L4J3p5q9w")`，完整 URL 为 `https://mp.weixin.qq.com/s/{id}`。
 
-### 4.2 执行
+### 4.2 抓取路径优先级（新增）
+
+遇到公众号链接时，按以下优先级执行：
+
+1. **路径 A（优先）**：`WebFetch` 直接抓取正文（适合绕过部分“环境异常”场景）。  
+2. **路径 B（回退）**：`scripts/fetch_wechat_full.py`（requests + bs4 + html2text）。  
+3. **路径 C（兜底）**：用户提供可访问正文源（复制文本/导出 md/截图+原图包），再按本站规范落盘。
+
+执行要求：
+
+- 只要 A 成功拿到全文，优先用 A 落盘；
+- A 失败再走 B，不要在 B 死循环重试；
+- A/B 都失败时立即走 C，并在提交信息里标明“来源方式（用户提供）”。
+
+### 4.3 路径 A：WebFetch 执行规范（新增）
+
+#### 4.3.1 抓取与判定
+
+- 对每个微信链接调用 `WebFetch(url)`。
+- 若返回包含「环境异常 / 去验证 / 当前环境异常」等阻断词，判定失败，切回路径 B。
+- 若返回正文，必须确认：
+  - 有明确标题；
+  - 有连续正文段落（不是仅一句导语）；
+  - 不是“小说阅读器跳转提示”这类空壳页。
+
+#### 4.3.2 落盘格式
+
+- 新建或更新：`src/content/blog/{slug}.md`
+- frontmatter 至少包含：`title`、`description`、`pubDate`、`keywords`
+- 开头保留：
+  - `> **原文首发**：[微信公众号](原链接)`
+
+### 4.4 图片处理规范（重点新增）
+
+无论走路径 A 还是 B，**图片都必须同步到站点**，不得只留外链。
+
+#### 4.4.1 图片来源优先级
+
+1. 正文中可直接提取的 `mmbiz.qpic.cn` 图片 URL（`data-src` / `src`）；
+2. 若 WebFetch 结果未给出可下载 URL，则：
+   - 用回退脚本从原页面抓图，或
+   - 由用户提供原图文件包（兜底）。
+
+#### 4.4.2 本地命名与路径
+
+- 图片统一落盘到：`public/images/blog/`
+- 命名规范：`{slug}-wechat-{序号}.{ext}`
+- 文内引用必须替换为本地路径：`/images/blog/{filename}`
+- **禁止**在最终 md 中保留 `mmbiz.qpic.cn` 外链
+
+#### 4.4.3 封面图规则
+
+- 有图文章必须写 `heroImage`（首张图或主视觉图）
+- `heroImage` 指向本地路径，如：`/images/blog/{slug}-wechat-01.png`
+
+### 4.5 路径 B：脚本执行（原 4.2）
 
 ```bash
 cd ".../06-归档/blog"
@@ -72,14 +127,18 @@ python scripts/fetch_wechat_full.py
 
 正文为 **HTML → Markdown（html2text）**，个别段落与图片可能挤在同一行，如需版式可再人工或加后处理断行。
 
-### 4.3 构建校验
+### 4.6 构建与图片完整性校验（升级）
 
 ```bash
 nvm use 22   # 或等价方式
 npm run build
 ```
 
-通过后再提交。
+通过后再提交。并额外做图片检查：
+
+1. 抽查新增文章 md：确认至少有 `heroImage` 或文中图片链接；  
+2. 确认 `public/images/blog/` 下存在对应文件；  
+3. 随机打开 1-2 篇新增文章的 `dist/blog/{slug}/index.html`，检查图片 src 为 `/images/blog/...` 本地路径。
 
 ---
 
@@ -118,11 +177,14 @@ git push origin master
 ## 7. 实施检查清单（每次同步可过一遍）
 
 1. [ ] 在 `fetch_wechat_full.py` 的 `ARTICLES` 中登记/更新 slug 与微信 id  
-2. [ ] 执行脚本（或确认正文已为全文而非摘要）  
-3. [ ] `nvm use 22` 后 `npm run build` 通过  
-4. [ ] `git add` 包含对应 `.md`、`public/images/blog/` 下新图及必要代码  
-5. [ ] `git commit` + `git push origin master`  
-6. [ ] Vercel 构建成功，ailaoming.com 抽查文章与头图比例  
+2. [ ] 先尝试 `WebFetch`，失败再走脚本回退  
+3. [ ] 正文为全文（非摘要），并保留原文链接  
+4. [ ] 图片已本地化到 `public/images/blog/`（无微信外链残留）  
+5. [ ] `heroImage` 已配置（有图文章）  
+6. [ ] `nvm use 22` 后 `npm run build` 通过  
+7. [ ] `git add` 包含对应 `.md`、`public/images/blog/` 下新图及必要代码  
+8. [ ] `git commit` + `git push origin master`  
+9. [ ] Vercel 构建成功，ailaoming.com 抽查文章与头图比例  
 
 ---
 

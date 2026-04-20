@@ -1,46 +1,44 @@
 ---
 title: "如何让 claude code 每次重启后都具有记忆：一个超简单方法（基础版）"
-description: "Claude Code 默认重启后记忆清零。本文给出最简单的记忆复用方式：在项目根目录维护 CLAUDE.md，让每次新对话自动加载上下文。"
+description: "Claude Code 记忆系统部署指南：通过 CLAUDE.md 实现重启后记忆复用的基础方法。"
 pubDate: 2026-04-20
 keywords: ["Claude Code", "CLAUDE.md", "记忆", "SOP", "AI工具"]
+heroImage: "/images/blog/claude-code-memory-claude-md-basic-wechat-01.jpg"
 ---
 
 > **原文首发**：[微信公众号](https://mp.weixin.qq.com/s/FLZelyg2qev3tDEDh_wWjA)
 
-claude code 的基础设定是每次重启终端记忆即清零，不具备记忆复用的能力。明明 claude code 很强，但每次重启后都要重新投喂背景，沟通成本很高。  
-一个可落地的办法是：在项目根目录放 `CLAUDE.md`，让新会话启动时自动加载。
+![](/images/blog/claude-code-memory-claude-md-basic-wechat-01.jpg)
 
-下面是可直接执行的基础版部署指南（原文核心）：
+![](/images/blog/claude-code-memory-claude-md-basic-wechat-02.png)
+
+![](/images/blog/claude-code-memory-claude-md-basic-wechat-03.png)
+
+Claude Code 记忆系统部署指南
+
+让 Claude 每次对话都“记得”你是谁、你的项目、你的偏好。
 
 ## 核心原理
 
-Claude Code 本身没有跨对话记忆，但支持在项目根目录放 `CLAUDE.md`，每次新对话启动时自动加载到上下文中，相当于给 AI 注入个人档案。
+Claude Code 本身没有跨对话记忆。但它支持在项目根目录放一个 `CLAUDE.md` 文件，每次新对话启动时自动加载到上下文中。相当于给 AI 注入了一份“个人档案”。
 
-## 一、最简单方式：CLAUDE.md
+## 一、最简单的方式：CLAUDE.md
 
-1. 进入你的项目目录  
-2. 创建 `CLAUDE.md`  
-3. 写入你希望 Claude 固定记住的信息（身份、项目背景、编码规范、沟通偏好、常用命令、禁止事项）  
-4. 保存后生效
+### 步骤
 
-位置规则：
-
-- 项目根目录 `CLAUDE.md`：当前项目生效，可提交到 Git
-- `~/.claude/CLAUDE.md`：全局生效，所有项目加载
+1. 打开终端，进入你的项目目录
+2. 创建 `CLAUDE.md` 文件
+3. 写入你想让 Claude 记住的内容
 
 ## 二、进阶：分层记忆
 
-可采用全局 + 项目双层：
+如果你有多个项目、多个身份，可以分层管理。Claude 会叠加加载：先加载全局，再加载项目级。
 
-- `~/.claude/CLAUDE.md`
-- `~/project-a/CLAUDE.md`
-- `~/project-b/CLAUDE.md`
+## 三、CLAUDE.md 写什么？
 
-加载顺序通常为先全局后项目。
+按需填写，不需要全抄。核心原则：写那些每次都要重复告诉 AI 的信息。
 
-## 三、CLAUDE.md 写什么
-
-建议只写“每次都要重复说”的稳定信息：
+### 推荐内容
 
 - 身份信息
 - 项目背景
@@ -49,14 +47,24 @@ Claude Code 本身没有跨对话记忆，但支持在项目根目录放 `CLAUDE
 - 常用命令
 - 禁止事项
 
-不建议写频繁变化的临时状态，避免占用上下文窗口。
+### 不用写的内容
 
-## 四、同步与迁移
+- 每次都会变的临时信息
+- 已经写在代码注释里的东西
+- 过于冗长的文档（会占上下文窗口）
 
-`CLAUDE.md` 就是普通文件，可通过 Git、手动拷贝、云同步等方式迁移。
+## 五、部署到其他电脑
 
-## 五、补充
+`CLAUDE.md` 就是一个普通文件，同步方式随你：
 
-如果你还想保留“修订痕迹”，Word 里可用「审阅 -> 比较 -> 比较文档」，对比原文档与 AI 修改版本，生成带修订痕迹文件。  
-这一步目前仍建议人工在 Word 内操作。
+- Git 同步（推荐）：提交到仓库，clone 后自动生效
+- 手动复制：拷贝文件到对应目录
+- 云同步：国产云盘等
 
+## 总结
+
+1. 在项目根目录创建 `CLAUDE.md`
+2. 写入你想让 AI 记住的信息
+3. 保存，下次对话自动生效
+
+就这么简单。不需要配置、不需要插件、不需要 API。文件在，记忆就在。
