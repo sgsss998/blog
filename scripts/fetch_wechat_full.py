@@ -3,10 +3,12 @@
 
 from __future__ import annotations
 
+import argparse
 import ast
 import html as html_lib
 import json
 import re
+import sys
 from pathlib import Path
 
 import html2text
@@ -34,6 +36,10 @@ ARTICLES: list[tuple[str, str]] = [
     ("ai-money-series-02-tomato-novel", "P3X5VmCC-Zyv2AghvF1UGQ"),
     ("plain-prompt-export-ai-memories", "C8LBrGelkf6krJkUPURZkQ"),
     ("claude-code-mac-glm-2026", "P3St1vufT6Yw2IZamxq2jg"),
+    ("claude-code-memory-claude-md-basic", "FLZelyg2qev3tDEDh_wWjA"),
+    ("ai-word-edit-sop-elegant", "Dv0NVgms6t9-smKIduUNxg"),
+    ("ai-novel-102-days-400k-35yuan", "ZAmP7YlMG4fHVe2Z_M54FA"),
+    ("recommend-ai-word-skill", "Fnp8Ly9qv9QCweqpmWqyaw"),
 ]
 
 
@@ -43,6 +49,8 @@ def ext_from_url(url: str) -> str:
         return "gif"
     if "wx_fmt=png" in u:
         return "png"
+    if "wx_fmt=webp" in u:
+        return "webp"
     if "wx_fmt=jpeg" in u or "wx_fmt=jpg" in u:
         return "jpg"
     return "jpg"
@@ -143,8 +151,7 @@ def process_one(session: requests.Session, slug: str, article_id: str) -> None:
         fname = f"{slug}-wechat-{img_idx:02d}.{ext}"
         rel = f"/images/blog/{fname}"
         dest = PUBLIC_IMG / fname
-        if not dest.exists():
-            download_image(session, raw, dest)
+        download_image(session, raw, dest)
         img["src"] = rel
         for attr in ("data-src", "data-ratio", "data-s", "data-type", "data-w", "data-imgfileid", "data-aistatus"):
             if attr in img.attrs:
@@ -162,10 +169,28 @@ def process_one(session: requests.Session, slug: str, article_id: str) -> None:
 
 
 def main() -> None:
+    parser = argparse.ArgumentParser(description="Fetch WeChat mp articles into blog markdown.")
+    parser.add_argument(
+        "--only",
+        nargs="*",
+        metavar="SLUG",
+        help="Only process these slugs (must exist in ARTICLES).",
+    )
+    args = parser.parse_args()
+
+    articles = ARTICLES
+    if args.only:
+        wanted = set(args.only)
+        articles = [(s, a) for s, a in ARTICLES if s in wanted]
+        missing = wanted - {s for s, _ in articles}
+        if missing:
+            print("Unknown slug(s) not in ARTICLES:", ", ".join(sorted(missing)), file=sys.stderr)
+            sys.exit(2)
+
     PUBLIC_IMG.mkdir(parents=True, exist_ok=True)
     BLOG_MD.mkdir(parents=True, exist_ok=True)
     with requests.Session() as session:
-        for slug, aid in ARTICLES:
+        for slug, aid in articles:
             process_one(session, slug, aid)
 
 

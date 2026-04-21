@@ -1,6 +1,6 @@
 # SOP：微信公众号全文同步至 ailaoming.com
 
-> **最后更新**：2026-04-20  
+> **最后更新**：2026-04-21  
 > **适用**：本目录 Astro 博客（部署仓库 `https://github.com/sgsss998/blog`）
 
 ---
@@ -115,6 +115,8 @@
 cd ".../06-归档/blog"
 . .venv-wechat/bin/activate
 python scripts/fetch_wechat_full.py
+# 仅重拉已在 ARTICLES 中登记的若干篇（slug 与脚本内元组第一项一致）
+python scripts/fetch_wechat_full.py --only slug-a slug-b
 ```
 
 脚本行为概要：
@@ -124,6 +126,7 @@ python scripts/fetch_wechat_full.py
 - 图片保存为 `public/images/blog/{slug}-wechat-{序号}.{ext}`，文中引用 `/images/blog/...`；
 - 保留原文章已有 frontmatter 中的 **`pubDate`、`keywords`**（若文件已存在），**标题**以微信页 `h1#activity-name` 为准；
 - 有图时写入 **`heroImage`**（首张图），供列表与详情头图使用。
+- 每次抓取会**重新下载**当前序号下的配图并覆盖同名文件，避免沿用过期缓存。
 
 正文为 **HTML → Markdown（html2text）**，个别段落与图片可能挤在同一行，如需版式可再人工或加后处理断行。
 
