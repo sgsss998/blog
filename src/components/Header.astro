@@ -8,6 +8,9 @@ import HeaderLink from './HeaderLink.astro';
     <h2><a href="/">{SITE_TITLE}</a></h2>
     <div class="internal-links">
       <HeaderLink href="/">首页</HeaderLink>
+      <HeaderLink href="/products">产品库</HeaderLink>
+      <HeaderLink href="/skills">Skills</HeaderLink>
+      <HeaderLink href="/services">服务</HeaderLink>
       <HeaderLink href="/blog">文章</HeaderLink>
       <HeaderLink href="/about">关于</HeaderLink>
     </div>
@@ -82,8 +85,15 @@ import HeaderLink from './HeaderLink.astro';
     display: flex;
     align-items: center;
     justify-content: space-between;
+    gap: 0.4em;
+    flex-wrap: wrap;
     max-width: 960px;
     margin: 0 auto;
+  }
+  .internal-links {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
   }
   nav a {
     padding: 1em 0.8em;
@@ -172,6 +182,9 @@ import HeaderLink from './HeaderLink.astro';
     border-radius: 8px;
   }
   @media (max-width: 720px) {
+    nav {
+      justify-content: center;
+    }
     .social-links a:first-child {
       display: none;
     }
