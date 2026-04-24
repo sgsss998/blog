@@ -14,35 +14,81 @@ import { SITE_DESCRIPTION, SITE_TITLE } from '../consts';
     <Header />
     <main>
       <section class="hero">
-        <h1>你好，我是老明</h1>
-        <p class="tagline">AI实战派 | 效率工具狂魔 | 自我进化中</p>
+        <p class="eyebrow">AI 干货家老明</p>
+        <h1>把 AI 从「会聊天」变成「会干活」</h1>
+        <p class="tagline">
+          我专注 OpenClaw、RAG 记忆库、Skills 和自动化工作流，帮你把 idea 变成稳定可复用的生产系统。
+        </p>
+        <div class="hero-actions">
+          <a class="btn primary" href="/products">查看产品库</a>
+          <a class="btn ghost" href="/services">咨询合作</a>
+        </div>
       </section>
 
-      <section class="intro">
-        <p>
-          这里是我的个人博客，记录我在 AI 领域的实战经验、效率工具的使用心得，以及个人成长路上的思考。
-        </p>
-        <p>
-          我相信：工具服务于人，AI 是杠杆。用好它们，放大自己的能力。
+      <section class="trust">
+        <h2>为什么可以先信我</h2>
+        <div class="stats">
+          <div class="stat-card">
+            <strong>27+</strong>
+            <span>站内归档文章</span>
+          </div>
+          <div class="stat-card">
+            <strong>10+</strong>
+            <span>可复用 skills 与 SOP</span>
+          </div>
+          <div class="stat-card">
+            <strong>7×24</strong>
+            <span>OpenClaw 实战迭代</span>
+          </div>
+        </div>
+        <p class="trust-links">
+          可验证链接：
+          <a href="https://github.com/sgsss998" target="_blank">GitHub</a>
+          ·
+          <a href="/blog">文章归档</a>
+          ·
+          <a href="/about">关于我</a>
         </p>
       </section>
 
       <section class="highlights">
-        <h2>最近在折腾什么</h2>
+        <h2>精选产品与方向</h2>
         <div class="card-grid">
           <div class="card">
-            <h3>🤖 OpenClaw 本地 AI</h3>
-            <p>7×24 小时在线的 AI 助手，像微信好友一样随时响应。已稳定运行 25 天，消耗 5 亿 tokens。</p>
+            <h3>🤖 OpenClaw 一站式方案</h3>
+            <p>从部署到养成，覆盖 Memory、Skills、风控与多 Agent 协作，适合想把 AI 真正投入业务的人。</p>
+            <a href="/products">查看详情</a>
           </div>
           <div class="card">
-            <h3>🧠 AI 复利飞轮</h3>
-            <p>构建个人内容引擎：一个 idea → 文章 → 多平台分发 → 反馈闭环。让内容产生复利。</p>
+            <h3>🧠 RAG 记忆库落地</h3>
+            <p>从本地向量库到混合检索，解决 AI 没记忆、回答漂移和上下文爆炸问题。</p>
+            <a href="/products">查看详情</a>
           </div>
           <div class="card">
-            <h3>📝 公众号写作</h3>
-            <p>「AI干货家老明」主理人。专注 AI 实战、效率提升、个人系统搭建。</p>
+            <h3>🛠 Skills 与工作流资产化</h3>
+            <p>把零散经验变成可复用技能卡，让内容、工具和服务形成复利闭环。</p>
+            <a href="/products">查看详情</a>
           </div>
         </div>
+      </section>
+
+      <section class="services-preview">
+        <h2>我能提供什么</h2>
+        <div class="service-grid">
+          <div class="service-card">
+            <h3>轻咨询</h3>
+            <p>明确问题、定位卡点、给出可执行路径。</p>
+          </div>
+          <div class="service-card">
+            <h3>深度陪跑</h3>
+            <p>围绕你的场景落地 AI 系统，按里程碑验收。</p>
+          </div>
+          <div class="service-card">
+            <h3>企业培训</h3>
+            <p>面向团队的 AI 提效实战培训与流程改造建议。</p>
+          </div>
+        </div>
+        <p><a href="/services">查看完整服务说明</a></p>
       </section>
 
       <section class="cta">
@@ -56,24 +102,88 @@ import { SITE_DESCRIPTION, SITE_TITLE } from '../consts';
 <style>
   .hero {
     text-align: center;
-    padding: 3em 0 2em;
+    padding: 3.5em 0 2em;
+  }
+  .eyebrow {
+    display: inline-block;
+    margin: 0;
+    padding: 0.3em 0.7em;
+    border-radius: 999px;
+    font-size: 0.85em;
+    background: rgba(var(--accent), 0.12);
+    color: var(--accent);
   }
   .hero h1 {
-    font-size: 2.8em;
-    margin-bottom: 0.3em;
+    font-size: 2.7em;
+    margin: 0.5em 0 0.4em;
   }
   .tagline {
     color: rgb(var(--gray));
-    font-size: 1.2em;
-    margin: 0;
+    font-size: 1.1em;
+    margin: 0 auto;
+    max-width: 760px;
+    line-height: 1.8;
+  }
+  .hero-actions {
+    margin-top: 1.5em;
+    display: flex;
+    justify-content: center;
+    gap: 0.9em;
+    flex-wrap: wrap;
+  }
+  .btn {
+    padding: 0.75em 1.2em;
+    border-radius: 999px;
+    text-decoration: none;
+    font-weight: 600;
+    border: 1px solid rgba(var(--accent), 0.35);
+  }
+  .btn.primary {
+    background: var(--accent);
+    color: white;
+  }
+  .btn.ghost {
+    color: var(--accent);
+    background: white;
   }
 
-  .intro {
-    margin: 2em 0 3em;
+  .trust {
+    margin: 2.5em 0;
+    padding: 1.8em;
+    border-radius: var(--radius);
+    background: rgba(var(--gray-light), 0.25);
+    border: 1px solid rgba(var(--gray), 0.15);
   }
-  .intro p {
-    font-size: 1.1em;
-    color: rgb(var(--gray-dark));
+  .trust h2 {
+    margin-top: 0;
+    margin-bottom: 1em;
+  }
+  .stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 1em;
+  }
+  .stat-card {
+    background: white;
+    border-radius: 12px;
+    padding: 1em;
+    text-align: center;
+  }
+  .stat-card strong {
+    display: block;
+    font-size: 1.4em;
+    margin-bottom: 0.2em;
+  }
+  .stat-card span {
+    color: rgb(var(--gray));
+    font-size: 0.9em;
+  }
+  .trust-links {
+    margin: 1em 0 0;
+    color: rgb(var(--gray));
+  }
+  .trust-links a {
+    text-decoration: none;
   }
 
   .highlights {
@@ -111,6 +221,35 @@ import { SITE_DESCRIPTION, SITE_TITLE } from '../consts';
     font-size: 0.95em;
     line-height: 1.6;
   }
+  .card a {
+    display: inline-block;
+    margin-top: 0.9em;
+    text-decoration: none;
+    font-weight: 600;
+  }
+
+  .services-preview {
+    margin: 3em 0;
+  }
+  .service-grid {
+    display: grid;
+    gap: 1em;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    margin-bottom: 1em;
+  }
+  .service-card {
+    padding: 1.1em;
+    border-radius: 12px;
+    border: 1px solid rgba(var(--gray), 0.2);
+    background: white;
+  }
+  .service-card h3 {
+    margin: 0 0 0.4em;
+  }
+  .service-card p {
+    margin: 0;
+    color: rgb(var(--gray));
+  }
 
   .cta {
     margin: 3em 0;
@@ -130,7 +269,7 @@ import { SITE_DESCRIPTION, SITE_TITLE } from '../consts';
 
   @media (max-width: 720px) {
     .hero h1 {
-      font-size: 2em;
+      font-size: 1.9em;
     }
     .tagline {
       font-size: 1em;
