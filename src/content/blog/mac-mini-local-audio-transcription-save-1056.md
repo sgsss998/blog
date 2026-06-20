@@ -1,0 +1,10 @@
+---
+title: "用 mac mini 本地转写音频，一年节省1056元讯飞听见的会员费"
+description: "我有大量的会议录音文件需要转写，为此我还研究出了一套生成会议纪要的自动化combo——讯飞听见+claude code的 skill。具体方法如下： 开通讯飞听见每月 88 元的会员，然后打开苹果手机录音，录音完成后把录音文件导入到讯飞听见，通过讯飞听见转写，转写完毕后导出 txt 文件到claude code，再通过已经迭代好的会议纪要skill-sop进行整理，最终输出成一份完整的会议纪要。 从去年十月份开始，我一直使用这套方法整…"
+pubDate: 2026-04-28
+keywords: ["AI干货家老明", "微信公众号同步"]
+heroImage: "/images/blog/mac-mini-local-audio-transcription-save-1056-wechat-01.jpg"
+---
+
+> **原文首发**：[微信公众号](https://mp.weixin.qq.com/s/ZN1acGNfAvtsi8O7AbRltg)
+![](/images/blog/mac-mini-local-audio-transcription-save-1056-wechat-01.jpg)我有大量的会议录音文件需要转写，为此我还研究出了一套生成会议纪要的自动化combo——讯飞听见+claude code的 skill。具体方法如下：开通讯飞听见每月 88 元的会员，然后打开苹果手机录音，录音完成后把录音文件导入到讯飞听见，通过讯飞听见转写，转写完毕后导出 txt 文件到claude code，再通过已经迭代好的会议纪要skill-sop进行整理，最终输出成一份完整的会议纪要。从去年十月份开始，我一直使用这套方法整理会议纪要，整体的感受是：方便、快捷、省心。讯飞听见的转写准确率还可以，速度也很快，加上 airdrop 的丝滑导出，整体流程非常smooth，效率很高。然而，这套方法最大的缺点是——费钱。一个月 88 块钱的订阅费，属实有些小贵，几乎抵得上我一个月的小龙虾费用了，且只有录音转写功能，性价比太低。![](/images/blog/mac-mini-local-audio-transcription-save-1056-wechat-02.jpg)我虽然知道还有大量的其他方法可以做平替，但由于惯性思维和路径依赖，我一直懒得去做切换，于是便成为了讯飞听见的骨灰级用户（转写时长超过 130 小时，还有其他账号的转写记录）：![](/images/blog/mac-mini-local-audio-transcription-save-1056-wechat-03.jpg)今天，我的讯飞听见会员又到期了。看着往期的巨款账单，我心痛不已，不由得心生一计：每月88块钱太贵了，都能喝好几杯星巴克了，不如试试免费的本地转写？反正我有台 mac mini，闲着也是闲着，只跑小龙虾也太浪费了，16gb 内存跑个本地转写应该绰绰有余。如果效果实在不佳，再开讯飞听见的会员。![](/images/blog/mac-mini-local-audio-transcription-save-1056-wechat-04.png)于是，说干就干，为了省钱，我直接开门见山问我的小龙虾（麦克，最强执行官）：![](/images/blog/mac-mini-local-audio-transcription-save-1056-wechat-05.png)![](/images/blog/mac-mini-local-audio-transcription-save-1056-wechat-06.png)麦克回答得异常干脆，能！他告诉我装一个 whisper large 是没问题的，而且速度也还行，内存绰绰有余，最重要的是：完！全！免！费！![](/images/blog/mac-mini-local-audio-transcription-save-1056-wechat-07.png)我立刻下达指令，让他把相关软件安装好。然后，我就把需要转写的音频文件发给他，试试效果（这里涉及到隐私，我懒得打码，就不放录音文件和转写的正文了，反正效果比我想象的好很多，远远超乎我的意料）：![](/images/blog/mac-mini-local-audio-transcription-save-1056-wechat-08.png)最终的效果我非常满意！和讯飞听见几乎没有差别，甚至某些细节还比讯飞听见要准确。推荐大家也试试，如果你也需要每个月开通转写音频的会员，不如试试部署在本地，用 whisper large 来本地转写，仅仅需要 3gb 左右的内存即可，一般的电脑都带的动，完全免费。具体的部署方法，可以去问任意的 AI，也可以像我一样，直接让你的小龙虾一步到位帮你安装好。
