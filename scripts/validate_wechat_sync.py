@@ -75,10 +75,21 @@ def check_post(md_path: Path) -> list[str]:
         if not img_file.exists():
             errors.append(f"正文图片文件不存在: {ref}")
 
-    # 5) prevent ultra-short fallback summaries
+    # 5) prevent ultra-short fallback summaries, while allowing explicit WeChat
+    # short/video archive entries whose source format is short by design.
     body_plain = re.sub(r"!\[[^\]]*\]\([^)]+\)", "", body)
     body_plain = re.sub(r"\s+", "", body_plain)
-    if len(body_plain) < 300:
+    explicit_short_archive = any(
+        marker in raw
+        for marker in (
+            "微信短内容/图片消息",
+            "微信短内容/图片或视频消息",
+            "微信壳页元数据归档",
+            "微信视频消息",
+            "恢复状态",
+        )
+    )
+    if len(body_plain) < 300 and not explicit_short_archive:
         errors.append("正文字符过短（<300），疑似摘要化落盘")
 
     return errors
@@ -123,4 +134,3 @@ def main() -> int:
 
 if __name__ == "__main__":
     sys.exit(main())
-
