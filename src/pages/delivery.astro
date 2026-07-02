@@ -1,0 +1,648 @@
+---
+import BaseHead from '../components/BaseHead.astro';
+import ConversionCTA from '../components/ConversionCTA.astro';
+import FAQSection from '../components/FAQSection.astro';
+import Footer from '../components/Footer.astro';
+import Header from '../components/Header.astro';
+import TrustBoundary from '../components/TrustBoundary.astro';
+import { WECHAT } from '../consts';
+
+const deliverySteps = [
+  {
+    step: '01',
+    title: '需求卡收口',
+    output: '确认目标流程、资料入口、期望输出、预算意向和隐私边界。',
+    pass: '能写出一个具体任务，而不是泛泛地说“想用 AI 提效”。',
+  },
+  {
+    step: '02',
+    title: '诊断与范围锁定',
+    output: '拆出 AI 能做、人必须确认、暂时不做和需要回源核验的部分。',
+    pass: '形成一页路线图，明确第一个可验收小闭环。',
+  },
+  {
+    step: '03',
+    title: '脱敏样例试跑',
+    output: '用 1-2 个脱敏样例跑通输入、步骤、输出和异常处理。',
+    pass: '样例输出能被复查，错误点能定位到具体步骤。',
+  },
+  {
+    step: '04',
+    title: 'SOP / Skill 固化',
+    output: '沉淀输入要求、执行步骤、人工确认点、输出格式和验收清单。',
+    pass: '同类任务再次出现时，不需要重新口头解释。',
+  },
+  {
+    step: '05',
+    title: '本地验证与交付',
+    output: '交付文件、目录、脚本、页面或流程说明，并跑构建/校验/人工复核。',
+    pass: '能打开、能复跑、能解释失败时由谁接管。',
+  },
+  {
+    step: '06',
+    title: '复盘与迭代判断',
+    output: '记录适合扩展、应该暂停和需要人工长期维护的部分。',
+    pass: '明确下一步是结束、扩展到第二个流程，还是进入阶段陪跑。',
+  },
+];
+
+const deliverableTypes = [
+  {
+    title: '诊断路线图',
+    fit: '需求还不够稳，但已经有一个真实流程。',
+    includes: '流程拆解、工具分工、风险边界、优先级和暂缓事项。',
+    proof: '验收标准是知道先做哪 1-3 件事，以及哪些暂时不值得做。',
+  },
+  {
+    title: 'Skill / SOP 小项目',
+    fit: '输入、输出和验收口径已经相对稳定。',
+    includes: '可复用 SOP、输入材料清单、执行步骤、人工确认点和验收清单。',
+    proof: '验收标准是同类任务能按流程复跑，不再每次重新解释。',
+  },
+  {
+    title: '知识库治理包',
+    fit: '资料散、路径乱、AI 找不到上下文。',
+    includes: '目录规则、索引入口、命名口径、权限边界、检索问题和维护节奏。',
+    proof: '验收标准是人能找到原始资料，AI 能引用可复查上下文。',
+  },
+  {
+    title: '系统阶段陪跑',
+    fit: '涉及多工具、多资料源、长期维护和持续迭代。',
+    includes: '阶段目标、原型、验证脚本、维护清单、复盘节奏和下一阶段建议。',
+    proof: '验收标准是先跑通一个真实闭环，再决定是否扩展。',
+  },
+];
+
+const acceptanceRows = [
+  {
+    item: '输入',
+    good: '样例、模板、目录、权限和禁区说清楚。',
+    weak: '只有一句“你帮我自动化一下”。',
+  },
+  {
+    item: '输出',
+    good: '知道最终要文件、表格、页面、SOP、脚本还是判断清单。',
+    weak: '只说“做得专业一点”。',
+  },
+  {
+    item: '验收',
+    good: '能列出错了就必须返工或人工接管的点。',
+    weak: '只靠主观感觉判断好不好。',
+  },
+  {
+    item: '边界',
+    good: '明确哪些内容不能公开、不能上传、不能进入长期记忆。',
+    weak: '敏感资料混在一起，交付后才补充限制。',
+  },
+  {
+    item: '复用',
+    good: '下一次同类任务能按同一套入口和步骤运行。',
+    weak: '只得到一次性聊天答案，后面仍然从零开始。',
+  },
+];
+
+const pauseSignals = [
+  '没有样例、没有流程、没有目标输出，只想听 AI 趋势。',
+  '需求每天变化，还不接受先做小闭环。',
+  '希望 AI 替代法律、财务、医疗、投资或组织内部责任人。',
+  '要求伪造、绕规、批量骚扰、隐藏事实或生成违规内容。',
+  '隐私边界说不清，却要求直接处理原始敏感材料。',
+];
+
+const kickoffItems = [
+  '我想交付的具体流程是：',
+  '我能提供的脱敏样例、模板或目录截图是：',
+  '我希望最终输出是：诊断路线图 / Skill-SOP / 知识库治理 / 系统陪跑 / 暂不确定',
+  '我认为验收成功的标准是：',
+  '必须人工确认或不能让 AI 处理的部分是：',
+  '预算意向：轻量诊断 / 单流程小项目 / 阶段陪跑 / 暂不确定',
+  '期望启动时间：本周 / 本月 / 先预沟通',
+  '是否接受先诊断再项目：是 / 否 / 需要先了解',
+  '隐私边界：我会先提供脱敏描述，不直接发送原始敏感材料。',
+];
+
+const kickoffCopy = [
+  `微信号：${WECHAT}`,
+  '备注：AI 项目交付预审',
+  '来源：ailaoming.com/delivery',
+  '线索类型：AI 项目交付流程 / 启动预审',
+  ...kickoffItems,
+].join('\n');
+
+const deliveryFaqs = [
+  {
+    question: '一定要先做诊断吗？',
+    answer: '不一定。如果输入、输出和验收已经很清楚，可以直接进入 Skill/SOP 小项目；如果还说不清，就先做诊断或 Coffee Chat，避免把模糊问题硬做成项目。',
+  },
+  {
+    question: '交付物会不会只是一段提示词？',
+    answer: '不会。提示词只是其中一部分。真正交付的是输入要求、执行步骤、人工确认点、输出格式、验收清单和后续维护口径。',
+  },
+  {
+    question: '可以处理敏感资料吗？',
+    answer: '第一次只看脱敏样例和边界说明。确实需要看原始上下文时，必须先确认范围、用途和不进入公开展示的规则。',
+  },
+  {
+    question: '什么情况会暂停？',
+    answer: '没有样例、不接受人工核验、需求持续漂移，或要求 AI 替代专业责任时，会先暂停。暂停不是拒绝合作，而是先把问题缩小到可验收范围。',
+  },
+];
+
+const deliveryStructuredData = {
+  '@context': 'https://schema.org',
+  '@type': 'HowTo',
+  '@id': 'https://ailaoming.com/delivery/#howto',
+  name: 'AI 项目交付流程',
+  url: 'https://ailaoming.com/delivery/',
+  inLanguage: 'zh-CN',
+  description: '从需求卡、诊断、脱敏样例试跑、SOP 固化、本地验证到复盘迭代的 AI 项目交付流程。',
+  step: deliverySteps.map((item) => ({
+    '@type': 'HowToStep',
+    name: item.title,
+    text: `${item.output} ${item.pass}`,
+  })),
+};
+---
+
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <BaseHead
+      title="AI 项目交付流程"
+      description="AI干货家老明的交付流程：需求卡、诊断、脱敏样例试跑、SOP/Skill 固化、本地验证、复盘迭代和启动预审。"
+    />
+    <script type="application/ld+json" set:html={JSON.stringify(deliveryStructuredData)}></script>
+  </head>
+  <body>
+    <Header />
+    <main>
+      <section class="hero">
+        <div class="hero-copy">
+          <p class="eyebrow">Delivery Playbook</p>
+          <h1>AI 项目交付流程：从需求卡到可复跑闭环</h1>
+          <p class="tagline">
+            一个 AI 项目不是“聊完就开干”。先把资料、流程、边界、验收和人工接管点说清楚，再用脱敏样例跑小闭环，最后才沉淀成可复用的 SOP、Skill、知识库或系统流程。
+          </p>
+          <div class="hero-actions">
+            <a class="btn primary" href="#delivery-steps">看 6 步交付流程</a>
+            <a class="btn secondary" href="#kickoff-brief">复制启动预审卡</a>
+            <a class="btn secondary" href="/trust">看隐私边界</a>
+          </div>
+        </div>
+        <aside class="hero-panel" aria-label="交付原则">
+          <strong>交付原则</strong>
+          <p>先小闭环，后扩展；先脱敏样例，后原始上下文；先验收标准，后报价和排期。</p>
+        </aside>
+      </section>
+
+      <section id="delivery-steps" class="section" aria-label="6 步交付流程">
+        <div class="section-head">
+          <p class="eyebrow">Process</p>
+          <h2>6 步交付流程</h2>
+          <p>每一步都有输出和通过标准，避免把 AI 项目做成一串不可复查的聊天记录。</p>
+        </div>
+        <div class="step-grid">
+          {deliverySteps.map((item) => (
+            <article>
+              <span>{item.step}</span>
+              <h3>{item.title}</h3>
+              <p>{item.output}</p>
+              <strong>{item.pass}</strong>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      <section class="section deliverable-section" aria-label="交付类型">
+        <div class="section-head">
+          <p class="eyebrow">Deliverables</p>
+          <h2>四类交付物</h2>
+          <p>不同成熟度的需求，对应不同交付物。不是所有问题都应该直接进入系统陪跑。</p>
+        </div>
+        <div class="deliverable-grid">
+          {deliverableTypes.map((item) => (
+            <article>
+              <h3>{item.title}</h3>
+              <dl>
+                <div>
+                  <dt>适合</dt>
+                  <dd>{item.fit}</dd>
+                </div>
+                <div>
+                  <dt>包含</dt>
+                  <dd>{item.includes}</dd>
+                </div>
+                <div>
+                  <dt>验收</dt>
+                  <dd>{item.proof}</dd>
+                </div>
+              </dl>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      <section class="section acceptance-section" aria-label="验收矩阵">
+        <div class="section-head">
+          <p class="eyebrow">Acceptance</p>
+          <h2>交付前先看验收矩阵</h2>
+          <p>能不能做，不看工具名，看这五件事是否足够清楚。</p>
+        </div>
+        <div class="acceptance-table">
+          <div class="acceptance-row acceptance-head">
+            <span>维度</span>
+            <span>适合启动</span>
+            <span>需要先补清楚</span>
+          </div>
+          {acceptanceRows.map((row) => (
+            <div class="acceptance-row">
+              <strong>{row.item}</strong>
+              <span>{row.good}</span>
+              <span>{row.weak}</span>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <section class="section pause-section" aria-label="暂缓信号">
+        <div>
+          <p class="eyebrow">Pause Signals</p>
+          <h2>这些情况先暂停，不硬做项目</h2>
+          <p>暂停的目的不是拖延，而是避免把不可验收的模糊需求做成高成本返工。</p>
+        </div>
+        <ul>
+          {pauseSignals.map((item) => <li>{item}</li>)}
+        </ul>
+      </section>
+
+      <section id="kickoff-brief" class="section kickoff-section" aria-label="项目启动预审卡">
+        <div>
+          <p class="eyebrow">Kickoff Brief</p>
+          <h2>项目启动前材料清单</h2>
+          <p>
+            复制下面这张启动预审卡，发微信 <code>{WECHAT}</code>。它会自动带上 来源：ailaoming.com/delivery 和 线索类型：AI 项目交付流程 / 启动预审。
+          </p>
+        </div>
+        <div class="kickoff-card">
+          <ol>
+            {kickoffItems.map((item) => <li>{item}</li>)}
+          </ol>
+          <button type="button" class="copy-kickoff" data-copy={kickoffCopy}>复制启动预审卡</button>
+          <p class="copy-kickoff-status" aria-live="polite"></p>
+        </div>
+      </section>
+
+      <TrustBoundary
+        compact={true}
+        eyebrow="交付边界"
+        title="交付流程不要求你一开始交出原始资料"
+        intro="第一次只需要脱敏样例、目录结构、失败问题和不可公开边界。高风险资料必须先明确用途、范围、人工确认点和公开禁区；不确定资料能不能发时，先看 /trust 信任与隐私边界。"
+      />
+
+      <FAQSection title="交付流程常见问题" items={deliveryFaqs} />
+
+      <ConversionCTA
+        title="先判断你的问题能不能进入交付"
+        note="把一个具体流程、一个脱敏样例和验收标准发来，我先判断该走 Coffee Chat、诊断、Skill/SOP 小项目，还是知识库治理。"
+        remark="AI 项目交付预审"
+        briefItems={[
+          '我想进入交付的流程是：',
+          '我能提供的脱敏样例是：',
+          '我希望验收标准是：',
+        ]}
+        primaryHref="/brief"
+        primaryLabel="复制需求卡"
+        secondaryHref="/pricing"
+        secondaryLabel="看合作方式"
+        briefHref="/diagnosis"
+        briefLabel="先做 AI 自测"
+      />
+    </main>
+    <Footer />
+  </body>
+</html>
+
+<script>
+  document.querySelectorAll('.copy-kickoff').forEach((button) => {
+    button.addEventListener('click', async () => {
+      const trigger = button instanceof HTMLElement ? button : null;
+      const text = trigger?.dataset.copy ?? '';
+      const panel = trigger?.closest('.kickoff-card');
+      const status = panel?.querySelector('.copy-kickoff-status');
+
+      try {
+        if (!navigator.clipboard || !text) throw new Error('Clipboard unavailable');
+        await navigator.clipboard.writeText(text);
+        if (status) status.textContent = '已复制，可直接粘贴到微信';
+      } catch {
+        if (status) status.textContent = '复制失败，请手动复制上面的清单';
+      }
+    });
+  });
+</script>
+
+<style>
+  main {
+    width: 1080px;
+  }
+
+  .hero {
+    display: grid;
+    grid-template-columns: minmax(0, 1.25fr) minmax(260px, 0.75fr);
+    gap: 1.2rem;
+    align-items: stretch;
+    padding: 3.5rem 0 2.2rem;
+  }
+
+  .eyebrow {
+    margin: 0 0 0.65rem;
+    color: var(--accent);
+    font-size: 0.82rem;
+    font-weight: 800;
+  }
+
+  h1 {
+    margin: 0;
+    font-size: 2.55rem;
+    line-height: 1.14;
+  }
+
+  .tagline {
+    max-width: 780px;
+    margin: 1rem 0 0;
+    color: rgb(var(--gray));
+    font-size: 1.06rem;
+  }
+
+  .hero-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.8rem;
+    margin-top: 1.4rem;
+  }
+
+  .btn {
+    display: inline-flex;
+    min-height: 42px;
+    align-items: center;
+    justify-content: center;
+    padding: 0.62rem 0.9rem;
+    border-radius: 8px;
+    font-weight: 800;
+    text-decoration: none;
+  }
+
+  .btn.primary {
+    color: #fff;
+    background: var(--accent);
+  }
+
+  .btn.secondary {
+    color: rgb(var(--black));
+    background: #fff;
+    border: 1px solid rgba(var(--black), 0.12);
+  }
+
+  .hero-panel,
+  .step-grid article,
+  .deliverable-grid article,
+  .kickoff-card {
+    background: #fff;
+    border: 1px solid rgba(var(--black), 0.08);
+    border-radius: 8px;
+    box-shadow: var(--box-shadow);
+  }
+
+  .hero-panel {
+    padding: 1.15rem;
+  }
+
+  .hero-panel strong {
+    color: rgb(var(--black));
+  }
+
+  .hero-panel p {
+    color: rgb(var(--gray));
+    line-height: 1.7;
+  }
+
+  .section {
+    margin: 3rem 0;
+  }
+
+  .section-head {
+    max-width: 760px;
+    margin-bottom: 1.2rem;
+  }
+
+  .section-head h2,
+  .pause-section h2,
+  .kickoff-section h2 {
+    margin: 0;
+    font-size: 1.72rem;
+  }
+
+  .section-head p:last-child,
+  .pause-section p,
+  .kickoff-section p {
+    margin: 0.65rem 0 0;
+    color: rgb(var(--gray));
+  }
+
+  .step-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.9rem;
+  }
+
+  .step-grid article,
+  .deliverable-grid article {
+    padding: 1rem;
+  }
+
+  .step-grid span {
+    display: inline-flex;
+    min-width: 2.4rem;
+    min-height: 2rem;
+    align-items: center;
+    justify-content: center;
+    color: var(--accent);
+    background: rgba(0, 102, 255, 0.07);
+    border: 1px solid rgba(0, 102, 255, 0.16);
+    border-radius: 8px;
+    font-size: 0.78rem;
+    font-weight: 900;
+  }
+
+  .step-grid h3,
+  .deliverable-grid h3 {
+    margin: 0.8rem 0 0.45rem;
+    font-size: 1.02rem;
+  }
+
+  .step-grid p,
+  .deliverable-grid dd,
+  .pause-section li,
+  .kickoff-card li {
+    color: rgb(var(--gray));
+    font-size: 0.92rem;
+    line-height: 1.65;
+  }
+
+  .step-grid p {
+    margin: 0;
+  }
+
+  .step-grid strong {
+    display: block;
+    margin-top: 0.75rem;
+    color: rgb(var(--black));
+    font-size: 0.9rem;
+    line-height: 1.55;
+  }
+
+  .deliverable-section,
+  .acceptance-section,
+  .pause-section,
+  .kickoff-section {
+    padding: 1rem;
+    background: #f7fbff;
+    border: 1px solid rgba(0, 102, 255, 0.1);
+    border-radius: 8px;
+  }
+
+  .deliverable-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.9rem;
+  }
+
+  .deliverable-grid dl {
+    display: grid;
+    gap: 0.65rem;
+    margin: 0.75rem 0 0;
+  }
+
+  .deliverable-grid dl div {
+    padding-top: 0.65rem;
+    border-top: 1px solid rgba(var(--black), 0.07);
+  }
+
+  .deliverable-grid dt {
+    color: rgb(var(--black));
+    font-size: 0.78rem;
+    font-weight: 800;
+  }
+
+  .deliverable-grid dd {
+    margin: 0.2rem 0 0;
+  }
+
+  .acceptance-table {
+    display: grid;
+    gap: 0.55rem;
+  }
+
+  .acceptance-row {
+    display: grid;
+    grid-template-columns: 0.55fr repeat(2, minmax(0, 1fr));
+    gap: 0.55rem;
+  }
+
+  .acceptance-row > * {
+    min-width: 0;
+    padding: 0.72rem;
+    color: rgb(var(--gray));
+    background: #fff;
+    border: 1px solid rgba(var(--black), 0.08);
+    border-radius: 8px;
+    font-size: 0.9rem;
+    line-height: 1.6;
+  }
+
+  .acceptance-row strong,
+  .acceptance-head span {
+    color: rgb(var(--black));
+    font-weight: 800;
+  }
+
+  .acceptance-head span {
+    color: var(--accent);
+    background: rgba(0, 102, 255, 0.06);
+    border-color: rgba(0, 102, 255, 0.14);
+  }
+
+  .pause-section,
+  .kickoff-section {
+    display: grid;
+    grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+    gap: 1rem;
+    align-items: start;
+  }
+
+  .pause-section ul,
+  .kickoff-card ol {
+    margin: 0;
+    padding-left: 1.2rem;
+  }
+
+  .pause-section ul {
+    padding: 1rem 1rem 1rem 2rem;
+    background: #fff;
+    border: 1px solid rgba(var(--black), 0.08);
+    border-radius: 8px;
+  }
+
+  .pause-section li + li,
+  .kickoff-card li + li {
+    margin-top: 0.5rem;
+  }
+
+  .kickoff-card {
+    padding: 1rem;
+  }
+
+  .copy-kickoff {
+    width: 100%;
+    min-height: 42px;
+    margin-top: 0.9rem;
+    padding: 0.55rem 0.75rem;
+    color: var(--accent);
+    font: inherit;
+    font-weight: 800;
+    background: #fff;
+    border: 1px solid rgba(0, 102, 255, 0.2);
+    border-radius: 8px;
+    cursor: pointer;
+  }
+
+  .copy-kickoff-status {
+    min-height: 1.2rem;
+    margin: 0.45rem 0 0;
+    color: rgb(var(--gray));
+    font-size: 0.84rem;
+  }
+
+  @media (max-width: 900px) {
+    main {
+      width: calc(100% - 2rem);
+    }
+
+    .hero,
+    .step-grid,
+    .deliverable-grid,
+    .pause-section,
+    .kickoff-section,
+    .acceptance-row {
+      grid-template-columns: 1fr;
+    }
+
+    h1 {
+      font-size: 2.05rem;
+    }
+
+    .hero {
+      padding-top: 2.4rem;
+    }
+  }
+</style>

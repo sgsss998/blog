@@ -1,5 +1,6 @@
 ---
 import Layout from '../layouts/BlogPost.astro';
+import ConversionCTA from '../components/ConversionCTA.astro';
 ---
 
 <Layout
@@ -7,6 +8,8 @@ import Layout from '../layouts/BlogPost.astro';
   description="老明的个人简介 - AI 干货家，专注可复用系统与结果交付"
   pubDate={new Date('2026-03-19')}
   heroImage={undefined}
+  showMeta={false}
+  showEngagement={false}
 >
   <h2>我是谁？</h2>
   <p>
@@ -45,13 +48,50 @@ import Layout from '../layouts/BlogPost.astro';
     <li><strong>内容视角</strong>：公开复盘我做对和做错的过程，让你少踩坑</li>
   </ul>
 
-  <h2>真实信息与联系</h2>
+  <h2>公开可信锚点</h2>
+  <p>
+    如果你是第一次看到这个网站，可以先从公开材料判断我的能力边界，而不是只看一句自我介绍。
+  </p>
+  <ul>
+    <li><strong>公开文章库</strong>：RAG、OpenClaw、AI 写作、Skill、内容商业化和个人 AI 工作台的长期复盘。</li>
+    <li><strong>Skill 样例</strong>：报销材料整理、Word 格式保真、去 AI 味写作、前端幻灯片和文章转漫画等脱敏样例。</li>
+    <li><strong>项目看板</strong>：AI 写小说、AI 法考备考、AI 投研记录、Git 版长期记忆库 OS 等进行中项目。</li>
+    <li><strong>线下入口</strong>：上海 Coffee Chat 用来承接高密度交流、预诊断和后续小项目。</li>
+    <li><strong>技术交付</strong>：这个站点本身就是一个持续更新的 Astro 静态站、内容归档系统和本地校验流程样例。</li>
+  </ul>
+
+  <h2>公开身份边界</h2>
+  <p>
+    这个站点展示的是「老明」这个公开 AI 实战身份。公开页面只写可验证的方法、项目进度、脱敏样例和合作边界；未经授权的原始资料、私人聊天、客户背景、内部组织信息、账号密钥和未确认报价不会写入网站。更完整的材料准备口径见 <a href="/trust">AI 咨询信任与隐私边界</a>。
+  </p>
+
+  <h2>联系入口</h2>
   <p>
     我叫老明，目前主要精力在 AI 实战落地、产品化与内容系统搭建。你可以通过下面方式联系我：
   </p>
   <ul>
     <li>微信：<code>soplaoming</code>（备注「博客」）</li>
-    <li>GitHub：<a href="https://github.com/sgsss998" target="_blank">github.com/sgsss998</a></li>
+    <li>GitHub：<a href="https://github.com/sgsss998" target="_blank" rel="noopener noreferrer">github.com/sgsss998</a></li>
     <li>合作方向：AI 工作流搭建、RAG 记忆系统、skills 设计与落地</li>
   </ul>
+
+  <h2>合作边界</h2>
+  <p>
+    我更适合处理有具体场景、具体资料结构和明确验收标准的问题。公开页面只展示脱敏后的方法、样例和项目进度；客户原始材料、内部资料、私人聊天和未确认报价不会进入网站。第一次沟通前可以先复制 <a href="/trust#privacy-card">脱敏材料准备卡</a>。
+  </p>
+
+  <ConversionCTA
+    title="从一个真实流程开始认识我"
+    note="如果你是第一次来，不用先判断要不要合作。先做 AI 自测，或者发一个你现在反复做、反复返工的流程，我会先判断它适合轻量交流、诊断，还是 Skill/SOP 小项目。"
+    remark="关于页咨询"
+    briefItems={[
+      '我是从关于页来的，我想了解：',
+      '我手头最想优化的 AI 流程是：',
+      '我希望先 AI 自测 / Coffee Chat / 线上诊断：',
+    ]}
+    primaryHref="/diagnosis"
+    primaryLabel="AI 落地自测"
+    secondaryHref="/coffee-chat"
+    secondaryLabel="上海 Coffee Chat"
+  />
 </Layout>

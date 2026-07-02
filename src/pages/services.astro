@@ -1,49 +1,993 @@
 ---
 import Layout from '../layouts/BlogPost.astro';
+import ConversionCTA from '../components/ConversionCTA.astro';
+import FAQSection from '../components/FAQSection.astro';
+import ProofShowcase from '../components/ProofShowcase.astro';
+import TrustBoundary from '../components/TrustBoundary.astro';
+
+const serviceFaqs = [
+  {
+    question: '第一次沟通前需要准备什么？',
+    answer: '先准备一个你反复做、反复返工的具体流程，再准备 1-2 个脱敏样例。样例越具体，越容易判断这件事适合做诊断、Skill 定制，还是项目制落地。',
+  },
+  {
+    question: '能不能先只做一次轻量诊断？',
+    answer: '可以。很多场景不适合一上来做大系统，先用一次诊断把资料源、重复动作、工具选择和优先级拆清楚，反而更省成本。',
+  },
+  {
+    question: '资料涉及隐私怎么办？',
+    answer: '默认先脱敏。能用样例说明问题，就不使用原始敏感材料；必须看原始上下文时，也会先明确哪些内容只用于本地判断，哪些内容绝不进入公开展示。',
+  },
+  {
+    question: '交付后我能自己继续用吗？',
+    answer: '目标就是让你后续能复用。交付物会尽量包括输入要求、执行步骤、输出标准和验收清单，而不是只给一次性的聊天结论。',
+  },
+  {
+    question: '什么需求会直接拒绝？',
+    answer: '绕过平台规则、伪造材料、批量骚扰、隐藏事实、要求 AI 替代专业责任人的需求不接。高风险事项只做流程整理，不替代法律、财务、医疗或投资判断。',
+  },
+];
+
+const decisionRows = [
+  {
+    signal: '问题还很散，只知道想用 AI 提效',
+    entry: 'Coffee Chat / 方向梳理',
+    deliverable: '问题清单、优先级、下一步动作',
+    next: '先带一个真实问题来聊，不急着做系统',
+  },
+  {
+    signal: '已经有一个反复返工的流程',
+    entry: 'AI 工作流诊断',
+    deliverable: '流程拆解、工具分工、人机边界、路线图',
+    next: '准备当前做法和 1 个脱敏样例',
+  },
+  {
+    signal: '输入、输出、验收标准基本稳定',
+    entry: 'Skill / SOP 小项目',
+    deliverable: '可复用 Skill、SOP、输入要求、验收清单',
+    next: '用脱敏样例跑一轮小闭环',
+  },
+  {
+    signal: '资料很多，AI 找不准上下文',
+    entry: '知识库治理',
+    deliverable: '目录规则、索引入口、权限边界、检索口径',
+    next: '先盘点资料入口和公开边界',
+  },
+  {
+    signal: '涉及多工具、长期维护和持续迭代',
+    entry: 'AI 系统陪跑',
+    deliverable: '阶段目标、原型、验证脚本、迭代清单',
+    next: '先确认第一个可验收流程',
+  },
+];
+
+const deliveryMatrix = [
+  {
+    item: '输入材料',
+    light: '一个问题或场景',
+    project: '脱敏样例、模板、目标输出',
+    system: '目录、权限、工具栈、长期目标',
+  },
+  {
+    item: '交付形态',
+    light: '沟通纪要或下一步清单',
+    project: 'SOP / Skill / 文档模板 / 验收清单',
+    system: '工作流、目录结构、脚本或系统原型',
+  },
+  {
+    item: '验收口径',
+    light: '知道先做什么、不做什么',
+    project: '同类任务能按流程复跑',
+    system: '真实流程能跑通，失败时知道谁接管',
+  },
+  {
+    item: '不适合',
+    light: '只想听风口概念',
+    project: '没有样例或不接受人工确认',
+    system: '希望一次做成万能系统',
+  },
+];
+
+const serviceEvidenceRows = [
+  {
+    service: 'AI 获客站诊断',
+    sample: '个人网站从文章归档升级为 AI 获客系统',
+    publicProof: '站内公开页面展示首页、文章库、样例库、资料卡、AI 自测、Coffee Chat、工作坊和发布前审批包如何连接。',
+    firstAsset: '公开内容入口、想承接的服务方向、1 个脱敏样例或公开项目链接。',
+    acceptance: '输出内容到线索的漏斗图、页面优先级、需求卡字段和公开边界。',
+    notFit: '完全没有内容资产、只想买流量、希望承诺线索数量。',
+    href: '/ai-acquisition',
+    action: '看获客站诊断',
+  },
+  {
+    service: 'AI 工作流诊断',
+    sample: 'AI 获客站改造与落地自测',
+    publicProof: '站内公开页面：AI 落地自测、服务决策表、发布前审批包。',
+    firstAsset: '一个重复流程、当前工具栈、1 份脱敏样例。',
+    acceptance: '输出 1-3 个优先流程，说明 AI 接手段、人确认段和暂缓事项。',
+    notFit: '只想听工具趋势、没有具体流程、无法提供样例。',
+    href: '/workflow-diagnosis',
+    action: '看诊断服务',
+  },
+  {
+    service: '办公 Skill / SOP 定制',
+    sample: 'Word 格式保真与报销材料整理 Skill',
+    publicProof: '公开文章展示 Word SOP 和报销 Skill 的脱敏结构。',
+    firstAsset: '原模板、目标输出、最近一次返工原因或规则说明。',
+    acceptance: '同类任务能按输入要求、执行步骤、输出标准和验收清单复跑。',
+    notFit: '想要万能提示词、不接受人工核验、要求修改事实材料。',
+    href: '/blog/ai-word-edit-sop-elegant/',
+    action: '看 Word SOP',
+  },
+  {
+    service: '个人知识库整理',
+    sample: 'RAG 与长期记忆库 / Memory OS',
+    publicProof: '公开页面展示 Memory OS 分层架构、准入规则、隐私边界和评测指标；公开文章展示 RAG 方法、资料入口和引用口径。',
+    firstAsset: '目录样例、资料类型、检索问题和不可公开范围。',
+    acceptance: '能找到原始路径，能解释引用依据，长期记忆有准入和状态规则，敏感资料有明确边界。',
+    notFit: '资料量很少、暂时只需要普通搜索、还不愿意整理入口。',
+    href: '/memory-os',
+    action: '看 Memory OS',
+  },
+  {
+    service: 'AI 系统落地陪跑',
+    sample: 'Codex 长程任务协作',
+    publicProof: '公开文章和当前站点维护流程展示长程执行、验证和审批。',
+    firstAsset: '目标边界、现有仓库或工具栈、第一个可验收流程。',
+    acceptance: '先跑通一个小闭环，再形成验证脚本、维护清单和迭代节奏。',
+    notFit: '希望一次做成万能系统、没有负责人确认、不能接受分阶段验收。',
+    href: '/blog/codex-pro-200-dollar-how-i-use-it/',
+    action: '看 Codex 复盘',
+  },
+];
+
+const firstDealOptions = [
+  {
+    label: '成本要先算',
+    title: '先用 ROI 估算器判断值不值',
+    threshold: '适合已经知道某个流程耗时，但还不确定是否值得进入诊断或小项目的人。',
+    bring: '每周耗时、返工比例、机会成本口径和预计 AI 可节省比例。',
+    deliverable: '得到月度节省时间、月度释放价值和建议下一步。',
+    upgrade: '如果释放价值明显，再进入诊断或 Skill/SOP 小项目预审。',
+    href: '/roi-calculator',
+    action: '先估算 ROI',
+  },
+  {
+    label: '资料还不清',
+    title: '先拿资料卡补齐线索',
+    threshold: '适合只有方向、还没有样例的人。',
+    bring: '当前工具、资料入口、一个想解决的问题。',
+    deliverable: '先把问题压缩成可沟通模板，不直接启动项目。',
+    upgrade: '资料入口、目标输出和边界说清后，再进入自测或诊断。',
+    href: '/products#resource-skill-brief',
+    action: '复制需求模板',
+  },
+  {
+    label: '流程已明确',
+    title: '先从一次流程诊断开始',
+    threshold: '适合已经有重复流程，但不知道 AI 能接手哪一段的人。',
+    bring: '当前做法、1 个脱敏样例、期望输出和失败标准。',
+    deliverable: '输出流程拆解、工具分工、人机边界和第一批可落地任务。',
+    upgrade: '如果输入、输出和验收稳定，再升级 Skill/SOP 小项目。',
+    href: '/diagnosis',
+    action: '先做自测',
+  },
+  {
+    label: '需要当面拆',
+    title: '想当面拆先 Coffee Chat',
+    threshold: '适合问题有现实上下文，但还不适合直接报价的人。',
+    bring: '一个真实卡点、当前尝试过的方法、希望聊完得到的结果。',
+    deliverable: '把方向收束成下一步清单，判断是否值得进入诊断或小项目。',
+    upgrade: '只有样例、边界和验收口径都清楚时，才建议进入项目。',
+    href: '/coffee-chat',
+    action: '看 Coffee Chat',
+  },
+  {
+    label: '内容不转化',
+    title: '先看 AI 获客站诊断',
+    threshold: '适合已经有文章、项目、资料包或个人品牌，但访客看完不知道下一步的人。',
+    bring: '公开内容入口、想承接的服务方向、一个公开样例或脱敏描述。',
+    deliverable: '输出内容、样例、自测、需求卡、Coffee Chat、工作坊和服务页之间的转化路径。',
+    upgrade: '路径说清后，再进入页面改造、内容系统整理或阶段陪跑。',
+    href: '/ai-acquisition',
+    action: '看获客诊断',
+  },
+  {
+    label: '同主题多人',
+    title: '3-8 人先做小型工作坊预审',
+    threshold: '适合同一主题的小团队或小组，比如知识库、办公 Skill、内容商业化或 AI 工作流。',
+    bring: '工作坊主题、预计人数、参与者背景、共同卡点和 1 个脱敏样例。',
+    deliverable: '判断是否适合开小班，并收束现场应该产出的流程图、资料清单或 Skill 草图。',
+    upgrade: '主题集中、样例清楚后，再进入上海 AI 小型工作坊或后续诊断。',
+    href: '/workshop',
+    action: '看工作坊预审',
+  },
+];
+
+const engagementTiers = [
+  {
+    label: '轻量判断',
+    title: 'Coffee Chat / 预诊断',
+    budget: '低成本试探，不直接承诺系统交付。',
+    start: '问题还散，但已经有一个真实卡点。',
+    bring: '一个场景、当前尝试过的方法、希望聊完得到什么。',
+    output: '方向清单、暂缓事项、是否值得进入诊断的判断。',
+    pause: '只想泛泛聊趋势，或没有任何具体流程。',
+  },
+  {
+    label: '小班共创',
+    title: 'AI 小型工作坊',
+    budget: '按主题和人数确认，不承诺通用培训课。',
+    start: '同一主题 3-8 人，已经有共同流程或共同卡点。',
+    bring: '主题、人数、参与者背景、脱敏样例、希望现场输出。',
+    output: '流程图、资料清单、Skill 草图、内容转化路径或下一步项目范围。',
+    pause: '主题太分散、只想听概念，或无法说明材料边界。',
+  },
+  {
+    label: '单次诊断',
+    title: 'AI 工作流诊断',
+    budget: '按诊断范围报价，重点买判断和路线图。',
+    start: '已经有重复流程，但工具、人机边界和优先级不清。',
+    bring: '当前做法、1 个脱敏样例、失败标准或返工原因。',
+    output: '流程拆解、工具分工、优先级、第一批可落地任务。',
+    pause: '无法提供样例，或希望 AI 替代最终责任人。',
+  },
+  {
+    label: '小项目',
+    title: 'Skill / SOP 交付',
+    budget: '按单个流程报价，先跑通一类任务。',
+    start: '输入、输出、验收方式基本稳定。',
+    bring: '模板、规则说明、脱敏样例、目标输出格式。',
+    output: '可复用 Skill/SOP、输入要求、执行步骤和验收清单。',
+    pause: '需求每天都变，或不接受人工核验。',
+  },
+  {
+    label: '阶段陪跑',
+    title: 'AI 系统落地陪跑',
+    budget: '按阶段报价，先定义第一个可验收闭环。',
+    start: '涉及多工具、多资料源、长期维护和持续迭代。',
+    bring: '目标边界、现有仓库或工具栈、负责人确认机制。',
+    output: '阶段目标、原型、验证脚本、维护清单和迭代节奏。',
+    pause: '希望一次做成万能系统，或没有负责人确认。',
+  },
+];
 ---
 
 <Layout
-  title="服务"
-  description="老明可提供的服务：轻咨询、深度陪跑、企业培训"
-  pubDate={new Date('2026-04-24')}
+  title="AI 落地服务"
+  description="AI干货家老明的商业服务：AI 工作流诊断、个人知识库整理、办公 Skills 定制、OpenClaw/Codex/RAG 系统陪跑。"
+  pubDate={new Date('2026-07-01')}
   heroImage={undefined}
+  showMeta={false}
+  showEngagement={false}
 >
   <h2>服务说明</h2>
   <p>
-    我提供的是结果导向服务，不是泛聊。每项服务都会明确：目标、边界、交付物、时间。
+    我做的不是泛泛的 AI 工具推荐，而是把你的真实工作流拆开：资料在哪里、重复劳动在哪里、交付标准是什么、AI 能接手哪一段、人工还必须守住哪一段。最终目标是降低返工率，让流程稳定复用，并且留下下一次还能继续跑的 SOP、Skill 或系统结构。
   </p>
 
-  <h2>服务档位</h2>
-  <h3>1) 轻咨询（适合快速诊断）</h3>
+  <section class="decision-panel" aria-label="服务决策表">
+    <h2>服务决策表</h2>
+    <p>
+      不确定该选什么服务时，先按问题成熟度判断。越靠后，越需要稳定样例、明确边界和可验收输出。
+    </p>
+    <div class="decision-table">
+      {decisionRows.map((row) => (
+        <article>
+          <h3>{row.entry}</h3>
+          <dl>
+            <div>
+              <dt>典型信号</dt>
+              <dd>{row.signal}</dd>
+            </div>
+            <div>
+              <dt>交付物</dt>
+              <dd>{row.deliverable}</dd>
+            </div>
+            <div>
+              <dt>下一步</dt>
+              <dd>{row.next}</dd>
+            </div>
+          </dl>
+        </article>
+      ))}
+    </div>
+  </section>
+
+  <h2>先选一个入口</h2>
+  <section class="route-grid" aria-label="按自测结果选择入口">
+    <article>
+      <p class="package-kicker">0-4 分</p>
+      <h2>先 Coffee Chat</h2>
+      <p>问题还不够具体，先用一次轻量交流把真实流程、资料边界和优先级找出来。</p>
+      <p class="choice-next">下一步：带一个问题来，不急着上项目。</p>
+      <a href="/coffee-chat">看 Coffee Chat</a>
+    </article>
+    <article>
+      <p class="package-kicker">5-8 分</p>
+      <h2>做一次诊断</h2>
+      <p>已经有可拆流程，但需要先明确工具组合、人机分工和第一批可落地任务。</p>
+      <p class="choice-next">下一步：用自测结果发起一次轻量诊断。</p>
+      <a href="/workflow-diagnosis">看诊断服务</a>
+    </article>
+    <article>
+      <p class="package-kicker">9-12 分</p>
+      <h2>进入 Skill/SOP 小项目</h2>
+      <p>输入、场景和价值都比较清楚，适合用脱敏样例跑通，再沉淀成可复用流程。</p>
+      <p class="choice-next">下一步：准备 1-2 个脱敏样例和目标输出。</p>
+      <a href="/skill-sop">看 Skill/SOP 小项目</a>
+    </article>
+    <article>
+      <p class="package-kicker">资料复杂</p>
+      <h2>先做知识库治理</h2>
+      <p>如果文件、笔记、微信记录和项目资料已经失控，先整理资料入口，再谈自动化。</p>
+      <p class="choice-next">下一步：先做目录、索引和权限边界盘点。</p>
+      <a href="#knowledge-base">看知识库整理</a>
+    </article>
+  </section>
+
+  <section class="package-grid" aria-label="服务包">
+    <article id="diagnosis">
+      <p class="package-kicker">入门诊断</p>
+      <h2>AI 工作流诊断</h2>
+      <p>适合已经在用 ChatGPT、Claude、Codex、Cursor、Gemini、Kimi 等工具，但工具之间没有系统、任务每次都重来的个人或小团队。</p>
+      <ul>
+        <li><strong>常规周期</strong>：一次深度沟通或短周期诊断。</li>
+        <li><strong>交付物</strong>：现状拆解、工具取舍、优先级路线图、第一批可落地任务清单。</li>
+        <li><strong>验收标准</strong>：你能清楚知道先做哪 1-3 个流程，哪些暂时不值得做。</li>
+      </ul>
+      <div class="package-actions">
+        <a href="/workflow-diagnosis">看诊断服务</a>
+        <a href="/delivery">看交付流程</a>
+        <a href="/cases">看诊断样例</a>
+      </div>
+    </article>
+
+    <article id="skills">
+      <p class="package-kicker">主推交付</p>
+      <h2>办公 Skill / SOP 定制</h2>
+      <p>适合高频做文档、纪要、报销、资料归档、文章同步、简历、合同初筛、PPT 初稿等重复任务的人。</p>
+      <ul>
+        <li><strong>常规周期</strong>：按单个流程做小项目交付。</li>
+        <li><strong>交付物</strong>：可复用 Skill / SOP、输入要求、执行步骤、输出标准、验收清单。</li>
+        <li><strong>验收标准</strong>：同类任务再次出现时，可以按流程复跑，而不是重新口头交代。</li>
+      </ul>
+      <div class="package-actions">
+        <a href="/skill-sop">看 Skill/SOP 小项目</a>
+        <a href="/cases">看 Skill 样例</a>
+        <a href="/delivery">看交付流程</a>
+      </div>
+    </article>
+
+    <article id="knowledge-base">
+      <p class="package-kicker">资料治理</p>
+      <h2>个人知识库整理与 AI 接入</h2>
+      <p>适合 Obsidian、微信记录、网盘、电脑文件夹、历史项目资料已经很多，但找不到、用不起来、喂给 AI 也容易乱的人。</p>
+      <ul>
+        <li><strong>常规周期</strong>：按资料规模分阶段治理。</li>
+        <li><strong>交付物</strong>：目录规则、索引页、命名体系、资料权重、隐私边界和可检索入口。</li>
+        <li><strong>验收标准</strong>：AI 能引用正确路径和上下文，人也能快速找到原始资料。</li>
+      </ul>
+      <div class="package-actions">
+        <a href="/memory-os">看 Memory OS</a>
+        <a href="/blog/rag-database-method-open-source/">看 RAG 方法</a>
+        <a href="/diagnosis">测资料基础</a>
+      </div>
+    </article>
+
+    <article id="automation">
+      <p class="package-kicker">系统陪跑</p>
+      <h2>AI 系统落地陪跑</h2>
+      <p>适合想把 OpenClaw、Codex、Cursor、RAG、本地知识库、多 Agent 协作接成一个长期系统的个人或小团队。</p>
+      <ul>
+        <li><strong>常规周期</strong>：按目标拆成原型、验收、迭代几个阶段。</li>
+        <li><strong>交付物</strong>：需求拆解、权限边界、目录结构、工作流设计、原型搭建和迭代清单。</li>
+        <li><strong>验收标准</strong>：系统能处理一个真实流程，并且失败时知道由谁、在哪一步接管。</li>
+      </ul>
+      <div class="package-actions">
+        <a href="/projects">看项目看板</a>
+        <a href="/delivery">看交付流程</a>
+        <a href="/coffee-chat">先聊小闭环</a>
+      </div>
+    </article>
+  </section>
+
+  <section class="service-proof-panel" aria-label="服务样例与验收边界">
+    <div class="panel-head">
+      <p class="package-kicker">Proof to Delivery</p>
+      <h2>服务样例与验收边界</h2>
+      <p>
+        每个服务都先对应一个可公开查看的样例入口，再说明第一次需要什么材料、怎样算验收，以及什么情况暂时不适合继续推进。
+      </p>
+      <a class="panel-link" href="/cases">看完整公开样例库</a>
+    </div>
+    <div class="service-proof-grid">
+      {serviceEvidenceRows.map((row) => (
+        <article>
+          <div class="service-proof-title">
+            <span>{row.service}</span>
+            <h3>{row.sample}</h3>
+          </div>
+          <dl>
+            <div>
+              <dt>公开样例</dt>
+              <dd>{row.publicProof}</dd>
+            </div>
+            <div>
+              <dt>首次材料</dt>
+              <dd>{row.firstAsset}</dd>
+            </div>
+            <div>
+              <dt>可交付验收</dt>
+              <dd>{row.acceptance}</dd>
+            </div>
+            <div>
+              <dt>暂不适合</dt>
+              <dd>{row.notFit}</dd>
+            </div>
+          </dl>
+          <a class="service-proof-link" href={row.href}>{row.action}</a>
+        </article>
+      ))}
+    </div>
+  </section>
+
+  <h2>什么情况适合找我</h2>
   <ul>
-    <li><strong>适合</strong>：方向不清、工具选型困难、流程卡点</li>
-    <li><strong>交付</strong>：问题诊断 + 可执行路径 + 优先级建议</li>
-    <li><strong>价格</strong>：按次或按小时（沟通后确认）</li>
+    <li>你已经有真实资料、真实流程或真实任务，不只是想听 AI 概念。</li>
+    <li>你希望减少重复劳动、返工和人工整理，而不是只追新工具。</li>
+    <li>你能接受先做小闭环，再根据效果迭代，不追求一步到位的万能系统。</li>
+    <li>你愿意把“AI 做什么、人确认什么、哪些内容不能碰”说清楚。</li>
   </ul>
 
-  <h3>2) 深度陪跑（适合落地系统）</h3>
+  <h2>什么情况不适合</h2>
   <ul>
-    <li><strong>适合</strong>：要搭建 AI 工作流、RAG 记忆系统、skills 体系</li>
-    <li><strong>交付</strong>：方案设计 + 配置执行 + 验收清单</li>
-    <li><strong>价格</strong>：项目制，按范围报价</li>
+    <li>只想要一个万能提示词，期望一次解决所有问题。</li>
+    <li>没有样例、没有资料、没有具体工作流，只想泛泛聊风口。</li>
+    <li>要求绕过平台规则、批量骚扰、伪造材料或隐藏真实事实。</li>
+    <li>需要法律、财务、医疗、投资等专业结论，并希望 AI 替代最终责任人。</li>
   </ul>
 
-  <h3>3) 企业培训（适合团队提效）</h3>
-  <ul>
-    <li><strong>适合</strong>：团队需要系统化使用 AI 提效</li>
-    <li><strong>交付</strong>：场景培训 + 操作手册 + 后续建议</li>
-    <li><strong>价格</strong>：按场次与人数报价</li>
-  </ul>
+  <h2>合作流程</h2>
+  <ol>
+    <li><strong>先做落地自测</strong>：如果还不确定适不适合做项目，先用 <a href="/diagnosis">AI 落地自测</a> 判断路径。</li>
+    <li><strong>发一个具体场景</strong>：说明你现在反复做、反复返工的一件事。</li>
+    <li><strong>判断是否值得做</strong>：先看能不能形成稳定输入、稳定输出和可验收标准。</li>
+    <li><strong>确认交付范围</strong>：明确要做咨询、Skill、资料治理还是项目陪跑。</li>
+    <li><strong>本地或线上交付</strong>：按样例跑通，再把 SOP、文件和验收清单交给你；完整步骤见 <a href="/delivery">AI 项目交付流程</a>。</li>
+  </ol>
 
-  <h2>合作边界</h2>
-  <ul>
-    <li>欢迎：AI 实战落地、工具链搭建、内容系统优化</li>
-    <li>不接：仅要“一个 prompt 包治百病”的纯口嗨需求</li>
-    <li>原则：先对齐目标，再谈方案和价格</li>
-  </ul>
+  <section class="engagement-panel" aria-label="预算口径与成交筛选">
+    <div class="panel-head">
+      <p class="package-kicker">Commercial Fit</p>
+      <h2>预算口径与成交筛选</h2>
+      <p>
+        我不在公开页写死价格，但会先按问题成熟度判断预算形态。你可以用下面五档判断自己该先轻量聊、做工作坊、做诊断、进小项目，还是做阶段陪跑。
+      </p>
+    </div>
+    <div class="engagement-grid">
+      {engagementTiers.map((tier) => (
+        <article>
+          <p class="package-kicker">{tier.label}</p>
+          <h3>{tier.title}</h3>
+          <dl>
+            <div>
+              <dt>预算口径</dt>
+              <dd>{tier.budget}</dd>
+            </div>
+            <div>
+              <dt>启动条件</dt>
+              <dd>{tier.start}</dd>
+            </div>
+            <div>
+              <dt>首次材料</dt>
+              <dd>{tier.bring}</dd>
+            </div>
+            <div>
+              <dt>本次输出</dt>
+              <dd>{tier.output}</dd>
+            </div>
+            <div>
+              <dt>暂缓信号</dt>
+              <dd>{tier.pause}</dd>
+            </div>
+          </dl>
+        </article>
+      ))}
+    </div>
+  </section>
 
-  <h2>联系我</h2>
+  <h2>报价原则</h2>
   <p>
-    微信：<code>soplaoming</code>（备注「博客-服务」）。你可以直接发：目标、当前卡点、预算区间、期望时间。
+    公开页面暂不写死价格。真实报价取决于资料规模、流程复杂度、是否需要线下沟通、是否需要后续迭代。最小可从一次流程诊断开始；如果只是方向不确定，也可以先走上海 Coffee Chat；如果有内容但不转化，可以先看 <a href="/ai-acquisition">AI 获客站诊断</a>；如果同一主题有 3-8 人，可以先看 <a href="/workshop">上海 AI 小型工作坊</a>。还没判断值不值得做时，先用 <a href="/roi-calculator">AI ROI 估算器</a>；需要先判断合作档位时，看 <a href="/pricing">AI 合作方式与预算口径</a>；准备进入项目时，看 <a href="/delivery">AI 项目交付流程</a>。
   </p>
+
+  <section class="first-deal-panel" aria-label="第一次合作怎么开始">
+    <div class="panel-head">
+      <p class="package-kicker">Qualified Lead</p>
+      <h2>第一次合作怎么开始</h2>
+      <p>
+        这里是最小成交入口和合作门槛：不是所有需求都直接进入项目。先按资料清晰度、流程成熟度和是否需要线下拆解，选择一个成本最低的起步方式。
+      </p>
+    </div>
+    <div class="first-deal-grid">
+      {firstDealOptions.map((option) => (
+        <article>
+          <p class="package-kicker">{option.label}</p>
+          <h3>{option.title}</h3>
+          <dl>
+            <div>
+              <dt>合作门槛</dt>
+              <dd>{option.threshold}</dd>
+            </div>
+            <div>
+              <dt>首次材料</dt>
+              <dd>{option.bring}</dd>
+            </div>
+            <div>
+              <dt>本次交付</dt>
+              <dd>{option.deliverable}</dd>
+            </div>
+            <div>
+              <dt>升级条件</dt>
+              <dd>{option.upgrade}</dd>
+            </div>
+          </dl>
+          <a class="first-deal-link" href={option.href}>{option.action}</a>
+        </article>
+      ))}
+    </div>
+  </section>
+
+  <section class="delivery-panel" aria-label="交付物对照">
+    <h2>交付物对照</h2>
+    <div class="delivery-table">
+      <div class="delivery-row delivery-head">
+        <span>维度</span>
+        <span>轻量交流</span>
+        <span>小项目交付</span>
+        <span>系统陪跑</span>
+      </div>
+      {deliveryMatrix.map((row) => (
+        <div class="delivery-row">
+          <strong>{row.item}</strong>
+          <span>{row.light}</span>
+          <span>{row.project}</span>
+          <span>{row.system}</span>
+        </div>
+      ))}
+    </div>
+  </section>
+
+  <section class="starter-panel" aria-label="起步方式">
+    <h2>最小起步方式</h2>
+    <p>
+      不确定方向时，不从大项目开始。先用 AI 自测和一段脱敏样例判断：这件事是否高频、是否有稳定输入、是否能验收、是否值得做成 Skill 或知识库流程。
+    </p>
+    <div class="starter-steps">
+      <span>01 自测</span>
+      <span>02 发三句话模板</span>
+      <span>03 判断是否值得做</span>
+      <span>04 再定诊断或小项目</span>
+    </div>
+  </section>
+
+  <TrustBoundary
+    compact={true}
+    title="合作前先对齐四条边界"
+    intro="越是贴近真实流程，越需要先把资料、权限、验收和责任说清楚。下面四条是服务页默认边界，也是判断需求是否适合继续推进的前置条件；完整材料准备口径见 /trust 信任与隐私边界。"
+  />
+
+  <FAQSection title="服务常见问题" items={serviceFaqs} />
+
+  <ProofShowcase />
+
+  <ConversionCTA
+    title="先把你的一个流程拆开"
+    note="不用先想清楚要买什么服务。把你现在反复做、反复返工、最想让 AI 接手的一件事发来，我先判断它适合咨询、获客站诊断、工作坊、Skill 定制，还是项目制落地。"
+    remark="AI 服务"
+    briefItems={[
+      '我想优化的流程是：',
+      '现在用的工具、资料位置或样例是：',
+      '我希望先做诊断 / 获客站诊断 / 工作坊 / Skill 定制 / 知识库整理：',
+    ]}
+    primaryHref="/diagnosis"
+    primaryLabel="AI 落地自测"
+    secondaryHref="/coffee-chat"
+    secondaryLabel="上海 Coffee Chat"
+  />
+
+  <style>
+    .decision-table,
+    .route-grid,
+    .package-grid,
+    .first-deal-grid,
+    .engagement-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 1rem;
+      margin: 1.5rem 0 2rem;
+    }
+
+    .decision-table article,
+    .route-grid article,
+    .package-grid article,
+    .first-deal-grid article,
+    .engagement-grid article {
+      display: flex;
+      flex-direction: column;
+      padding: 1rem;
+      border: 1px solid rgba(var(--black), 0.08);
+      border-radius: 8px;
+      background: #fff;
+      box-shadow: 0 14px 32px rgba(20, 20, 20, 0.05);
+    }
+
+    .decision-panel,
+    .delivery-panel,
+    .service-proof-panel,
+    .first-deal-panel,
+    .engagement-panel,
+    .route-grid article {
+      background: #f7fbff;
+      border-color: rgba(0, 102, 255, 0.14);
+    }
+
+    .decision-panel,
+    .delivery-panel,
+    .service-proof-panel,
+    .first-deal-panel,
+    .engagement-panel {
+      margin: 1.5rem 0 2rem;
+      padding: 1rem;
+      border: 1px solid rgba(var(--black), 0.08);
+      border-radius: 8px;
+    }
+
+    .decision-panel h2,
+    .delivery-panel h2,
+    .service-proof-panel h2,
+    .first-deal-panel h2,
+    .engagement-panel h2 {
+      margin-top: 0;
+      font-size: 1.35rem;
+    }
+
+    .decision-panel > p {
+      color: rgb(var(--gray));
+      font-size: 0.95rem;
+    }
+
+    .package-kicker {
+      margin: 0 0 0.4rem;
+      color: var(--accent);
+      font-size: 0.82rem;
+      font-weight: 800;
+    }
+
+    .route-grid h2,
+    .package-grid h2,
+    .decision-table h3,
+    .engagement-grid h3 {
+      margin-top: 0;
+      font-size: 1.25rem;
+    }
+
+    .route-grid p,
+    .route-grid a,
+    .package-grid p,
+    .package-grid li,
+    .decision-table dd,
+    .engagement-grid dd {
+      font-size: 0.94rem;
+    }
+
+    .decision-table dl {
+      display: grid;
+      gap: 0.65rem;
+      margin: 0;
+    }
+
+    .decision-table dl div {
+      padding-top: 0.65rem;
+      border-top: 1px solid rgba(var(--black), 0.07);
+    }
+
+    .decision-table dt {
+      color: rgb(var(--black));
+      font-size: 0.78rem;
+      font-weight: 800;
+    }
+
+    .decision-table dd {
+      margin: 0.25rem 0 0;
+      color: rgb(var(--gray));
+      line-height: 1.65;
+    }
+
+    .engagement-grid {
+      margin-bottom: 0;
+    }
+
+    .engagement-grid dl {
+      display: grid;
+      gap: 0.65rem;
+      margin: 0;
+    }
+
+    .engagement-grid dl div {
+      padding-top: 0.65rem;
+      border-top: 1px solid rgba(var(--black), 0.07);
+    }
+
+    .engagement-grid dt {
+      color: rgb(var(--black));
+      font-size: 0.78rem;
+      font-weight: 800;
+    }
+
+    .engagement-grid dd {
+      margin: 0.25rem 0 0;
+      color: rgb(var(--gray));
+      line-height: 1.6;
+    }
+
+    .delivery-table {
+      display: grid;
+      gap: 0.55rem;
+    }
+
+    .delivery-row {
+      display: grid;
+      grid-template-columns: 0.8fr repeat(3, minmax(0, 1fr));
+      gap: 0.55rem;
+      align-items: stretch;
+    }
+
+    .delivery-row > * {
+      padding: 0.7rem;
+      color: rgb(var(--gray));
+      font-size: 0.88rem;
+      line-height: 1.55;
+      background: #fff;
+      border: 1px solid rgba(var(--black), 0.08);
+      border-radius: 8px;
+    }
+
+    .delivery-row strong,
+    .delivery-head span {
+      color: rgb(var(--black));
+      font-weight: 800;
+    }
+
+    .delivery-head span {
+      color: var(--accent);
+      background: rgba(0, 102, 255, 0.06);
+      border-color: rgba(0, 102, 255, 0.14);
+    }
+
+    .route-grid a {
+      font-weight: 800;
+    }
+
+    .package-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.55rem;
+      margin-top: auto;
+      padding-top: 1rem;
+    }
+
+    .package-actions a {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 38px;
+      padding: 0.5rem 0.72rem;
+      color: rgb(var(--black));
+      background: #fff;
+      border: 1px solid rgba(var(--black), 0.12);
+      border-radius: 8px;
+      font-size: 0.88rem;
+      font-weight: 800;
+      line-height: 1.2;
+      text-decoration: none;
+    }
+
+    .package-actions a:first-child {
+      color: #fff;
+      background: var(--accent);
+      border-color: var(--accent);
+    }
+
+    .choice-next {
+      color: rgb(var(--black));
+      font-weight: 700;
+    }
+
+    .panel-head {
+      max-width: 760px;
+      margin-bottom: 1rem;
+    }
+
+    .panel-head p:last-child {
+      color: rgb(var(--gray));
+      font-size: 0.95rem;
+      line-height: 1.75;
+    }
+
+    .panel-link {
+      display: inline-flex;
+      min-height: 38px;
+      align-items: center;
+      justify-content: center;
+      margin-top: 0.8rem;
+      padding: 0.5rem 0.75rem;
+      color: var(--accent);
+      background: #fff;
+      border: 1px solid rgba(0, 102, 255, 0.2);
+      border-radius: 8px;
+      font-size: 0.9rem;
+      font-weight: 800;
+      text-decoration: none;
+    }
+
+    .service-proof-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 1rem;
+    }
+
+    .service-proof-grid article {
+      display: flex;
+      min-width: 0;
+      flex-direction: column;
+      padding: 1rem;
+      background: #fff;
+      border: 1px solid rgba(var(--black), 0.08);
+      border-radius: 8px;
+      box-shadow: 0 14px 32px rgba(20, 20, 20, 0.05);
+    }
+
+    .service-proof-title span {
+      color: var(--accent);
+      font-size: 0.8rem;
+      font-weight: 800;
+    }
+
+    .service-proof-title h3 {
+      margin: 0.35rem 0 0.9rem;
+      font-size: 1.08rem;
+      line-height: 1.35;
+    }
+
+    .service-proof-grid dl {
+      display: grid;
+      gap: 0.7rem;
+      margin: 0;
+    }
+
+    .service-proof-grid dl div {
+      padding-top: 0.7rem;
+      border-top: 1px solid rgba(var(--black), 0.07);
+    }
+
+    .service-proof-grid dt {
+      color: rgb(var(--black));
+      font-size: 0.78rem;
+      font-weight: 800;
+    }
+
+    .service-proof-grid dd {
+      margin: 0.25rem 0 0;
+      color: rgb(var(--gray));
+      font-size: 0.9rem;
+      line-height: 1.65;
+    }
+
+    .service-proof-link {
+      margin-top: auto;
+      padding-top: 1rem;
+      color: var(--accent);
+      font-size: 0.9rem;
+      font-weight: 800;
+    }
+
+    .first-deal-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      margin-bottom: 0;
+    }
+
+    .first-deal-grid h3 {
+      margin: 0 0 0.75rem;
+      font-size: 1.08rem;
+      line-height: 1.35;
+    }
+
+    .first-deal-grid dl {
+      display: grid;
+      gap: 0.65rem;
+      margin: 0;
+    }
+
+    .first-deal-grid dl div {
+      padding-top: 0.65rem;
+      border-top: 1px solid rgba(var(--black), 0.07);
+    }
+
+    .first-deal-grid dt {
+      color: rgb(var(--black));
+      font-size: 0.78rem;
+      font-weight: 800;
+    }
+
+    .first-deal-grid dd {
+      margin: 0.25rem 0 0;
+      color: rgb(var(--gray));
+      font-size: 0.9rem;
+      line-height: 1.6;
+    }
+
+    .first-deal-link {
+      display: inline-flex;
+      width: fit-content;
+      min-height: 38px;
+      align-items: center;
+      justify-content: center;
+      margin-top: auto;
+      padding: 0.5rem 0.75rem;
+      color: #fff;
+      background: var(--accent);
+      border-radius: 8px;
+      font-size: 0.88rem;
+      font-weight: 800;
+      text-decoration: none;
+    }
+
+    .starter-panel {
+      margin: 1.5rem 0 2rem;
+      padding: 1.2rem;
+      background: rgba(var(--gray-light), 0.5);
+      border: 1px solid rgba(var(--black), 0.08);
+      border-radius: 8px;
+    }
+
+    .starter-panel h2 {
+      margin-top: 0;
+    }
+
+    .starter-steps {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 0.6rem;
+      margin-top: 1rem;
+    }
+
+    .starter-steps span {
+      padding: 0.65rem;
+      color: var(--accent);
+      font-size: 0.86rem;
+      font-weight: 800;
+      text-align: center;
+      background: #fff;
+      border: 1px solid rgba(0, 102, 255, 0.15);
+      border-radius: 8px;
+    }
+
+    @media (max-width: 760px) {
+      .decision-table,
+      .route-grid,
+      .package-grid,
+      .first-deal-grid,
+      .engagement-grid,
+      .service-proof-grid,
+      .starter-steps {
+        grid-template-columns: 1fr;
+      }
+
+      .delivery-row {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
 </Layout>

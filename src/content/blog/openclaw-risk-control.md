@@ -6,6 +6,8 @@ heroImage: /images/blog/openclaw-risk-control.jpg
 keywords: [OpenClaw, 风控, AI安全, 数据备份, skill-vetter, Mac Mini, AI Agent安全, 本地部署]
 ---
 
+> **站内原创整理**：这篇是老明基于 OpenClaw 使用风险和本地部署边界整理的公开技术笔记。
+
 大家都知道 Openclaw 风险极大，为什么？那是因为它几乎具备你计算机的一切权限，可以访问、读取、修改文件，改代码，上传资料，几乎一切的一切它都具备权限——所以，一旦他发抽，或者发疯，很容易就造成不可逆的后果。也因此，我们在使用小龙虾时，一定要提前做好风控措施。
 
 我的风控方式如下，纯干货：

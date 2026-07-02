@@ -1,0 +1,98 @@
+---
+type FAQItem = {
+  question: string;
+  answer: string;
+};
+
+interface Props {
+  title?: string;
+  eyebrow?: string;
+  items: FAQItem[];
+}
+
+const { title = '常见问题', eyebrow = 'FAQ', items } = Astro.props;
+const faqStructuredData = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: items.map((item) => ({
+    '@type': 'Question',
+    name: item.question,
+    acceptedAnswer: {
+      '@type': 'Answer',
+      text: item.answer,
+    },
+  })),
+};
+---
+
+<section class="faq-section" aria-labelledby="faq-title">
+  <div class="faq-head">
+    <p>{eyebrow}</p>
+    <h2 id="faq-title">{title}</h2>
+  </div>
+  <div class="faq-list">
+    {items.map((item) => (
+      <details>
+        <summary>{item.question}</summary>
+        <p>{item.answer}</p>
+      </details>
+    ))}
+  </div>
+</section>
+
+<script type="application/ld+json" set:html={JSON.stringify(faqStructuredData)}></script>
+
+<style>
+  .faq-section {
+    margin: 2.4rem 0;
+  }
+
+  .faq-head {
+    margin-bottom: 1rem;
+  }
+
+  .faq-head p {
+    margin: 0 0 0.45rem;
+    color: var(--accent);
+    font-size: 0.82rem;
+    font-weight: 800;
+  }
+
+  .faq-head h2 {
+    margin: 0;
+    font-size: 1.45rem;
+  }
+
+  .faq-list {
+    display: grid;
+    gap: 0.7rem;
+  }
+
+  details {
+    background: #fff;
+    border: 1px solid rgba(var(--black), 0.08);
+    border-radius: 8px;
+    box-shadow: 0 12px 28px rgba(20, 20, 20, 0.04);
+    overflow: hidden;
+  }
+
+  summary {
+    cursor: pointer;
+    padding: 0.95rem 1rem;
+    color: rgb(var(--black));
+    font-weight: 800;
+    line-height: 1.5;
+  }
+
+  summary::marker {
+    color: var(--accent);
+  }
+
+  details p {
+    margin: 0;
+    padding: 0 1rem 1rem;
+    color: rgb(var(--gray));
+    font-size: 0.95rem;
+    line-height: 1.8;
+  }
+</style>

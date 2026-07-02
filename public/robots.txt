@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://ailaoming.com/sitemap-index.xml

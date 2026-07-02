@@ -1,0 +1,663 @@
+---
+import BaseHead from '../components/BaseHead.astro';
+import ConversionCTA from '../components/ConversionCTA.astro';
+import FAQSection from '../components/FAQSection.astro';
+import Footer from '../components/Footer.astro';
+import Header from '../components/Header.astro';
+import TrustBoundary from '../components/TrustBoundary.astro';
+import { WECHAT } from '../consts';
+
+const localServices = [
+  {
+    label: '01',
+    title: 'AI 工作流诊断',
+    fit: '你已经在用 AI，但每次都靠临时提示词，任务没有沉淀成稳定流程。',
+    output: '现场或线上把资料源、工具分工、人机边界和第一批可落地任务拆清楚。',
+    href: '/workflow-diagnosis',
+  },
+  {
+    label: '02',
+    title: '个人知识库整理',
+    fit: '资料散在 Obsidian、本地文件夹、网盘、微信记录和历史项目里，AI 找不准上下文。',
+    output: '先整理资料入口、命名规则、不可公开范围和检索问题，再判断是否接 RAG。',
+    href: '/services#knowledge-base',
+  },
+  {
+    label: '03',
+    title: '办公 Skill / SOP 小项目',
+    fit: '你有 Word、纪要、写作、归档、报告初稿等重复任务，想做成可复跑流程。',
+    output: '用脱敏样例跑通输入要求、执行步骤、输出标准和验收清单。',
+    href: '/skill-sop',
+  },
+  {
+    label: '04',
+    title: '内容商业化与获客站',
+    fit: '你有文章、项目、经验或资料包，但还没有连接到自测、样例、需求卡和咨询入口。',
+    output: '拆出内容主题、证据资产、资料入口、Coffee Chat 和服务承接路径。',
+    href: '/cases',
+  },
+  {
+    label: '05',
+    title: '上海 AI 小型工作坊',
+    fit: '同一主题有 3-8 人想集中拆 AI 工作流、知识库、Skill/SOP 或内容商业化问题。',
+    output: '先预审主题、人数、材料边界和输出目标，再决定线上、公开场所小班或回到 Coffee Chat。',
+    href: '/workshop',
+  },
+];
+
+const areaCards = [
+  {
+    area: '浦东 / 张江',
+    note: '适合科技、AI 工具、创业和知识库主题；优先选择交通方便的公开场所。',
+  },
+  {
+    area: '徐汇 / 漕河泾',
+    note: '适合内容商业化、职场转型、办公自动化和小团队工作流诊断。',
+  },
+  {
+    area: '静安 / 黄浦',
+    note: '适合跨区会面和短时高密度交流，优先约能明确输出的一对一问题。',
+  },
+  {
+    area: '线上预沟通',
+    note: '问题能线上说清楚时不强行线下；先发需求卡，确认值得见面再约。',
+  },
+];
+
+const localPaths = [
+  {
+    step: '01',
+    title: '先判断成熟度',
+    body: '做 AI 自测或复制需求卡，看资料、流程、价值和风险边界是否说得清。',
+    href: '/diagnosis',
+    action: '先做自测',
+  },
+  {
+    step: '02',
+    title: '发脱敏需求卡',
+    body: '用一段可复制 Brief 说明来源、预算意向、启动时间、隐私边界和希望输出。',
+    href: '/brief',
+    action: '复制需求卡',
+  },
+  {
+    step: '03',
+    title: '决定线上还是线下',
+    body: '简单问题线上解决；有现实上下文、资料结构或长期方向时再约上海 Coffee Chat。',
+    href: '/coffee-chat',
+    action: '看 Coffee Chat',
+  },
+  {
+    step: '04',
+    title: '判断是否适合工作坊',
+    body: '如果同一主题有 3-8 人，先走工作坊预审；主题分散时继续一对一。',
+    href: '/workshop',
+    action: '看小型工作坊',
+  },
+  {
+    step: '05',
+    title: '进入诊断或小项目',
+    body: '只有样例、边界和验收口径都清楚，才建议进入诊断、Skill/SOP 或知识库治理。',
+    href: '/services',
+    action: '看服务方案',
+  },
+];
+
+const localBriefItems = [
+  '我在上海，方便区域是：浦东 / 徐汇 / 静安 / 黄浦 / 线上优先 / 其他',
+  '我想解决的 AI 场景是：工作流诊断 / 知识库整理 / Skill-SOP / 内容商业化 / Coffee Chat / 小型工作坊',
+  '现在最卡的一步是：',
+  '我可以提供的脱敏样例是：',
+  '希望输出：方向判断 / 流程拆解 / Skill 草图 / 资料入口清单 / 小项目范围',
+  '预算意向：Coffee Chat / 轻量诊断 / 单流程小项目 / 阶段陪跑 / 暂不确定',
+  '期望启动时间：本周 / 本月 / 先预沟通',
+  '是否接受先诊断再项目：是 / 否 / 需要先了解',
+  '隐私边界：我先用脱敏方式描述问题，不发送原始私密材料。',
+];
+
+const localBriefCopy = [
+  `微信号：${WECHAT}`,
+  '备注：上海 AI 本地服务',
+  '来源：ailaoming.com/shanghai-ai',
+  '线索类型：上海本地 AI 咨询 / Coffee Chat',
+  ...localBriefItems,
+].join('\n');
+
+const localFaqs = [
+  {
+    question: '必须线下见面才能开始吗？',
+    answer: '不用。能通过微信和脱敏样例说清的问题，优先线上预沟通；只有涉及资料结构、长期方向或当面拆流程更高效时，再约上海线下 Coffee Chat。',
+  },
+  {
+    question: '会要求我现场展示原始资料吗？',
+    answer: '不会。第一次只需要脱敏样例、目录结构或问题描述。涉及公司、客户、私人聊天、财务、法律、医疗、投资等内容，默认不进入公开展示，也不在多人场展开。',
+  },
+  {
+    question: '适合什么样的上海本地需求？',
+    answer: '适合 AI 工作流诊断、个人知识库整理、办公 Skill/SOP、内容商业化闭环、AI 获客站改造和小型 Coffee Chat。只想听概念或没有具体流程时，先看文章、自测或资料卡。',
+  },
+  {
+    question: '线下聊完一定会推项目吗？',
+    answer: '不会。线下交流的最低目标是把问题收束成下一步清单；是否进入诊断、小项目或阶段陪跑，取决于样例、边界、验收口径和预算意向是否都清楚。',
+  },
+];
+
+const localStructuredData = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'WebPage',
+    '@id': 'https://ailaoming.com/shanghai-ai/#webpage',
+    name: '上海 AI 工作流诊断与 Coffee Chat',
+    url: 'https://ailaoming.com/shanghai-ai/',
+    inLanguage: 'zh-CN',
+    description: '面向上海本地知识工作者、内容创作者和小团队的 AI 工作流诊断、知识库整理、Skill/SOP 小项目和线下 Coffee Chat 入口。',
+    about: ['AI 工作流诊断', '个人知识库整理', '办公 Skill', '上海 AI Coffee Chat', '上海 AI 小型工作坊', 'AI 获客站'],
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'Service',
+    '@id': 'https://ailaoming.com/shanghai-ai/#service',
+    name: '上海 AI 落地服务',
+    serviceType: 'AI workflow consulting',
+    areaServed: {
+      '@type': 'City',
+      name: '上海',
+      addressCountry: 'CN',
+    },
+    provider: {
+      '@type': 'Person',
+      name: '老明',
+      url: 'https://ailaoming.com/',
+    },
+    availableChannel: {
+      '@type': 'ServiceChannel',
+      serviceUrl: 'https://ailaoming.com/shanghai-ai/',
+      serviceLocation: {
+        '@type': 'Place',
+        name: '上海交通方便区域或线上预沟通',
+      },
+    },
+  },
+];
+---
+
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <BaseHead
+      title="上海 AI 工作流诊断与 Coffee Chat"
+      description="面向上海本地知识工作者、内容创作者和小团队的 AI 工作流诊断、知识库整理、Skill/SOP 小项目和线下 Coffee Chat 入口。"
+    />
+    <script type="application/ld+json" set:html={JSON.stringify(localStructuredData)}></script>
+  </head>
+  <body>
+    <Header />
+    <main>
+      <section class="hero">
+        <div class="hero-copy">
+          <p class="eyebrow">Shanghai AI Service</p>
+          <h1>上海 AI 工作流诊断与 Coffee Chat</h1>
+          <p class="tagline">
+            面向上海本地知识工作者、内容创作者、创业者和小团队：把一个真实 AI 使用卡点，拆成资料边界、工具分工、下一步动作和可交付小闭环。
+          </p>
+          <div class="hero-actions">
+            <a class="btn primary" href="#local-brief">复制上海本地需求卡</a>
+            <a class="btn secondary" href="/coffee-chat">看 Coffee Chat</a>
+            <a class="btn secondary" href="/workshop">看小型工作坊</a>
+          </div>
+          <p class="hero-note">不写具体私人地址，不强行线下见面；先判断问题是否值得当面拆。</p>
+        </div>
+        <aside class="hero-panel" aria-label="上海本地服务范围">
+          <p class="panel-kicker">本地承接范围</p>
+          <ul>
+            <li>AI 工作流诊断</li>
+            <li>个人知识库整理</li>
+            <li>办公 Skill / SOP 小项目</li>
+            <li>内容商业化与 AI 获客站</li>
+            <li>上海 AI 小型工作坊</li>
+            <li>上海 AI Coffee Chat</li>
+          </ul>
+        </aside>
+      </section>
+
+      <section class="section local-path-panel" aria-label="上海本地合作路径">
+        <div class="section-head">
+          <p class="eyebrow">Local Funnel</p>
+          <h2>从一个卡点，到一次可执行沟通</h2>
+          <p>上海本地入口不是为了把所有问题都线下化，而是把值得当面拆的流程筛出来。</p>
+        </div>
+        <div class="path-grid">
+          {localPaths.map((path) => (
+            <a href={path.href}>
+              <span>{path.step}</span>
+              <h3>{path.title}</h3>
+              <p>{path.body}</p>
+              <strong>{path.action}</strong>
+            </a>
+          ))}
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="section-head">
+          <p class="eyebrow">Services</p>
+          <h2>适合上海本地拆解的五类问题</h2>
+          <p>每类问题都先看能不能给出脱敏样例、明确验收口径，再决定是线上诊断、线下 Coffee Chat，还是小项目交付。</p>
+        </div>
+        <div class="service-grid">
+          {localServices.map((service) => (
+            <article>
+              <span>{service.label}</span>
+              <h3>{service.title}</h3>
+              <dl>
+                <div>
+                  <dt>适合</dt>
+                  <dd>{service.fit}</dd>
+                </div>
+                <div>
+                  <dt>输出</dt>
+                  <dd>{service.output}</dd>
+                </div>
+              </dl>
+              <a href={service.href}>查看对应入口</a>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      <section class="section area-panel" aria-label="上海区域说明">
+        <div class="section-head">
+          <p class="eyebrow">Shanghai Area</p>
+          <h2>线下只约交通方便的公开场所</h2>
+          <p>区域只用于粗略判断时间成本，不公开私人地址，也不承诺上门服务。</p>
+        </div>
+        <div class="area-grid">
+          {areaCards.map((card) => (
+            <article>
+              <h3>{card.area}</h3>
+              <p>{card.note}</p>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      <section id="local-brief" class="section local-brief-panel" aria-label="上海本地需求卡">
+        <div>
+          <p class="eyebrow">Local Brief</p>
+          <h2>复制这段，先判断是否值得线下聊</h2>
+          <p>这段话会带上来源页、线索类型、预算意向、启动时间和隐私边界，方便后续筛选，不需要提交表单。</p>
+          <p class="brief-source-note">
+            复制模板会自动带上 来源：ailaoming.com/shanghai-ai 和 线索类型：上海本地 AI 咨询 / Coffee Chat。
+          </p>
+        </div>
+        <div class="brief-box">
+          <ol>
+            {localBriefItems.map((item) => <li>{item}</li>)}
+          </ol>
+          <button type="button" class="copy-local-brief" data-copy={localBriefCopy}>复制上海本地需求卡</button>
+          <p class="copy-local-status" aria-live="polite"></p>
+        </div>
+      </section>
+
+      <TrustBoundary
+        compact={true}
+        eyebrow="本地边界"
+        title="线下沟通也先脱敏，不现场交出原始资料"
+        intro="上海本地交流只改变沟通密度，不改变隐私边界。第一次沟通先看脱敏样例、目录结构和问题描述；私人聊天、公司材料、客户信息和未确认结果不进入公开页面。"
+      />
+
+      <FAQSection title="上海本地服务常见问题" items={localFaqs} />
+
+      <ConversionCTA
+        title="在上海，先带一个真实 AI 卡点来"
+        note="把上海本地需求卡和一个脱敏样例发来，我会先判断这件事适合线上预沟通、Coffee Chat、AI 小型工作坊、AI 工作流诊断，还是 Skill/SOP 小项目。"
+        remark="上海 AI 本地服务"
+        briefItems={[
+          '我在上海，方便区域是：',
+          '我想拆的 AI 场景是：',
+          '我希望先线上预沟通 / Coffee Chat / 小型工作坊 / 诊断 / 小项目：',
+        ]}
+        primaryHref="/brief"
+        primaryLabel="复制需求卡"
+        secondaryHref="/pricing"
+        secondaryLabel="看合作方式"
+      />
+    </main>
+    <Footer />
+
+    <script>
+      document.querySelectorAll('.copy-local-brief').forEach((button) => {
+        button.addEventListener('click', async () => {
+          const trigger = button instanceof HTMLElement ? button : null;
+          const text = trigger?.dataset.copy ?? '';
+          const panel = trigger?.closest('.local-brief-panel');
+          const status = panel?.querySelector('.copy-local-status');
+
+          try {
+            if (!navigator.clipboard || !text) throw new Error('Clipboard unavailable');
+            await navigator.clipboard.writeText(text);
+            if (status) status.textContent = '已复制，可直接粘贴到微信补充';
+          } catch {
+            if (status) status.textContent = '复制失败，请手动复制上面的内容';
+          }
+        });
+      });
+    </script>
+  </body>
+</html>
+
+<style>
+  main {
+    width: 1080px;
+    max-width: calc(100% - 2rem);
+    margin: 0 auto;
+    padding: 2rem 0 4rem;
+  }
+
+  .hero {
+    display: grid;
+    grid-template-columns: minmax(0, 1.25fr) minmax(280px, 0.75fr);
+    gap: 1.4rem;
+    align-items: stretch;
+    padding: 2.4rem 0 1.6rem;
+  }
+
+  .eyebrow,
+  .panel-kicker {
+    margin: 0 0 0.6rem;
+    color: var(--accent);
+    font-size: 0.82rem;
+    font-weight: 800;
+    letter-spacing: 0;
+  }
+
+  h1 {
+    max-width: 760px;
+    margin: 0;
+    color: rgb(var(--black));
+    font-size: clamp(2.1rem, 7vw, 3.7rem);
+    line-height: 1.03;
+    letter-spacing: 0;
+  }
+
+  h2,
+  h3 {
+    color: rgb(var(--black));
+    letter-spacing: 0;
+  }
+
+  .tagline {
+    max-width: 760px;
+    margin: 1rem 0 0;
+    color: rgb(var(--gray));
+    font-size: 1.05rem;
+    line-height: 1.8;
+  }
+
+  .hero-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.7rem;
+    margin-top: 1.2rem;
+  }
+
+  .btn,
+  .path-grid a,
+  .service-grid a,
+  .copy-local-brief {
+    display: inline-flex;
+    min-height: 42px;
+    align-items: center;
+    justify-content: center;
+    padding: 0.65rem 0.9rem;
+    border-radius: 8px;
+    font: inherit;
+    font-weight: 800;
+    line-height: 1.2;
+    text-decoration: none;
+  }
+
+  .btn.primary,
+  .copy-local-brief {
+    color: #fff;
+    background: var(--accent);
+    border: 1px solid var(--accent);
+    cursor: pointer;
+  }
+
+  .btn.secondary {
+    color: rgb(var(--black));
+    background: #fff;
+    border: 1px solid rgba(var(--black), 0.12);
+  }
+
+  .hero-note,
+  .section-head p,
+  .path-grid p,
+  .service-grid dd,
+  .area-grid p,
+  .local-brief-panel p,
+  .brief-box li,
+  .hero-panel li {
+    color: rgb(var(--gray));
+    line-height: 1.68;
+  }
+
+  .hero-note {
+    margin: 0.8rem 0 0;
+    font-size: 0.92rem;
+  }
+
+  .hero-panel,
+  .path-grid a,
+  .service-grid article,
+  .area-grid article,
+  .local-brief-panel,
+  .brief-box {
+    background: #fff;
+    border: 1px solid rgba(var(--black), 0.08);
+    border-radius: 8px;
+    box-shadow: 0 14px 32px rgba(20, 20, 20, 0.05);
+  }
+
+  .hero-panel {
+    padding: 1rem;
+    background: #f7fbff;
+    border-color: rgba(0, 102, 255, 0.14);
+  }
+
+  .hero-panel ul {
+    display: grid;
+    gap: 0.5rem;
+    margin: 0;
+    padding-left: 1.1rem;
+  }
+
+  .section {
+    margin: 2.8rem 0;
+  }
+
+  .section-head {
+    max-width: 780px;
+    margin-bottom: 1rem;
+  }
+
+  .section-head h2,
+  .local-brief-panel h2 {
+    margin: 0 0 0.65rem;
+    font-size: 1.55rem;
+  }
+
+  .section-head p,
+  .local-brief-panel p {
+    margin: 0;
+  }
+
+  .brief-source-note {
+    margin-top: 0.75rem !important;
+    color: rgb(var(--black)) !important;
+    font-size: 0.92rem;
+    font-weight: 800;
+  }
+
+  .path-grid,
+  .service-grid,
+  .area-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 1rem;
+  }
+
+  .path-grid a {
+    display: flex;
+    min-height: 100%;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
+    padding: 1rem;
+    color: inherit;
+  }
+
+  .path-grid span,
+  .service-grid span {
+    color: var(--accent);
+    font-size: 0.82rem;
+    font-weight: 800;
+  }
+
+  .path-grid h3,
+  .service-grid h3,
+  .area-grid h3 {
+    margin: 0.45rem 0 0.5rem;
+    font-size: 1.04rem;
+    line-height: 1.35;
+  }
+
+  .path-grid p {
+    flex: 1;
+    margin: 0 0 0.85rem;
+    font-size: 0.92rem;
+  }
+
+  .path-grid strong {
+    color: var(--accent);
+    font-size: 0.86rem;
+  }
+
+  .service-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .service-grid article,
+  .area-grid article {
+    padding: 1rem;
+  }
+
+  .service-grid dl {
+    display: grid;
+    gap: 0.65rem;
+    margin: 0.8rem 0 1rem;
+  }
+
+  .service-grid dl div {
+    padding-top: 0.65rem;
+    border-top: 1px solid rgba(var(--black), 0.07);
+  }
+
+  .service-grid dt {
+    color: rgb(var(--black));
+    font-size: 0.78rem;
+    font-weight: 800;
+  }
+
+  .service-grid dd {
+    margin: 0.25rem 0 0;
+    font-size: 0.94rem;
+  }
+
+  .service-grid a {
+    width: fit-content;
+    min-height: 38px;
+    color: rgb(var(--black));
+    background: #fff;
+    border: 1px solid rgba(var(--black), 0.12);
+    font-size: 0.88rem;
+  }
+
+  .area-panel {
+    padding: 1rem;
+    background: #f7fbff;
+    border: 1px solid rgba(0, 102, 255, 0.14);
+    border-radius: 8px;
+  }
+
+  .area-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .area-grid p {
+    margin: 0;
+    font-size: 0.92rem;
+  }
+
+  .local-brief-panel {
+    display: grid;
+    grid-template-columns: minmax(0, 0.8fr) minmax(300px, 1.2fr);
+    gap: 1rem;
+    padding: 1rem;
+    background: rgba(var(--gray-light), 0.42);
+  }
+
+  .brief-box {
+    padding: 1rem;
+  }
+
+  .brief-box ol {
+    margin: 0;
+    padding-left: 1.1rem;
+  }
+
+  .brief-box li {
+    font-size: 0.93rem;
+  }
+
+  .brief-box li + li {
+    margin-top: 0.35rem;
+  }
+
+  .copy-local-brief {
+    width: 100%;
+    margin-top: 0.9rem;
+  }
+
+  .copy-local-status {
+    min-height: 1.2rem;
+    margin-top: 0.5rem !important;
+    color: #157347 !important;
+    font-size: 0.86rem;
+    font-weight: 800;
+  }
+
+  @media (max-width: 820px) {
+    main {
+      max-width: calc(100% - 1rem);
+      padding-top: 1rem;
+    }
+
+    .hero,
+    .path-grid,
+    .service-grid,
+    .area-grid,
+    .local-brief-panel {
+      grid-template-columns: 1fr;
+    }
+
+    .hero {
+      padding-top: 1.4rem;
+    }
+
+    .hero-actions a,
+    .copy-local-brief {
+      width: 100%;
+    }
+  }
+</style>

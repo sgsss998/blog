@@ -1,0 +1,623 @@
+---
+import BaseHead from '../components/BaseHead.astro';
+import ConversionCTA from '../components/ConversionCTA.astro';
+import FAQSection from '../components/FAQSection.astro';
+import Footer from '../components/Footer.astro';
+import Header from '../components/Header.astro';
+import TrustBoundary from '../components/TrustBoundary.astro';
+import { WECHAT } from '../consts';
+
+const formatCards = [
+  {
+    label: '01',
+    title: 'AI 工作流实战工作坊',
+    fit: '适合一个团队或同主题小组，已经有重复任务，但工具分工和人机边界不清。',
+    output: '产出流程拆解、工具分工、人工确认点和第一条可试跑任务。',
+  },
+  {
+    label: '02',
+    title: '知识库与 RAG 工作坊',
+    fit: '适合资料多、入口散、检索不稳的人群，先把资料入口和不可公开边界拆清楚。',
+    output: '产出资料入口清单、排除规则、检索问题样例和第一批治理优先级。',
+  },
+  {
+    label: '03',
+    title: '办公 Skill/SOP 工作坊',
+    fit: '适合 Word、纪要、归档、报告初稿、材料整理等重复办公流程。',
+    output: '产出 Skill 草图、输入要求、执行步骤、验收口径和人工接管点。',
+  },
+  {
+    label: '04',
+    title: '内容商业化工作坊',
+    fit: '适合已经有文章、资料包、项目经验或公开内容，但还没接到服务入口。',
+    output: '产出内容到资料卡、自测、Coffee Chat、服务页的转化路径。',
+  },
+];
+
+const agendaSteps = [
+  {
+    step: '01',
+    title: '会前预审',
+    body: '先复制工作坊预审卡，确认主题、人数、材料边界、预算意向和希望输出。',
+  },
+  {
+    step: '02',
+    title: '边界确认',
+    body: '开场先确认哪些内容可讨论、哪些只能脱敏、哪些不进入公开复盘。',
+  },
+  {
+    step: '03',
+    title: '流程拆解',
+    body: '围绕同一个主题拆资料入口、当前做法、卡点、工具分工和人工确认点。',
+  },
+  {
+    step: '04',
+    title: '现场试跑',
+    body: '用公开或脱敏样例跑一段小流程，不要求展示原始敏感材料。',
+  },
+  {
+    step: '05',
+    title: '输出清单',
+    body: '收束成流程图、资料清单、Skill 草图、内容转化路径或下一步诊断范围。',
+  },
+  {
+    step: '06',
+    title: '会后沉淀',
+    body: '只沉淀共性方法和下一步，不把个人问题、组织信息和原始材料写成公开背书。',
+  },
+];
+
+const qualificationCards = [
+  {
+    title: '适合启动',
+    items: ['同一主题至少 3 人', '能提供脱敏样例', '希望得到可执行清单', '接受先预审再定制'],
+  },
+  {
+    title: '先暂缓',
+    items: ['只想听宏观趋势', '没有具体流程', '不愿意说明材料边界', '要求现场解决高风险判断'],
+  },
+  {
+    title: '默认边界',
+    items: ['3-8 人小规模', '公开场所或线上', '不收原始敏感材料', '不公开具体地点和私人信息'],
+  },
+];
+
+const deliverables = [
+  '一张主题范围说明：本次解决什么、不解决什么。',
+  '一份流程拆解：输入、处理步骤、输出、验收和人工确认点。',
+  '一张工具分工：对话模型、代码 Agent、知识库、人工分别负责什么。',
+  '一个试跑任务：会后 7 天内能验证是否值得继续投入。',
+  '一份下一步建议：自学、Coffee Chat、工作流诊断、Skill/SOP 小项目或阶段陪跑。',
+];
+
+const workshopBriefItems = [
+  '工作坊主题：AI 工作流 / 知识库-RAG / Skill-SOP / 内容商业化 / 其他',
+  '预计人数：3-4 人 / 5-8 人 / 暂不确定',
+  '参与者背景：个人创作者 / 知识工作者 / 小团队 / 创业项目 / 其他',
+  '共同卡点是：',
+  '可以提供的脱敏样例是：',
+  '希望现场输出：流程图 / Skill 草图 / 资料清单 / 内容转化路径 / 下一步项目范围',
+  '形式偏好：上海线下公开场所 / 线上 / 先预沟通',
+  '预算意向：小班工作坊 / 后续诊断 / 小项目 / 阶段陪跑 / 暂不确定',
+  '期望启动时间：本周 / 本月 / 先预沟通',
+  '是否接受先诊断再项目：是 / 否 / 需要先了解',
+  '隐私边界：只先发脱敏描述，不发送原始敏感材料。',
+];
+
+const workshopBriefCopy = [
+  `微信号：${WECHAT}`,
+  '备注：上海 AI 工作坊预审',
+  '来源：ailaoming.com/workshop',
+  '线索类型：上海 AI 小型工作坊 / 小团队内训预审',
+  ...workshopBriefItems,
+].join('\n');
+
+const workshopFaqs = [
+  {
+    question: '这个工作坊和 Coffee Chat 有什么区别？',
+    answer: 'Coffee Chat 更适合一对一或少量同主题交流；工作坊适合 3-8 人围绕同一个流程或主题，现场产出流程图、资料清单、Skill 草图或下一步项目范围。',
+  },
+  {
+    question: '能不能直接定制企业培训？',
+    answer: '可以先预审，但不直接承诺通用培训课。只有当主题、参与者背景、脱敏样例、输出目标和隐私边界都清楚时，才定制小型工作坊。',
+  },
+  {
+    question: '现场会收集或上传材料吗？',
+    answer: '不会通过表单收集材料，也不要求现场上传原始敏感内容。第一次只看脱敏描述、公开样例或目录级信息。',
+  },
+  {
+    question: '会后能公开复盘吗？',
+    answer: '只能公开主题、共性问题、方法结构和下一步动作；不公开参与者身份、具体地点、组织信息、私人聊天和原始材料。',
+  },
+];
+
+const workshopStructuredData = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'Service',
+    '@id': 'https://ailaoming.com/workshop/#service',
+    name: '上海 AI 小型工作坊',
+    serviceType: 'AI workflow workshop',
+    areaServed: {
+      '@type': 'City',
+      name: '上海',
+      addressCountry: 'CN',
+    },
+    provider: {
+      '@type': 'Person',
+      name: '老明',
+      url: 'https://ailaoming.com/',
+    },
+    description: '面向上海本地知识工作者、内容创作者、小团队和创业项目的 AI 工作流、知识库、Skill/SOP 与内容商业化小型工作坊预审入口。',
+    offers: {
+      '@type': 'Offer',
+      availability: 'https://schema.org/InStock',
+      url: 'https://ailaoming.com/workshop/',
+    },
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'WebPage',
+    '@id': 'https://ailaoming.com/workshop/#webpage',
+    name: '上海 AI 小型工作坊',
+    url: 'https://ailaoming.com/workshop/',
+    inLanguage: 'zh-CN',
+    description: '用于预审上海 AI 小型工作坊、小团队内训、Coffee Chat 升级场和 Skill/SOP 共创场的公开页面。',
+  },
+];
+---
+
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <BaseHead
+      title="上海 AI 小型工作坊"
+      description="面向上海本地知识工作者、内容创作者、小团队和创业项目的 AI 工作流、知识库、Skill/SOP 与内容商业化小型工作坊预审入口。"
+    />
+    <script type="application/ld+json" set:html={JSON.stringify(workshopStructuredData)}></script>
+  </head>
+  <body>
+    <Header />
+    <main>
+      <section class="hero">
+        <div>
+          <p class="eyebrow">Shanghai AI Workshop</p>
+          <h1>上海 AI 小型工作坊</h1>
+          <p class="tagline">
+            适合 3-8 人围绕同一个 AI 工作流、知识库、Skill/SOP 或内容商业化问题做一次高密度拆解。不是泛泛培训课，而是用脱敏样例把下一步收束成可执行清单。
+          </p>
+          <div class="hero-actions">
+            <a class="btn primary" href="#workshop-brief">复制工作坊预审卡</a>
+            <a class="btn secondary" href="/diagnosis">先做 AI 自测</a>
+            <a class="btn secondary" href="/coffee-chat">先看 Coffee Chat</a>
+            <a class="btn secondary" href="/shanghai-ai">上海本地入口</a>
+          </div>
+          <p class="hero-note">不公开具体地点，不虚构已举办场次；先预审主题、人数、材料边界和输出目标。</p>
+        </div>
+        <aside class="hero-panel" aria-label="工作坊边界">
+          <p class="panel-label">默认边界</p>
+          <ul>
+            <li>3-8 人小规模</li>
+            <li>上海公开场所或线上</li>
+            <li>只用公开或脱敏样例</li>
+            <li>会后只沉淀共性方法</li>
+          </ul>
+        </aside>
+      </section>
+
+      <section class="section">
+        <div class="section-head">
+          <p class="eyebrow">Workshop Modules</p>
+          <h2>四类适合做小型工作坊的主题</h2>
+          <p>同一主题越集中，越适合工作坊；问题差异太大时，优先回到 Coffee Chat 或一对一诊断。</p>
+        </div>
+        <div class="format-grid">
+          {formatCards.map((card) => (
+            <article>
+              <span>{card.label}</span>
+              <h3>{card.title}</h3>
+              <dl>
+                <div>
+                  <dt>适合</dt>
+                  <dd>{card.fit}</dd>
+                </div>
+                <div>
+                  <dt>输出</dt>
+                  <dd>{card.output}</dd>
+                </div>
+              </dl>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      <section class="section agenda-panel" aria-label="工作坊流程">
+        <div class="section-head">
+          <p class="eyebrow">Agenda</p>
+          <h2>6 步把主题收束成可执行清单</h2>
+          <p>每场只围绕一个主题做深，不把所有 AI 问题塞进同一场。</p>
+        </div>
+        <div class="agenda-grid">
+          {agendaSteps.map((step) => (
+            <article>
+              <span>{step.step}</span>
+              <h3>{step.title}</h3>
+              <p>{step.body}</p>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      <section class="section qualification-panel" aria-label="工作坊启动条件">
+        <div class="section-head">
+          <p class="eyebrow">Qualification</p>
+          <h2>先判断是否值得开工作坊</h2>
+          <p>工作坊比 Coffee Chat 更重，所以要先确认主题集中、材料可脱敏、输出可验收。</p>
+        </div>
+        <div class="qualification-grid">
+          {qualificationCards.map((card) => (
+            <article>
+              <h3>{card.title}</h3>
+              <ul>
+                {card.items.map((item) => <li>{item}</li>)}
+              </ul>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      <section class="section deliverable-panel" aria-label="工作坊交付物">
+        <div>
+          <p class="eyebrow">Deliverables</p>
+          <h2>一场工作坊至少要留下这些东西</h2>
+          <p>如果只听概念、没有输出，就不值得占用线下时间。</p>
+        </div>
+        <ul>
+          {deliverables.map((item) => <li>{item}</li>)}
+        </ul>
+      </section>
+
+      <section id="workshop-brief" class="brief-panel" aria-label="工作坊预审卡">
+        <div>
+          <p class="eyebrow">Pre-brief</p>
+          <h2>复制工作坊预审卡</h2>
+          <p>
+            不提交表单，不上传、不存储。复制后发微信 <code>{WECHAT}</code>，先判断该做 Coffee Chat、工作坊、诊断，还是小项目。
+          </p>
+        </div>
+        <div class="brief-card">
+          <pre>{workshopBriefCopy}</pre>
+          <button type="button" class="copy-workshop-brief" data-copy={workshopBriefCopy}>复制工作坊预审卡</button>
+          <p class="copy-status" aria-live="polite"></p>
+        </div>
+      </section>
+
+      <TrustBoundary
+        compact={true}
+        eyebrow="隐私边界"
+        title="工作坊只讨论可公开或可脱敏的问题"
+        intro="会前只需要主题、人数、脱敏样例和输出目标。组织信息、私人聊天、原始材料、账号信息和未授权内容，不进入公开复盘，也不在多人场展开。"
+      />
+
+      <FAQSection title="工作坊常见问题" items={workshopFaqs} />
+
+      <ConversionCTA
+        title="把一次线下交流升级成可交付工作坊"
+        note="如果你的问题已经不只是个人 Coffee Chat，而是 3-8 人围绕同一个主题想做一次高密度拆解，先复制工作坊预审卡，我会判断该线上预沟通、线下小班，还是先做诊断。"
+        remark="上海 AI 工作坊预审"
+        briefItems={[
+          '工作坊主题是：AI 工作流 / 知识库-RAG / Skill-SOP / 内容商业化',
+          '预计人数和参与者背景是：',
+          '希望现场输出是：流程图 / Skill 草图 / 资料清单 / 下一步项目范围',
+        ]}
+        primaryHref="/coffee-chat"
+        primaryLabel="先看 Coffee Chat"
+        secondaryHref="/shanghai-ai"
+        secondaryLabel="上海本地入口"
+        briefHref="/brief"
+        briefLabel="复制需求卡"
+      />
+    </main>
+    <Footer />
+
+    <script>
+      document.querySelectorAll('.copy-workshop-brief').forEach((button) => {
+        button.addEventListener('click', async () => {
+          const trigger = button instanceof HTMLElement ? button : null;
+          const text = trigger?.dataset.copy ?? '';
+          const panel = trigger?.closest('.brief-card');
+          const status = panel?.querySelector('.copy-status');
+
+          try {
+            if (!navigator.clipboard || !text) throw new Error('Clipboard unavailable');
+            await navigator.clipboard.writeText(text);
+            if (status) status.textContent = '已复制，可直接粘贴到微信';
+          } catch {
+            if (status) status.textContent = '复制失败，请手动复制上面的预审卡';
+          }
+        });
+      });
+    </script>
+  </body>
+</html>
+
+<style>
+  main {
+    width: 960px;
+    max-width: calc(100% - 2rem);
+    margin: 0 auto;
+    padding: 2rem 0 4rem;
+  }
+
+  .hero,
+  .hero-panel,
+  .format-grid article,
+  .agenda-grid article,
+  .qualification-grid article,
+  .deliverable-panel,
+  .brief-panel {
+    border: 1px solid rgba(var(--black), 0.08);
+    border-radius: 8px;
+  }
+
+  .hero {
+    display: grid;
+    grid-template-columns: minmax(0, 1.1fr) minmax(280px, 0.9fr);
+    gap: 1rem;
+    align-items: stretch;
+    padding: 1.4rem;
+    background: linear-gradient(135deg, rgba(0, 102, 255, 0.08), rgba(21, 115, 71, 0.08));
+  }
+
+  .eyebrow,
+  .panel-label {
+    margin: 0 0 0.55rem;
+    color: var(--accent);
+    font-size: 0.82rem;
+    font-weight: 800;
+  }
+
+  h1 {
+    margin: 0 0 1rem;
+    font-size: clamp(2rem, 5vw, 3.5rem);
+    line-height: 1.05;
+  }
+
+  h2,
+  h3,
+  p {
+    margin-top: 0;
+  }
+
+  .tagline,
+  .hero-note,
+  .section-head p,
+  .format-grid dd,
+  .agenda-grid p,
+  .qualification-grid li,
+  .deliverable-panel p,
+  .deliverable-panel li,
+  .brief-panel p {
+    color: rgb(var(--gray));
+    line-height: 1.75;
+  }
+
+  .tagline {
+    font-size: 1.08rem;
+  }
+
+  .hero-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.65rem;
+    margin: 1.2rem 0 0.8rem;
+  }
+
+  .btn {
+    display: inline-flex;
+    min-height: 42px;
+    align-items: center;
+    justify-content: center;
+    padding: 0.65rem 0.95rem;
+    border-radius: 8px;
+    font-weight: 800;
+    text-decoration: none;
+  }
+
+  .btn.primary {
+    color: #fff;
+    background: var(--accent);
+  }
+
+  .btn.secondary {
+    color: rgb(var(--black));
+    background: #fff;
+    border: 1px solid rgba(var(--black), 0.12);
+  }
+
+  .hero-panel {
+    padding: 1rem;
+    background: #fff;
+    box-shadow: 0 16px 38px rgba(20, 20, 20, 0.06);
+  }
+
+  .hero-panel ul,
+  .qualification-grid ul,
+  .deliverable-panel ul {
+    display: grid;
+    gap: 0.55rem;
+    margin: 0;
+    padding-left: 1.1rem;
+  }
+
+  .section {
+    margin: 2.4rem 0;
+  }
+
+  .section-head {
+    max-width: 740px;
+    margin-bottom: 1rem;
+  }
+
+  .section-head h2,
+  .deliverable-panel h2,
+  .brief-panel h2 {
+    margin-bottom: 0.55rem;
+    font-size: 1.65rem;
+  }
+
+  .format-grid,
+  .agenda-grid,
+  .qualification-grid {
+    display: grid;
+    gap: 0.85rem;
+  }
+
+  .format-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .agenda-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .qualification-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .format-grid article,
+  .agenda-grid article,
+  .qualification-grid article {
+    padding: 1rem;
+    background: #fff;
+    box-shadow: 0 12px 28px rgba(20, 20, 20, 0.04);
+  }
+
+  .format-grid span,
+  .agenda-grid span {
+    display: inline-flex;
+    margin-bottom: 0.65rem;
+    color: var(--accent);
+    font-size: 0.82rem;
+    font-weight: 900;
+  }
+
+  .format-grid h3,
+  .agenda-grid h3,
+  .qualification-grid h3 {
+    margin-bottom: 0.55rem;
+    font-size: 1.05rem;
+  }
+
+  .format-grid dl {
+    margin: 0;
+  }
+
+  .format-grid div + div {
+    margin-top: 0.75rem;
+  }
+
+  .format-grid dt {
+    margin-bottom: 0.25rem;
+    color: rgb(var(--black));
+    font-size: 0.84rem;
+    font-weight: 800;
+  }
+
+  .format-grid dd {
+    margin: 0;
+    font-size: 0.95rem;
+  }
+
+  .deliverable-panel,
+  .brief-panel {
+    display: grid;
+    grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+    gap: 1rem;
+    padding: 1.2rem;
+    background: #fff;
+  }
+
+  .brief-card {
+    padding: 0.9rem;
+    background: rgba(var(--gray-light), 0.5);
+    border-radius: 8px;
+  }
+
+  .brief-card pre {
+    max-height: 320px;
+    overflow: auto;
+    margin: 0;
+    padding: 0.85rem;
+    color: rgb(var(--gray));
+    font: 0.86rem/1.65 ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', monospace;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+    background: #fff;
+    border-radius: 8px;
+  }
+
+  .copy-workshop-brief {
+    width: 100%;
+    min-height: 42px;
+    margin-top: 0.8rem;
+    padding: 0.6rem 0.8rem;
+    color: var(--accent);
+    font: inherit;
+    font-weight: 800;
+    background: #fff;
+    border: 1px solid rgba(0, 102, 255, 0.2);
+    border-radius: 8px;
+    cursor: pointer;
+  }
+
+  .copy-status {
+    min-height: 1.2rem;
+    margin: 0.5rem 0 0;
+    color: #157347;
+    font-size: 0.88rem;
+    font-weight: 800;
+  }
+
+  @media (max-width: 840px) {
+    .hero,
+    .deliverable-panel,
+    .brief-panel {
+      grid-template-columns: 1fr;
+    }
+
+    .format-grid,
+    .agenda-grid,
+    .qualification-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (max-width: 560px) {
+    main {
+      max-width: calc(100% - 1rem);
+      padding-top: 1rem;
+    }
+
+    .hero,
+    .deliverable-panel,
+    .brief-panel {
+      padding: 1rem;
+    }
+
+    h1 {
+      font-size: 2rem;
+    }
+
+    .format-grid,
+    .agenda-grid,
+    .qualification-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .hero-actions a,
+    .copy-workshop-brief {
+      width: 100%;
+    }
+  }
+</style>

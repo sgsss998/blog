@@ -6,6 +6,8 @@ heroImage: /images/blog/openclaw-local-embedding-tip.jpg
 keywords: [OpenClaw, Embedding本地化, Ollama, bge-m3, Token省钱, AI记忆系统, 向量化, Claude Code]
 ---
 
+> **站内原创整理**：这篇是老明基于 OpenClaw 本地化使用经验整理的公开技术笔记。
+
 最近"养小龙虾"火了。
 
 但养过小龙虾的都知道，这玩意儿吃 token，吃得凶。

@@ -1,0 +1,758 @@
+---
+import BaseHead from '../components/BaseHead.astro';
+import ConversionCTA from '../components/ConversionCTA.astro';
+import FAQSection from '../components/FAQSection.astro';
+import Footer from '../components/Footer.astro';
+import Header from '../components/Header.astro';
+import TrustBoundary from '../components/TrustBoundary.astro';
+import { WECHAT } from '../consts';
+
+const funnelSteps = [
+  {
+    step: '01',
+    title: '内容入口',
+    body: '先判断现有文章、笔记、项目复盘或资料包，到底解决哪个具体问题。',
+  },
+  {
+    step: '02',
+    title: '证据资产',
+    body: '把能公开的样例、项目、文章、工具和验收口径整理成可被访客核验的证据。',
+  },
+  {
+    step: '03',
+    title: '自助判断',
+    body: '用 AI 自测、ROI 估算、资料卡和需求卡，让访客先判断自己适合哪条路径。',
+  },
+  {
+    step: '04',
+    title: '低摩擦联系',
+    body: '不急着做表单，先用微信复制模板收集来源、预算意向、启动时间和隐私边界。',
+  },
+  {
+    step: '05',
+    title: '交流承接',
+    body: '上海本地问题进 Coffee Chat 或工作坊预审，线上问题先进轻量诊断。',
+  },
+  {
+    step: '06',
+    title: '服务交付',
+    body: '只有样例、范围、验收和边界清楚后，再进入诊断、小项目或阶段陪跑。',
+  },
+];
+
+const diagnosticCards = [
+  {
+    title: '定位是否一句话说清',
+    signal: '访客进站 10 秒内能否知道你解决什么 AI 问题。',
+    fix: '重写首页 H1、首屏 CTA、服务摘要和不适合人群。',
+  },
+  {
+    title: '内容是否能导向下一步',
+    signal: '文章读完后是否知道该看样例、自测、需求卡还是 Coffee Chat。',
+    fix: '按场景重组文章路径，并给每类文章配置下一步入口。',
+  },
+  {
+    title: '证据是否能公开核验',
+    signal: '有没有脱敏样例、公开项目、可复查产物和验收口径。',
+    fix: '建立公开样例库，不用私人材料换可信度。',
+  },
+  {
+    title: '线索是否足够合格',
+    signal: '访客发来的消息是否包含场景、样例、预算、时间和隐私边界。',
+    fix: '设计复制模板、需求卡、资料卡和分流页，减少低质量沟通。',
+  },
+  {
+    title: '本地活动是否有承接',
+    signal: '上海线下交流是否只停留在“欢迎来聊”。',
+    fix: '把 Coffee Chat、工作坊、公开复盘和服务判断接到同一条路径。',
+  },
+  {
+    title: '发布是否可控',
+    signal: '改完页面后是否能验证 SEO、图片、敏感词、CTA、RSS、sitemap。',
+    fix: '建立本地构建、内容健康、发布候选、运营审计和审批摘要。',
+  },
+];
+
+const deliverables = [
+  '一张获客漏斗图：内容、样例、自测、需求卡、Coffee Chat、工作坊、服务页分别负责什么。',
+  '一份页面优先级：先改首页、文章库、样例库、服务页，还是先补资料卡和需求卡。',
+  '一组复制模板：让访客发来的第一条消息包含来源、场景、预算、时间和隐私边界。',
+  '一套公开边界：哪些能作为公开证据，哪些只保留在私下沟通，哪些不进入网站。',
+  '一份本地发布清单：构建、图片、敏感词、路由、结构化数据和审批摘要怎么跑。',
+];
+
+const acquisitionRecaps = [
+  {
+    month: '2026-07',
+    subject: 'ailaoming.com 本站自诊断',
+    status: '公开样例运行中',
+    action: '把文章归档、服务页、AI 自测、需求卡、样例库、Skills、项目看板、Coffee Chat 和工作坊串成同一条获客路径。',
+    signal: '本地构建、内容健康、站点验证、运营审计、发布审批和候选发布检查均可复跑；公开页面只展示方法、结构和边界。',
+    next: '继续补真实脱敏案例、获客站诊断复盘和 Coffee Chat 复盘，不用私人材料换可信度。',
+    boundary: '不公开访客资料、私域聊天、未确认报价、后台数据、未授权原始材料和内部运营细节。',
+  },
+  {
+    month: '2026-07',
+    subject: 'Skill 资产公开化复盘',
+    status: '公开矩阵已接入',
+    action: '把本地 Skill 资产从内部执行能力转译成 Skills 页资产卡和公开样例库案例。',
+    signal: 'Skills 页展示 11 张本地资产卡；案例库新增本地 Skill 资产盘点样例；校验脚本检查卡片数量和脱敏边界。',
+    next: '把高频 Skill 继续沉淀成资料卡、预审卡和可交付的小项目路径。',
+    boundary: '不公开本地路径、原始 Skill 全文、公司信息、真名、内部模板、报销单据和周报原文。',
+  },
+  {
+    month: '2026-07',
+    subject: '上海 Coffee Chat 承接路径',
+    status: '模板上线，等待真实复盘',
+    action: '先公开报名字段、候补主题、会前材料、现场输出和会后沉淀规则。',
+    signal: 'Coffee Chat、上海本地页和工作坊页已经接入获客漏斗，但未把预约线索包装成已举办活动。',
+    next: '实际活动发生后，只按月份、主题、共性问题、可公开结论和下一步更新复盘。',
+    boundary: '不公开具体地点、参与者身份、私人聊天、商业计划、联系人和未授权问题细节。',
+  },
+];
+
+const acquisitionBriefItems = [
+  '当前内容资产：公众号 / 小红书 / 个人网站 / 项目看板 / 资料包 / 其他',
+  '主要想承接的 AI 业务：工作流诊断 / 知识库整理 / Skill-SOP / 工作坊 / 其他',
+  '现在最卡的一步是：有内容但没线索 / 有线索但不合格 / 服务页说不清 / 证据不足 / 不知道怎么报价',
+  '可以公开展示的材料是：文章链接 / 项目页面 / 脱敏样例 / 公开工具 / 暂无',
+  '不能公开的边界是：',
+  '希望本次输出：漏斗图 / 页面优先级 / 需求卡模板 / Coffee Chat 承接路径 / 发布检查清单',
+  '预算意向：获客站诊断 / 页面改造 / 内容系统整理 / 阶段陪跑 / 暂不确定',
+  '期望启动时间：本周 / 本月 / 先预沟通',
+  '是否接受先诊断再项目：是 / 否 / 需要先了解',
+  '隐私边界：只先发公开链接或脱敏描述，不发送原始敏感材料。',
+];
+
+const acquisitionBriefCopy = [
+  `微信号：${WECHAT}`,
+  '备注：AI 获客站诊断',
+  '来源：ailaoming.com/ai-acquisition',
+  '线索类型：AI 获客站诊断 / 内容转线索',
+  ...acquisitionBriefItems,
+].join('\n');
+
+const acquisitionFaqs = [
+  {
+    question: '这个服务和普通网站设计有什么区别？',
+    answer: '这里不从视觉包装开始，而是先看内容、证据、线索质量和服务承接。目标不是做一个好看的展示页，而是让访客能自助判断、复制需求卡、进入 Coffee Chat 或明确服务路径。',
+  },
+  {
+    question: '我只有公众号或小红书，没有独立网站，可以做吗？',
+    answer: '可以先诊断内容转线索路径。独立网站不是第一步，先判断内容资产、证据资产、资料卡和沟通模板是否能把问题说清。',
+  },
+  {
+    question: '会不会要求我公开后台数据或私域聊天？',
+    answer: '不会。第一次只看公开链接、脱敏截图或口头结构。后台、私域聊天、未确认合作、私人身份和敏感材料不进入公开页面。',
+  },
+  {
+    question: '能不能承诺带来多少线索？',
+    answer: '不承诺收益和线索数量。可验收的是页面结构、入口完整度、线索筛选字段、公开证据和本地发布检查，真实转化要继续靠内容、主题和后续运营验证。',
+  },
+];
+
+const structuredData = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'Service',
+    '@id': 'https://ailaoming.com/ai-acquisition/#service',
+    name: 'AI 获客站诊断',
+    serviceType: 'AI acquisition website diagnosis',
+    provider: {
+      '@type': 'Person',
+      name: '老明',
+      url: 'https://ailaoming.com/',
+    },
+    description: '面向有 AI 内容、项目、资料包或线下活动需求的人，诊断内容如何转成合格线索、Coffee Chat、工作坊和服务承接。',
+    offers: {
+      '@type': 'Offer',
+      availability: 'https://schema.org/InStock',
+      url: 'https://ailaoming.com/ai-acquisition/',
+    },
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'WebPage',
+    '@id': 'https://ailaoming.com/ai-acquisition/#webpage',
+    name: 'AI 获客站诊断',
+    url: 'https://ailaoming.com/ai-acquisition/',
+    inLanguage: 'zh-CN',
+    description: '把文章、样例、项目、AI 自测、需求卡、Coffee Chat、工作坊和服务页串成可验证的 AI 获客漏斗。',
+  },
+];
+---
+
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <BaseHead
+      title="AI 获客站诊断"
+      description="把文章、样例、项目、AI 自测、需求卡、Coffee Chat、工作坊和服务页串成可验证的 AI 获客漏斗。"
+    />
+    <script type="application/ld+json" set:html={JSON.stringify(structuredData)}></script>
+  </head>
+  <body>
+    <Header />
+    <main>
+      <section class="hero">
+        <div>
+          <p class="eyebrow">AI Acquisition Funnel</p>
+          <h1>AI 获客站诊断</h1>
+          <p class="tagline">
+            适合已经有 AI 内容、项目、资料包或线下交流想法，但还没有稳定线索入口的人。目标不是做一个漂亮展示页，而是把文章、公开样例、自测、需求卡、Coffee Chat、工作坊和服务页串成一条能筛选合格线索的路径。
+          </p>
+          <div class="hero-actions">
+            <a class="btn primary" href="#acquisition-brief">复制获客站诊断卡</a>
+            <a class="btn secondary" href="/cases">看公开样例库</a>
+            <a class="btn secondary" href="/diagnosis">先做 AI 自测</a>
+          </div>
+          <p class="hero-note">不承诺收益，不收表单，不上传访客资料；第一次只看公开链接或脱敏描述。</p>
+        </div>
+        <aside class="hero-panel" aria-label="诊断输出">
+          <p class="panel-label">本次看什么</p>
+          <ul>
+            <li>内容能否导向下一步</li>
+            <li>证据是否可公开核验</li>
+            <li>线索是否足够合格</li>
+            <li>本地活动是否能承接服务</li>
+          </ul>
+        </aside>
+      </section>
+
+      <section class="section">
+        <div class="section-head">
+          <p class="eyebrow">Funnel Map</p>
+          <h2>一条 AI 获客漏斗应该长这样</h2>
+          <p>先让内容解释问题，再让证据建立信任，最后用低摩擦模板把访客送到合适的下一步。</p>
+        </div>
+        <div class="funnel-grid">
+          {funnelSteps.map((step) => (
+            <article>
+              <span>{step.step}</span>
+              <h3>{step.title}</h3>
+              <p>{step.body}</p>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      <section class="section diagnostic-panel" aria-label="诊断维度">
+        <div class="section-head">
+          <p class="eyebrow">Diagnosis</p>
+          <h2>6 个维度判断网站有没有获客能力</h2>
+          <p>只看访问量没有意义。更关键的是访客能不能知道你解决什么、凭什么信你、下一步发什么。</p>
+        </div>
+        <div class="diagnostic-grid">
+          {diagnosticCards.map((card) => (
+            <article>
+              <h3>{card.title}</h3>
+              <dl>
+                <div>
+                  <dt>信号</dt>
+                  <dd>{card.signal}</dd>
+                </div>
+                <div>
+                  <dt>处理</dt>
+                  <dd>{card.fix}</dd>
+                </div>
+              </dl>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      <section class="section deliverable-panel" aria-label="交付物">
+        <div>
+          <p class="eyebrow">Deliverables</p>
+          <h2>诊断结束后至少留下这些东西</h2>
+          <p>如果只是说“多发内容、多做 SEO”，这不算诊断。要能落到页面、路径和下一步动作。</p>
+        </div>
+        <ul>
+          {deliverables.map((item) => <li>{item}</li>)}
+        </ul>
+      </section>
+
+      <section class="section route-panel" aria-label="下一步路径">
+        <div class="section-head">
+          <p class="eyebrow">Routes</p>
+          <h2>不同成熟度，对应不同下一步</h2>
+        </div>
+        <div class="route-grid">
+          <a href="/products#resource-content-loop">
+            <span>内容还散</span>
+            <strong>先拿内容商业化闭环画布</strong>
+            <p>把文章、证据、转化入口和沉淀动作先写清。</p>
+          </a>
+          <a href="/cases#case-ai-website">
+            <span>想先看证据</span>
+            <strong>看本站获客系统样例</strong>
+            <p>先看本站如何从文章归档改成 AI 服务入口。</p>
+          </a>
+          <a href="/coffee-chat">
+            <span>人在上海</span>
+            <strong>先 Coffee Chat</strong>
+            <p>带一个内容或服务转化问题，当面拆下一步。</p>
+          </a>
+          <a href="/workshop">
+            <span>同题多人</span>
+            <strong>进入工作坊预审</strong>
+            <p>3-8 人围绕内容商业化或获客站改造做小班拆解。</p>
+          </a>
+        </div>
+      </section>
+
+      <section class="section recap-ledger" aria-label="AI 获客站诊断复盘台账">
+        <div class="section-head">
+          <p class="eyebrow">Review Ledger</p>
+          <h2>AI 获客站诊断复盘台账</h2>
+          <p>这里先记录本站自己的公开自诊断，不虚构合作案例。后续有真实项目或线下活动，只写脱敏后的共性问题、公开动作和下一步。</p>
+        </div>
+        <div class="recap-grid">
+          {acquisitionRecaps.map((item) => (
+            <article>
+              <div class="recap-head">
+                <span>{item.month}</span>
+                <strong>{item.status}</strong>
+              </div>
+              <h3>{item.subject}</h3>
+              <dl>
+                <div>
+                  <dt>公开动作</dt>
+                  <dd>{item.action}</dd>
+                </div>
+                <div>
+                  <dt>已验证信号</dt>
+                  <dd>{item.signal}</dd>
+                </div>
+                <div>
+                  <dt>下一步</dt>
+                  <dd>{item.next}</dd>
+                </div>
+                <div>
+                  <dt>不公开</dt>
+                  <dd>{item.boundary}</dd>
+                </div>
+              </dl>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      <section id="acquisition-brief" class="brief-panel" aria-label="AI 获客站诊断卡">
+        <div>
+          <p class="eyebrow">Qualified Brief</p>
+          <h2>复制 AI 获客站诊断卡</h2>
+          <p>
+            不提交表单，不上传、不存储。复制后发微信 <code>{WECHAT}</code>，先判断该做内容路径诊断、页面改造、Coffee Chat、工作坊，还是暂缓。
+          </p>
+        </div>
+        <div class="brief-card">
+          <pre>{acquisitionBriefCopy}</pre>
+          <button type="button" class="copy-acquisition-brief" data-copy={acquisitionBriefCopy}>复制获客站诊断卡</button>
+          <p class="copy-status" aria-live="polite"></p>
+        </div>
+      </section>
+
+      <TrustBoundary
+        compact={true}
+        eyebrow="公开边界"
+        title="获客站诊断不靠泄露资料建立可信度"
+        intro="第一次只看公开内容、脱敏样例、目录级信息和你愿意公开的服务方向。后台截图、私域聊天、未确认合作、私人身份和原始材料不进入公开页面。"
+      />
+
+      <FAQSection title="AI 获客站诊断常见问题" items={acquisitionFaqs} />
+
+      <ConversionCTA
+        title="把内容资产改成能筛选线索的路径"
+        note="如果你已经有文章、项目、资料包或线下交流想法，但访客看完不知道下一步该做什么，先复制获客站诊断卡。我会先判断该补内容路径、样例库、需求卡、Coffee Chat，还是服务页。"
+        remark="AI 获客站诊断"
+        briefItems={[
+          '我已有的内容资产是：',
+          '我想承接的 AI 业务是：',
+          '我现在最卡的是：内容不转化 / 线索不合格 / 服务页说不清 / 证据不足',
+        ]}
+        primaryHref="/cases"
+        primaryLabel="看公开样例"
+        secondaryHref="/services"
+        secondaryLabel="看服务方案"
+        briefHref="/brief"
+        briefLabel="复制需求卡"
+      />
+    </main>
+    <Footer />
+
+    <script>
+      document.querySelectorAll('.copy-acquisition-brief').forEach((button) => {
+        button.addEventListener('click', async () => {
+          const trigger = button instanceof HTMLElement ? button : null;
+          const text = trigger?.dataset.copy ?? '';
+          const panel = trigger?.closest('.brief-card');
+          const status = panel?.querySelector('.copy-status');
+
+          try {
+            if (!navigator.clipboard || !text) throw new Error('Clipboard unavailable');
+            await navigator.clipboard.writeText(text);
+            if (status) status.textContent = '已复制，可直接粘贴到微信';
+          } catch {
+            if (status) status.textContent = '复制失败，请手动复制上面的诊断卡';
+          }
+        });
+      });
+    </script>
+  </body>
+</html>
+
+<style>
+  main {
+    width: 1040px;
+    max-width: calc(100% - 2rem);
+    margin: 0 auto;
+    padding: 2rem 0 4rem;
+  }
+
+  .hero,
+  .hero-panel,
+  .funnel-grid article,
+  .diagnostic-grid article,
+  .recap-grid article,
+  .deliverable-panel,
+  .brief-panel,
+  .route-grid a {
+    border: 1px solid rgba(var(--black), 0.08);
+    border-radius: 8px;
+  }
+
+  .hero {
+    display: grid;
+    grid-template-columns: minmax(0, 1.15fr) minmax(280px, 0.85fr);
+    gap: 1rem;
+    align-items: stretch;
+    padding: 1.4rem;
+    background: linear-gradient(135deg, rgba(0, 102, 255, 0.08), rgba(21, 115, 71, 0.08));
+  }
+
+  .eyebrow,
+  .panel-label {
+    margin: 0 0 0.55rem;
+    color: var(--accent);
+    font-size: 0.82rem;
+    font-weight: 800;
+  }
+
+  h1 {
+    margin: 0 0 1rem;
+    font-size: clamp(2rem, 5vw, 3.45rem);
+    line-height: 1.05;
+  }
+
+  h2,
+  h3,
+  p {
+    margin-top: 0;
+  }
+
+  .tagline,
+  .hero-note,
+  .section-head p,
+  .funnel-grid p,
+  .diagnostic-grid dd,
+  .deliverable-panel p,
+  .deliverable-panel li,
+  .route-grid p,
+  .brief-panel p {
+    color: rgb(var(--gray));
+    line-height: 1.75;
+  }
+
+  .tagline {
+    font-size: 1.08rem;
+  }
+
+  .hero-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.65rem;
+    margin: 1.2rem 0 0.8rem;
+  }
+
+  .btn {
+    display: inline-flex;
+    min-height: 42px;
+    align-items: center;
+    justify-content: center;
+    padding: 0.65rem 0.95rem;
+    border-radius: 8px;
+    font-weight: 800;
+    text-decoration: none;
+  }
+
+  .btn.primary {
+    color: #fff;
+    background: var(--accent);
+  }
+
+  .btn.secondary {
+    color: rgb(var(--black));
+    background: #fff;
+    border: 1px solid rgba(var(--black), 0.12);
+  }
+
+  .hero-panel {
+    padding: 1rem;
+    background: #fff;
+    box-shadow: 0 16px 38px rgba(20, 20, 20, 0.06);
+  }
+
+  .hero-panel ul,
+  .deliverable-panel ul {
+    display: grid;
+    gap: 0.55rem;
+    margin: 0;
+    padding-left: 1.1rem;
+  }
+
+  .section {
+    margin: 2.4rem 0;
+  }
+
+  .section-head {
+    max-width: 760px;
+    margin-bottom: 1rem;
+  }
+
+  .section-head h2,
+  .deliverable-panel h2,
+  .brief-panel h2 {
+    margin-bottom: 0.55rem;
+    font-size: 1.65rem;
+  }
+
+  .funnel-grid,
+  .diagnostic-grid,
+  .recap-grid,
+  .route-grid {
+    display: grid;
+    gap: 0.85rem;
+  }
+
+  .funnel-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .diagnostic-grid,
+  .route-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .recap-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .funnel-grid article,
+  .diagnostic-grid article,
+  .recap-grid article,
+  .route-grid a {
+    padding: 1rem;
+    background: #fff;
+    box-shadow: 0 12px 28px rgba(20, 20, 20, 0.04);
+  }
+
+  .funnel-grid span,
+  .route-grid span {
+    display: inline-flex;
+    margin-bottom: 0.65rem;
+    color: var(--accent);
+    font-size: 0.82rem;
+    font-weight: 900;
+  }
+
+  .funnel-grid h3,
+  .diagnostic-grid h3,
+  .route-grid strong {
+    display: block;
+    margin-bottom: 0.55rem;
+    color: rgb(var(--black));
+    font-size: 1.05rem;
+  }
+
+  .diagnostic-grid dl {
+    margin: 0;
+  }
+
+  .diagnostic-grid div + div {
+    margin-top: 0.75rem;
+  }
+
+  .diagnostic-grid dt {
+    margin-bottom: 0.25rem;
+    color: rgb(var(--black));
+    font-size: 0.84rem;
+    font-weight: 800;
+  }
+
+  .diagnostic-grid dd {
+    margin: 0;
+    font-size: 0.95rem;
+  }
+
+  .recap-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.6rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .recap-head span,
+  .recap-head strong {
+    display: inline-flex;
+    min-height: 1.75rem;
+    align-items: center;
+    padding: 0.16rem 0.55rem;
+    border-radius: 999px;
+    font-size: 0.75rem;
+    font-weight: 900;
+    line-height: 1.2;
+  }
+
+  .recap-head span {
+    color: var(--accent);
+    background: #f7fbff;
+  }
+
+  .recap-head strong {
+    color: rgb(var(--gray-dark));
+    background: #f5f7f8;
+  }
+
+  .recap-grid h3 {
+    margin-bottom: 0.75rem;
+    color: rgb(var(--black));
+    font-size: 1.05rem;
+    line-height: 1.35;
+  }
+
+  .recap-grid dl {
+    display: grid;
+    gap: 0.65rem;
+    margin: 0;
+  }
+
+  .recap-grid dl div {
+    padding-top: 0.65rem;
+    border-top: 1px solid rgba(var(--black), 0.07);
+  }
+
+  .recap-grid dt {
+    margin-bottom: 0.25rem;
+    color: rgb(var(--black));
+    font-size: 0.8rem;
+    font-weight: 900;
+  }
+
+  .recap-grid dd {
+    margin: 0;
+    color: rgb(var(--gray));
+    font-size: 0.9rem;
+    line-height: 1.7;
+  }
+
+  .deliverable-panel,
+  .brief-panel {
+    display: grid;
+    grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+    gap: 1rem;
+    padding: 1.2rem;
+    background: #fff;
+  }
+
+  .route-grid a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .brief-card {
+    padding: 0.9rem;
+    background: rgba(var(--gray-light), 0.5);
+    border-radius: 8px;
+  }
+
+  .brief-card pre {
+    max-height: 340px;
+    overflow: auto;
+    margin: 0;
+    padding: 0.85rem;
+    color: rgb(var(--gray));
+    font: 0.86rem/1.65 ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', monospace;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+    background: #fff;
+    border-radius: 8px;
+  }
+
+  .copy-acquisition-brief {
+    width: 100%;
+    min-height: 42px;
+    margin-top: 0.8rem;
+    padding: 0.6rem 0.8rem;
+    color: var(--accent);
+    font: inherit;
+    font-weight: 800;
+    background: #fff;
+    border: 1px solid rgba(0, 102, 255, 0.2);
+    border-radius: 8px;
+    cursor: pointer;
+  }
+
+  .copy-status {
+    min-height: 1.2rem;
+    margin: 0.5rem 0 0;
+    color: #157347;
+    font-size: 0.88rem;
+    font-weight: 800;
+  }
+
+  @media (max-width: 840px) {
+    .hero,
+    .deliverable-panel,
+    .brief-panel {
+      grid-template-columns: 1fr;
+    }
+
+    .funnel-grid,
+    .diagnostic-grid,
+    .recap-grid,
+    .route-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (max-width: 560px) {
+    main {
+      max-width: calc(100% - 1rem);
+      padding-top: 1rem;
+    }
+
+    .hero,
+    .deliverable-panel,
+    .brief-panel {
+      padding: 1rem;
+    }
+
+    h1 {
+      font-size: 2rem;
+    }
+
+    .funnel-grid,
+    .diagnostic-grid,
+    .recap-grid,
+    .route-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .hero-actions a,
+    .copy-acquisition-brief {
+      width: 100%;
+    }
+  }
+</style>

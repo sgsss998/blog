@@ -6,6 +6,8 @@ heroImage: /images/blog/gemini-cli-installation-guide.jpg
 keywords: [Gemini CLI, Google AI, 命令行AI工具, 免费AI, AI安装教程, 终端AI, Gemini API, AI入门]
 ---
 
+> **站内原创整理**：这篇是老明基于公开工具安装流程整理的 AI 入门技术笔记。
+
 Gemini CLI 是 Google 的一款命令行工具，可以帮你修改文件、改代码、执行操作。是根植于终端命令行里面的 agent 助手。
 
 只要你有谷歌账号，就可以免费使用它，gemini cli 每天都有不少的免费额度，用不完。智能还不错。

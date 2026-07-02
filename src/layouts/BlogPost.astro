@@ -1,19 +1,42 @@
 ---
 import type { CollectionEntry } from 'astro:content';
 import BaseHead from '../components/BaseHead.astro';
+import ConversionCTA from '../components/ConversionCTA.astro';
 import Footer from '../components/Footer.astro';
 import FormattedDate from '../components/FormattedDate.astro';
 import Header from '../components/Header.astro';
 import Giscus from '../components/Giscus.astro';
 
-type Props = CollectionEntry<'blog'>['data'];
+type Props = CollectionEntry<'blog'>['data'] & {
+	showMeta?: boolean;
+	showEngagement?: boolean;
+	showArticleCTA?: boolean;
+};
 
-const { title, description, pubDate, updatedDate, heroImage, keywords = [] } = Astro.props;
+const {
+	title,
+	description,
+	pubDate,
+	updatedDate,
+	heroImage,
+	keywords = [],
+	showMeta = true,
+	showEngagement = true,
+	showArticleCTA = showEngagement,
+} = Astro.props;
 ---
 
-<html lang="en">
+<html lang="zh-CN">
 	<head>
-		<BaseHead title={title} description={description} keywords={keywords} />
+		<BaseHead
+			title={title}
+			description={description}
+			image={heroImage}
+			keywords={keywords}
+			ogType={showMeta ? 'article' : 'website'}
+			publishedTime={showMeta ? pubDate : undefined}
+			modifiedTime={showMeta ? updatedDate : undefined}
+		/>
 		<style>
 			main {
 				width: calc(100% - 2em);
@@ -79,36 +102,61 @@ const { title, description, pubDate, updatedDate, heroImage, keywords = [] } = A
 		<Header />
 		<main>
 			<article>
-				<div class="hero-image">
-					{heroImage && <img src={heroImage} alt="" />}
-				</div>
+				{heroImage && (
+					<div class="hero-image">
+						<img src={heroImage} alt="" />
+					</div>
+				)}
 				<div class="prose">
 					<div class="title">
-						<div class="date">
-							<FormattedDate date={pubDate} />
-							{
-								updatedDate && (
-									<div class="last-updated-on">
-										Last updated on <FormattedDate date={updatedDate} />
-									</div>
-								)
-							}
+							{showMeta && (
+								<div class="date">
+									<FormattedDate date={pubDate} />
+									{
+										updatedDate && (
+											<div class="last-updated-on">
+												更新于 <FormattedDate date={updatedDate} />
+											</div>
+										)
+									}
+								</div>
+							)}
+							<h1>{title}</h1>
+							<hr />
 						</div>
-						<h1>{title}</h1>
-						<hr />
+						<slot />
+						{showArticleCTA && (
+							<ConversionCTA
+								title="读完这篇，下一步可以拆你的真实流程"
+								note="如果你想把类似方法用到自己的资料、工作流或内容系统里，先做一次 AI 落地自测，再带着一个具体流程来聊。"
+								remark="文章读者 / AI 自测"
+								briefItems={[
+									`我读的是：${title}`,
+									'我想借鉴到自己的流程是：',
+									'我希望先做 AI 自测 / 线上诊断 / Coffee Chat：',
+								]}
+								primaryHref="/diagnosis"
+								primaryLabel="AI 落地自测"
+								secondaryHref="/coffee-chat"
+								secondaryLabel="上海 Coffee Chat"
+							/>
+						)}
+						{showEngagement && (
+							<>
+								<div class="view-count">
+									<span id="busuanzi_container_page_pv">
+										👀 本文阅读量 <span id="busuanzi_value_page_pv"></span> 次
+									</span>
+								</div>
+								<div class="comments-section">
+									<Giscus />
+								</div>
+							</>
+						)}
 					</div>
-					<slot />
-					<div class="view-count">
-						<span id="busuanzi_container_page_pv">
-							👀 本文阅读量 <span id="busuanzi_value_page_pv"></span> 次
-						</span>
-					</div>
-					<div class="comments-section">
-						<Giscus />
-					</div>
-				</div>
 			</article>
-		</main>
-		<Footer />
-	</body>
-</html>
+			</main>
+			<Footer />
+			{showEngagement && <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>}
+		</body>
+	</html>

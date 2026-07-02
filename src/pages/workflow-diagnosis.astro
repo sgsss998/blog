@@ -1,0 +1,704 @@
+---
+import BaseHead from '../components/BaseHead.astro';
+import ConversionCTA from '../components/ConversionCTA.astro';
+import FAQSection from '../components/FAQSection.astro';
+import Footer from '../components/Footer.astro';
+import Header from '../components/Header.astro';
+import TrustBoundary from '../components/TrustBoundary.astro';
+import { WECHAT } from '../consts';
+
+const fitSignals = [
+  {
+    title: '有重复流程',
+    body: '每周或每月都会出现，靠人工复制、整理、改格式、找资料或反复确认。',
+  },
+  {
+    title: '有脱敏样例',
+    body: '至少能提供 1 个遮挡版样例、目录截图或公开链接，让问题可以被复查。',
+  },
+  {
+    title: '有明确输出',
+    body: '知道最终想要路线图、SOP、脚本、模板、页面、报告还是后续小项目。',
+  },
+  {
+    title: '有验收标准',
+    body: '能说清哪些地方错了必须返工，哪些地方需要人工确认。',
+  },
+];
+
+const diagnosisSteps = [
+  {
+    step: '01',
+    title: '需求压缩',
+    output: '把你想做的 AI 提效目标压缩成一个具体流程、一个样例和一个期望输出。',
+    proof: '不再停留在“想用 AI 提效”，而是知道先拆哪件事。',
+  },
+  {
+    step: '02',
+    title: '资料入口盘点',
+    output: '梳理资料在本地文件夹、Obsidian、微信、网盘、表格、网页或工具里的入口。',
+    proof: '知道 AI 可以看什么、人要回源核验什么、哪些内容不能碰。',
+  },
+  {
+    step: '03',
+    title: '人机分工判断',
+    output: '拆出 AI 可以生成、AI 只能辅助、人必须确认和暂时不做的部分。',
+    proof: '避免把专业责任、事实核验和风险判断全部推给模型。',
+  },
+  {
+    step: '04',
+    title: '小闭环选择',
+    output: '选出第一个可验收的小流程，明确输入、输出、频率和失败接管点。',
+    proof: '后续能进入 Skill/SOP、知识库治理或系统陪跑，而不是继续泛聊。',
+  },
+  {
+    step: '05',
+    title: '路线图交付',
+    output: '输出诊断路线图、优先级、暂缓事项、预算档位和下一步建议。',
+    proof: '你能判断先做什么、不做什么，以及是否值得继续投入。',
+  },
+];
+
+const deliverables = [
+  {
+    title: '一页诊断路线图',
+    body: '当前流程、资料入口、主要卡点、AI 可接手段、人确认段、第一批优先事项。',
+  },
+  {
+    title: '工具与资料分工',
+    body: '哪些问题用对话模型，哪些需要本地知识库、脚本、模板、表格或人工核验。',
+  },
+  {
+    title: '小项目候选清单',
+    body: '把可继续交付的候选项拆成 Skill/SOP、知识库治理、内容自动化或系统陪跑。',
+  },
+  {
+    title: '暂缓与拒绝清单',
+    body: '明确哪些需求现在不值得做，哪些因为风险、样例不足或验收不清需要暂停。',
+  },
+];
+
+const scopeRows = [
+  {
+    item: '轻量诊断',
+    fit: '只有一个具体流程，样例比较清楚。',
+    output: '路线图、优先级、下一步动作。',
+  },
+  {
+    item: '资料入口诊断',
+    fit: '资料散、路径乱、AI 找不到上下文。',
+    output: '目录建议、入口规则、检索问题和治理顺序。',
+  },
+  {
+    item: '内容/获客诊断',
+    fit: '文章、项目、服务页和咨询入口没有连成转化链路。',
+    output: '页面路径、证据资产、CTA 和后续内容计划。',
+  },
+  {
+    item: '系统陪跑预诊断',
+    fit: '涉及多工具、多资料源和长期维护。',
+    output: '第一个小闭环、阶段边界、验证方式和暂缓事项。',
+  },
+];
+
+const pauseSignals = [
+  '只有“想用 AI 赚钱”或“帮我自动化一下”，没有具体流程。',
+  '不能提供脱敏样例，也说不清当前做法和失败点。',
+  '希望 AI 替代法律、财务、医疗、投资或组织内部责任人。',
+  '需求每天变化，同时又要求直接报价和确定交付结果。',
+  '要求伪造、绕规、隐藏事实、批量骚扰或处理未授权材料。',
+];
+
+const diagnosisChecklist = [
+  '我想诊断的具体流程是：',
+  '这个流程每周/月大约发生：',
+  '当前资料入口在：本地文件夹 / Obsidian / 微信 / 网盘 / 表格 / 网页 / 其他',
+  '我能提供的脱敏样例是：',
+  '最容易返工或卡住的步骤是：',
+  '我希望诊断后得到：路线图 / 工具分工 / 小项目清单 / 暂缓判断 / 暂不确定',
+  '预算意向：轻量诊断 / 单流程小项目 / 阶段陪跑 / 暂不确定',
+  '期望启动时间：本周 / 本月 / 先预沟通',
+  '是否接受先诊断再项目：是 / 否 / 需要先了解',
+  '隐私边界：第一次只发脱敏材料，不直接发送原始敏感材料。',
+];
+
+const diagnosisCopy = [
+  `微信号：${WECHAT}`,
+  '备注：AI 工作流诊断预审',
+  '来源：ailaoming.com/workflow-diagnosis',
+  '线索类型：AI 工作流诊断 / 预审',
+  ...diagnosisChecklist,
+].join('\n');
+
+const diagnosisFaqs = [
+  {
+    question: 'AI 工作流诊断和 AI 自测有什么区别？',
+    answer: 'AI 自测是免费自助判断，适合先看资料、流程、价值和风险是否清楚。AI 工作流诊断是针对一个具体流程做拆解，输出路线图、优先级和后续是否进入小项目的判断。',
+  },
+  {
+    question: '诊断后一定要继续做小项目吗？',
+    answer: '不一定。诊断的价值之一就是判断哪些事情不值得做。只有输入、输出、验收和边界都稳定时，才建议继续进入 Skill/SOP、知识库治理或系统陪跑。',
+  },
+  {
+    question: '第一次要准备完整材料吗？',
+    answer: '不需要。第一次只需要脱敏样例、当前做法、失败点和不可公开边界。是否需要更多上下文，要等诊断范围确认后再判断。',
+  },
+  {
+    question: '诊断能不能直接给价格？',
+    answer: '公开页不写死价格。真实报价取决于资料规模、流程复杂度、是否线下沟通、是否需要后续迭代和验收边界。先发预审卡，会更快判断预算档位。',
+  },
+];
+
+const diagnosisStructuredData = {
+  '@context': 'https://schema.org',
+  '@type': 'Service',
+  '@id': 'https://ailaoming.com/workflow-diagnosis/#service',
+  name: 'AI 工作流诊断',
+  serviceType: 'AI workflow diagnosis',
+  provider: {
+    '@type': 'Person',
+    name: 'AI干货家老明',
+  },
+  areaServed: ['线上', '上海'],
+  url: 'https://ailaoming.com/workflow-diagnosis/',
+  inLanguage: 'zh-CN',
+  description: '面向个人和小团队的 AI 工作流诊断服务，输出诊断路线图、工具分工、小项目候选清单和暂缓事项。',
+  hasOfferCatalog: {
+    '@type': 'OfferCatalog',
+    name: 'AI 工作流诊断范围',
+    itemListElement: scopeRows.map((row) => ({
+      '@type': 'Offer',
+      itemOffered: {
+        '@type': 'Service',
+        name: row.item,
+        description: row.output,
+      },
+    })),
+  },
+};
+---
+
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <BaseHead
+      title="AI 工作流诊断"
+      description="AI干货家老明的 AI 工作流诊断服务：把重复流程、资料入口、人机边界、验收标准和后续小项目路线图一次拆清楚。"
+    />
+    <script type="application/ld+json" set:html={JSON.stringify(diagnosisStructuredData)}></script>
+  </head>
+  <body>
+    <Header />
+    <main>
+      <section class="hero">
+        <div class="hero-copy">
+          <p class="eyebrow">Workflow Diagnosis</p>
+          <h1>AI 工作流诊断：先把一个流程拆清楚</h1>
+          <p class="tagline">
+            适合已经有重复任务、资料入口和现实卡点，但还不知道 AI 能接哪一段、该用什么工具、怎样验收的人。诊断不直接承诺大系统，先输出路线图、边界和第一个可落地小闭环。
+          </p>
+          <div class="hero-actions">
+            <a class="btn primary" href="#diagnosis-brief">复制诊断预审卡</a>
+            <a class="btn secondary" href="/diagnosis">先做 AI 自测</a>
+            <a class="btn secondary" href="/delivery">看交付流程</a>
+          </div>
+        </div>
+        <aside class="hero-panel" aria-label="诊断摘要">
+          <strong>诊断输出</strong>
+          <p>一页路线图 + 工具与资料分工 + 小项目候选清单 + 暂缓事项。</p>
+          <a href="/trust">先看信任与隐私边界</a>
+        </aside>
+      </section>
+
+      <section class="section" aria-label="适合启动信号">
+        <div class="section-head">
+          <p class="eyebrow">Fit Signals</p>
+          <h2>这四个信号齐了，就适合做诊断</h2>
+          <p>诊断不是聊天服务，而是把一个真实流程拆成可判断、可报价、可验收的下一步。</p>
+        </div>
+        <div class="fit-grid">
+          {fitSignals.map((item) => (
+            <article>
+              <h3>{item.title}</h3>
+              <p>{item.body}</p>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      <section class="section process-section" aria-label="诊断流程">
+        <div class="section-head">
+          <p class="eyebrow">Process</p>
+          <h2>5 步诊断流程</h2>
+          <p>每一步都要产出可复查的判断，而不是只得到一段泛泛建议。</p>
+        </div>
+        <div class="step-grid">
+          {diagnosisSteps.map((item) => (
+            <article>
+              <span>{item.step}</span>
+              <h3>{item.title}</h3>
+              <p>{item.output}</p>
+              <strong>{item.proof}</strong>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      <section class="section deliverable-section" aria-label="诊断交付物">
+        <div class="section-head">
+          <p class="eyebrow">Deliverables</p>
+          <h2>诊断结束后，你应该拿到什么</h2>
+          <p>诊断的核心不是工具推荐，而是让后续动作变少、变清楚、变可验收。</p>
+        </div>
+        <div class="deliverable-grid">
+          {deliverables.map((item) => (
+            <article>
+              <h3>{item.title}</h3>
+              <p>{item.body}</p>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      <section class="section scope-section" aria-label="诊断范围">
+        <div class="section-head">
+          <p class="eyebrow">Scope</p>
+          <h2>四类常见诊断范围</h2>
+          <p>同样叫诊断，范围可以很轻，也可以作为系统陪跑前的预审。</p>
+        </div>
+        <div class="scope-table">
+          <div class="scope-row scope-head">
+            <span>范围</span>
+            <span>适合</span>
+            <span>输出</span>
+          </div>
+          {scopeRows.map((row) => (
+            <div class="scope-row">
+              <strong>{row.item}</strong>
+              <span>{row.fit}</span>
+              <span>{row.output}</span>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <section class="section pause-section" aria-label="暂缓信号">
+        <div>
+          <p class="eyebrow">Pause Signals</p>
+          <h2>这些情况先不做诊断</h2>
+          <p>暂停不是拒绝合作，而是避免把不可验收的问题做成高成本返工。</p>
+        </div>
+        <ul>
+          {pauseSignals.map((item) => <li>{item}</li>)}
+        </ul>
+      </section>
+
+      <section id="diagnosis-brief" class="section brief-section" aria-label="诊断预审卡">
+        <div>
+          <p class="eyebrow">Diagnosis Brief</p>
+          <h2>复制诊断预审卡</h2>
+          <p>
+            发微信 <code>{WECHAT}</code> 前，先把下面 10 项填到能判断的程度。复制内容会自动带上 来源：ailaoming.com/workflow-diagnosis 和 线索类型：AI 工作流诊断 / 预审。
+          </p>
+        </div>
+        <div class="brief-card">
+          <ol>
+            {diagnosisChecklist.map((item) => <li>{item}</li>)}
+          </ol>
+          <button type="button" class="copy-diagnosis-brief" data-copy={diagnosisCopy}>复制诊断预审卡</button>
+          <p class="copy-diagnosis-status" aria-live="polite"></p>
+        </div>
+      </section>
+
+      <TrustBoundary
+        compact={true}
+        eyebrow="诊断边界"
+        title="第一次只看脱敏材料，诊断不替代专业责任"
+        intro="AI 工作流诊断只负责拆流程、工具、资料入口、人机边界和验收标准。涉及专业结论、组织责任或原始敏感上下文时，必须保留人工确认。"
+      />
+
+      <FAQSection title="AI 工作流诊断常见问题" items={diagnosisFaqs} />
+
+      <ConversionCTA
+        title="先把一个流程发来判断"
+        note="如果你已经有一个反复返工的流程，把脱敏样例、当前做法和失败点发来，我先判断它适合 Coffee Chat、AI 工作流诊断，还是直接进入 Skill/SOP 小项目。"
+        remark="AI 工作流诊断"
+        briefItems={[
+          '我想诊断的流程是：',
+          '我能提供的脱敏样例是：',
+          '我希望诊断后得到：路线图 / 工具分工 / 小项目清单',
+        ]}
+        primaryHref="/brief"
+        primaryLabel="复制需求卡"
+        secondaryHref="/pricing"
+        secondaryLabel="看合作方式"
+        briefHref="/skill-sop"
+        briefLabel="看 Skill/SOP 小项目"
+      />
+      <p class="coffee-chat-route">
+        上海本地想先当面拆一个流程，可以先看 <a href="/coffee-chat">AI Coffee Chat</a>。
+      </p>
+    </main>
+    <Footer />
+  </body>
+</html>
+
+<script>
+  document.querySelectorAll('.copy-diagnosis-brief').forEach((button) => {
+    button.addEventListener('click', async () => {
+      const trigger = button instanceof HTMLElement ? button : null;
+      const text = trigger?.dataset.copy ?? '';
+      const panel = trigger?.closest('.brief-card');
+      const status = panel?.querySelector('.copy-diagnosis-status');
+
+      try {
+        if (!navigator.clipboard || !text) throw new Error('Clipboard unavailable');
+        await navigator.clipboard.writeText(text);
+        if (status) status.textContent = '已复制，可直接粘贴到微信';
+      } catch {
+        if (status) status.textContent = '复制失败，请手动复制上面的清单';
+      }
+    });
+  });
+</script>
+
+<style>
+  main {
+    width: 1080px;
+  }
+
+  .hero {
+    display: grid;
+    grid-template-columns: minmax(0, 1.32fr) minmax(260px, 0.68fr);
+    gap: 1.2rem;
+    align-items: stretch;
+    padding: 3.6rem 0 2.4rem;
+  }
+
+  .eyebrow {
+    margin: 0 0 0.65rem;
+    color: var(--accent);
+    font-size: 0.82rem;
+    font-weight: 800;
+  }
+
+  h1 {
+    margin: 0;
+    font-size: 2.65rem;
+    line-height: 1.14;
+  }
+
+  .tagline {
+    max-width: 780px;
+    margin: 1rem 0 0;
+    color: rgb(var(--gray));
+    font-size: 1.06rem;
+  }
+
+  .hero-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.8rem;
+    margin-top: 1.35rem;
+  }
+
+  .btn {
+    display: inline-flex;
+    min-height: 42px;
+    align-items: center;
+    justify-content: center;
+    padding: 0.62rem 0.9rem;
+    border-radius: 8px;
+    font-weight: 800;
+    text-decoration: none;
+  }
+
+  .btn.primary {
+    color: #fff;
+    background: var(--accent);
+  }
+
+  .btn.secondary {
+    color: rgb(var(--black));
+    background: #fff;
+    border: 1px solid rgba(var(--black), 0.12);
+  }
+
+  .hero-panel,
+  .fit-grid article,
+  .step-grid article,
+  .deliverable-grid article,
+  .brief-card {
+    background: #fff;
+    border: 1px solid rgba(var(--black), 0.08);
+    border-radius: 8px;
+    box-shadow: var(--box-shadow);
+  }
+
+  .hero-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    padding: 1.15rem;
+  }
+
+  .hero-panel strong {
+    color: rgb(var(--black));
+  }
+
+  .hero-panel p {
+    margin: 0;
+    color: rgb(var(--gray));
+    line-height: 1.7;
+  }
+
+  .hero-panel a {
+    width: fit-content;
+    color: var(--accent);
+    font-weight: 800;
+  }
+
+  .section {
+    margin: 3rem 0;
+  }
+
+  .section-head {
+    max-width: 760px;
+    margin-bottom: 1.2rem;
+  }
+
+  .section-head h2,
+  .pause-section h2,
+  .brief-section h2 {
+    margin: 0;
+    font-size: 1.72rem;
+  }
+
+  .section-head p:last-child,
+  .pause-section p,
+  .brief-section p {
+    margin: 0.65rem 0 0;
+    color: rgb(var(--gray));
+  }
+
+  .fit-grid,
+  .deliverable-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 0.9rem;
+  }
+
+  .fit-grid article,
+  .deliverable-grid article {
+    min-width: 0;
+    padding: 1rem;
+  }
+
+  .fit-grid h3,
+  .deliverable-grid h3 {
+    margin: 0 0 0.45rem;
+    color: rgb(var(--black));
+    font-size: 1rem;
+    line-height: 1.35;
+  }
+
+  .fit-grid p,
+  .deliverable-grid p,
+  .step-grid p,
+  .scope-row span,
+  .pause-section li,
+  .brief-card li {
+    margin: 0;
+    color: rgb(var(--gray));
+    font-size: 0.92rem;
+    line-height: 1.65;
+  }
+
+  .process-section,
+  .deliverable-section,
+  .scope-section,
+  .pause-section,
+  .brief-section {
+    padding: 1rem;
+    background: #f7fbff;
+    border: 1px solid rgba(0, 102, 255, 0.1);
+    border-radius: 8px;
+  }
+
+  .step-grid {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 0.8rem;
+  }
+
+  .step-grid article {
+    min-width: 0;
+    padding: 1rem;
+  }
+
+  .step-grid span {
+    display: inline-flex;
+    min-width: 2.4rem;
+    min-height: 2rem;
+    align-items: center;
+    justify-content: center;
+    color: var(--accent);
+    background: rgba(0, 102, 255, 0.07);
+    border: 1px solid rgba(0, 102, 255, 0.16);
+    border-radius: 8px;
+    font-size: 0.78rem;
+    font-weight: 900;
+  }
+
+  .step-grid h3 {
+    margin: 0.8rem 0 0.45rem;
+    font-size: 1rem;
+    line-height: 1.35;
+  }
+
+  .step-grid strong {
+    display: block;
+    margin-top: 0.75rem;
+    color: rgb(var(--black));
+    font-size: 0.88rem;
+    line-height: 1.55;
+  }
+
+  .scope-table {
+    display: grid;
+    gap: 0.55rem;
+  }
+
+  .scope-row {
+    display: grid;
+    grid-template-columns: 0.8fr 1.1fr 1.1fr;
+    gap: 0.55rem;
+    align-items: stretch;
+  }
+
+  .scope-row > * {
+    padding: 0.75rem;
+    background: #fff;
+    border: 1px solid rgba(var(--black), 0.08);
+    border-radius: 8px;
+  }
+
+  .scope-row strong,
+  .scope-head span {
+    color: rgb(var(--black));
+    font-weight: 800;
+  }
+
+  .scope-head span {
+    color: var(--accent);
+    background: rgba(0, 102, 255, 0.06);
+    border-color: rgba(0, 102, 255, 0.14);
+  }
+
+  .pause-section {
+    display: grid;
+    grid-template-columns: minmax(0, 0.8fr) minmax(320px, 1.2fr);
+    gap: 1rem;
+    align-items: start;
+  }
+
+  .pause-section ul {
+    display: grid;
+    gap: 0.55rem;
+    margin: 0;
+    padding-left: 1.1rem;
+  }
+
+  .brief-section {
+    display: grid;
+    grid-template-columns: minmax(0, 0.85fr) minmax(300px, 1.15fr);
+    gap: 1rem;
+    align-items: start;
+  }
+
+  .brief-card {
+    padding: 1rem;
+  }
+
+  .brief-card ol {
+    margin: 0;
+    padding-left: 1.15rem;
+  }
+
+  .brief-card li + li {
+    margin-top: 0.35rem;
+  }
+
+  .copy-diagnosis-brief {
+    width: 100%;
+    min-height: 42px;
+    margin-top: 1rem;
+    padding: 0.6rem 0.8rem;
+    color: var(--accent);
+    font: inherit;
+    font-weight: 900;
+    background: #fff;
+    border: 1px solid rgba(0, 102, 255, 0.2);
+    border-radius: 8px;
+    cursor: pointer;
+  }
+
+  .copy-diagnosis-status {
+    min-height: 1.2rem;
+    margin: 0.45rem 0 0 !important;
+    color: #157347 !important;
+    font-size: 0.84rem;
+    font-weight: 800;
+  }
+
+  .coffee-chat-route {
+    max-width: 760px;
+    margin: -1rem 0 3rem;
+    color: rgb(var(--gray));
+    font-size: 0.92rem;
+    line-height: 1.7;
+  }
+
+  .coffee-chat-route a {
+    color: var(--accent);
+    font-weight: 800;
+  }
+
+  @media (max-width: 1000px) {
+    .fit-grid,
+    .deliverable-grid,
+    .step-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (max-width: 760px) {
+    main {
+      width: calc(100% - 1.5rem);
+    }
+
+    .hero,
+    .pause-section,
+    .brief-section {
+      grid-template-columns: 1fr;
+    }
+
+    h1 {
+      font-size: 2.1rem;
+    }
+
+    .fit-grid,
+    .deliverable-grid,
+    .step-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .scope-row {
+      grid-template-columns: 1fr;
+    }
+
+    .hero-actions a {
+      width: 100%;
+    }
+  }
+</style>

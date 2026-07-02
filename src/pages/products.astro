@@ -1,56 +1,914 @@
 ---
 import Layout from '../layouts/BlogPost.astro';
+import ConversionCTA from '../components/ConversionCTA.astro';
+import { WECHAT } from '../consts';
+
+const leadAssets = [
+  {
+    kicker: '入门资料',
+    title: 'AI 工具 7 天路线',
+    claim: '工具包',
+    status: '公开预览中',
+    maturity: 'L1 入门路线',
+    summary: '给刚开始系统使用 AI 的人，先解决工具太多、不知道怎么选、不知道从哪条路径入手的问题。',
+    preview: '按任务类型拆工具分工：对话、写作、办公、编程和本地系统。',
+    includes: ['AI 工具选择决策树', '对话、写作、办公、编程工具分工', '新手 7 天实践路线'],
+    expectedOutput: '拿到后能先跑一轮 7 天实践，不急着买系统或做项目。',
+    bestFor: '刚开始把 ChatGPT、Claude、Codex、Cursor、Kimi 等工具纳入日常工作的人。',
+    notFor: '已经有成熟工具栈、只想比较模型跑分的人。',
+    boundary: '只做工具路径建议，不承诺某个模型或平台长期最优。',
+    next: '先做 7 天实践，再决定是否需要 AI 工作流诊断。',
+  },
+  {
+    kicker: '样例清单',
+    title: 'Skill 样例清单',
+    claim: 'Skill 样例',
+    status: '可预览',
+    maturity: 'L2 脱敏样例',
+    summary: '给已经有重复任务的人，用公开脱敏样例看清楚一个 Skill 应该包含什么、怎么验收。',
+    preview: '用 Word、材料整理、写作改稿三个方向说明 Skill 的输入、步骤、验收和边界。',
+    includes: ['Word 格式保真编辑 Skill', '报销材料整理 Skill', '去 AI 味写作 Skill'],
+    expectedOutput: '看完能判断自己的重复任务是否值得做成 Skill/SOP 小项目。',
+    bestFor: '每周都有文档、纪要、报销、写作、归档等重复任务的人。',
+    notFor: '没有样例、没有固定流程，只想要万能提示词的人。',
+    boundary: '只展示结构和脱敏方法，不展示真实单据、私人文档和未授权材料。',
+    next: '带 1 个脱敏样例，判断是否值得做成 Skill/SOP 小项目。',
+  },
+  {
+    kicker: '自查表',
+    title: '知识库整理自查表',
+    claim: '知识库自查',
+    status: '可用于预诊断',
+    maturity: 'L2 自查清单',
+    summary: '给资料已经很多但用不起来的人，先判断问题在目录、命名、索引、权限边界还是检索策略。',
+    preview: '从资料入口、命名规则、检索问题、权限边界和引用口径五个维度自查。',
+    includes: ['资料入口和目录层级检查', '隐私边界与公开边界检查', 'RAG 接入前的最低治理要求'],
+    expectedOutput: '先定位资料治理短板，再决定是否进入知识库整理或 RAG 接入。',
+    bestFor: '资料散在 Obsidian、微信、本地文件夹、网盘和历史项目里的人。',
+    notFor: '资料量很少，暂时只需要普通搜索和文件夹命名的人。',
+    boundary: '不要求上传原始资料，第一次只看目录样例和脱敏问题描述。',
+    next: '先整理资料入口，再判断是否进入知识库治理或 RAG 接入。',
+  },
+  {
+    kicker: '内容系统',
+    title: '内容自动化起步包',
+    claim: '内容自动化',
+    status: '站点实战中',
+    maturity: 'L3 公开流程',
+    summary: '给已经在写公众号、小红书或长文的人，把选题、草稿、配图、发布、归档和复盘串成流程。',
+    preview: '用本站文章库和 AI 获客站诊断展示内容、SEO、资料领取和咨询入口的连接方式。',
+    includes: ['公众号到网站同步 SOP', '长文拆分与改写流程', '内容资产归档检查清单'],
+    expectedOutput: '把一个主题系列转成文章库、资料入口和可咨询问题列表。',
+    bestFor: '已经有内容资产，想把文章、资料包、个人网站和咨询入口打通的人。',
+    notFor: '只想追热点、没有长期主题，也不打算沉淀内容资产的人。',
+    boundary: '只处理有权使用的内容，不复制平台后台、私域聊天和未授权素材。',
+    next: '先选一个主题系列，把文章生产和站点归档跑通。',
+  },
+];
+
+const previewSamples = [
+  {
+    id: 'preview-skill-brief',
+    tag: 'Skill 模板预览',
+    title: 'Skill 首次需求模板公开版',
+    useFor: '把一个反复返工的任务，压缩成可判断、可报价、可验收的需求描述。',
+    source: '来自站内 Word SOP、报销材料整理和去 AI 味写作 Skill 的脱敏结构。',
+    fields: [
+      {
+        label: '任务名称',
+        example: '把固定格式的长文改成公众号草稿，并保留标题、段落和引用结构。',
+      },
+      {
+        label: '重复频率',
+        example: '每周 1-3 次；每次人工处理约 30-90 分钟。',
+      },
+      {
+        label: '输入材料',
+        example: '原始草稿、参考风格、禁止公开的信息范围、目标发布平台。',
+      },
+      {
+        label: '目标输出',
+        example: '一份可直接继续人工润色的草稿，包含标题、摘要、正文段落和检查清单。',
+      },
+      {
+        label: '验收口径',
+        example: '结构不乱、敏感信息不外泄、语气符合人设、人工只需要做最终确认。',
+      },
+      {
+        label: '人工接管点',
+        example: '事实判断、法律/财务/医疗/投资结论、未授权材料、原始隐私信息。',
+      },
+    ],
+    next: '如果你能填出 4 项以上，就适合继续判断是否做成 Skill/SOP 小项目。',
+    href: '/skill-sop',
+    action: '看 Skill/SOP 小项目',
+  },
+  {
+    id: 'preview-knowledge-check',
+    tag: '知识库自查预览',
+    title: '知识库整理自查表公开版',
+    useFor: '先判断资料混乱到底卡在入口、命名、权限边界，还是 AI 检索问题。',
+    source: '来自站内 RAG、长期记忆库和本地资料治理实践的脱敏检查口径。',
+    fields: [
+      {
+        label: '资料入口',
+        example: 'Obsidian、本地文件夹、网盘、微信收藏、项目归档分别在哪里。',
+      },
+      {
+        label: '命名规则',
+        example: '是否能按项目、主题、时间、版本找到原始文件。',
+      },
+      {
+        label: '检索问题',
+        example: '列 3 个你经常问 AI、但它经常答不准的问题。',
+      },
+      {
+        label: '权限边界',
+        example: '哪些资料不进库、不上传、不公开，只能本地人工查看。',
+      },
+      {
+        label: '引用口径',
+        example: 'AI 输出时必须能说明来源路径、日期、适用范围和不确定点。',
+      },
+      {
+        label: '第一步整理',
+        example: '先建 1 个总入口、3 个高频资料目录和 1 张不可公开清单。',
+      },
+    ],
+    next: '如果资料入口和权限边界说不清，先做知识库治理，再谈 RAG 或自动化。',
+    href: '/services#knowledge-base',
+    action: '看知识库治理',
+  },
+];
+
+const productSteps = [
+  '先按当前阶段选择一个资料入口',
+  '微信备注关键词，并补一句真实使用场景',
+  '拿到资料后按清单做一次自查',
+  '如果场景明确，再进入自测、诊断或小项目',
+];
+
+const buildResourceCopy = ({ resource, scene, next }) => [
+  `微信号：${WECHAT}`,
+  `资料卡备注：${resource}`,
+  '来源：ailaoming.com/products',
+  `当前场景：${scene}`,
+  `希望下一步：${next}`,
+  '隐私边界：我会先提供脱敏描述，不直接发送原始敏感材料。',
+].join('\n');
+
+const resourceChoices = [
+  {
+    title: '刚开始系统用 AI',
+    signal: '工具很多，但还没有稳定任务和工具分工。',
+    resourceHref: '#resource-ai-tools',
+    resourceLabel: '选 AI 工具 7 天实践路线',
+    nextHref: '/blog/codex-pro-200-dollar-how-i-use-it/',
+    nextLabel: '先看工具实践文章',
+  },
+  {
+    title: '有重复流程但说不清',
+    signal: '文档、纪要、写作、归档反复返工，缺少输入和验收口径。',
+    resourceHref: '#resource-skill-brief',
+    resourceLabel: '选 Skill 首次需求模板',
+    nextHref: '/skill-sop',
+    nextLabel: '看 Skill/SOP 小项目',
+  },
+  {
+    title: '资料很多但用不起来',
+    signal: '资料散在本地、Obsidian、微信或网盘里，AI 经常找不到上下文。',
+    resourceHref: '#resource-knowledge-check',
+    resourceLabel: '选知识库整理自查清单',
+    nextHref: '/services#knowledge-base',
+    nextLabel: '看知识库治理',
+  },
+  {
+    title: '内容想转成服务入口',
+    signal: '已经有文章、项目或经验，但缺少样例库、Coffee Chat 和服务承接链路。',
+    resourceHref: '#resource-content-loop',
+    resourceLabel: '选内容商业化闭环画布',
+    nextHref: '/cases',
+    nextLabel: '看公开样例库',
+  },
+];
+
+const selfServeAssets = [
+  {
+    id: 'resource-ai-tools',
+    title: 'AI 工具 7 天实践路线',
+    tag: '工具包',
+    useFor: '适合刚开始把 AI 工具纳入日常工作的人，先用一周验证真实使用频率。',
+    items: ['第 1-2 天：选 1 个高频任务，只用一个对话模型跑通', '第 3-4 天：把资料、提示词和输出样例整理成固定格式', '第 5-6 天：尝试用 Codex / Cursor 接手一个小文件任务', '第 7 天：复盘哪些环节值得继续自动化'],
+    nextHref: '/blog/codex-pro-200-dollar-how-i-use-it/',
+    nextLabel: '看 Codex 复盘',
+    copy: buildResourceCopy({
+      resource: '资料卡-AI 工具 7 天实践路线',
+      scene: '我现在主要用的 AI 工具是：；准备试跑的高频任务是：',
+      next: '先自学 7 天 / 做 AI 自测 / 进入轻量诊断',
+    }),
+  },
+  {
+    id: 'resource-skill-brief',
+    title: 'Skill 首次需求模板',
+    tag: 'Skill 样例',
+    useFor: '适合已经有重复流程，但还说不清输入、输出和验收口径的人。',
+    items: ['任务名称：这件事每周/每月发生几次', '输入材料：模板、截图、文档、规则说明分别在哪里', '目标输出：最终要得到文件、清单、文章还是目录', '验收方式：哪些点错了就必须人工接管'],
+    nextHref: '/skills',
+    nextLabel: '看 Skill 选型',
+    copy: buildResourceCopy({
+      resource: '资料卡-Skill 首次需求模板',
+      scene: '我想做成 Skill 的任务是：；能提供的脱敏输入材料是：',
+      next: '先判断是否适合做 Skill/SOP 小项目',
+    }),
+  },
+  {
+    id: 'resource-knowledge-check',
+    title: '知识库整理自查清单',
+    tag: '知识库自查',
+    useFor: '适合资料很多、检索不稳、AI 经常找不到上下文的人。',
+    items: ['资料入口：Obsidian、本地文件、网盘、微信记录分别在哪里', '命名规则：是否能按项目、时间、主题找到资料', '权限边界：哪些资料不进库、不上传、不公开', '检索问题：列 3 个你最常问但 AI 答不准的问题'],
+    nextHref: '/blog/rag-database-method-open-source/',
+    nextLabel: '看 RAG 方法',
+    copy: buildResourceCopy({
+      resource: '资料卡-知识库整理自查清单',
+      scene: '我的资料主要散在：；最常找不到的资料是：；不可公开边界是：',
+      next: '先做资料入口和权限边界自查',
+    }),
+  },
+  {
+    id: 'resource-content-loop',
+    title: '内容商业化闭环画布',
+    tag: '内容自动化',
+    useFor: '适合已经有文章、项目或个人经验，但还没有服务承接路径的人。',
+    items: ['公开内容：一篇文章解决哪个问题', '证据资产：对应哪个样例、项目或公开产物', '转化入口：读者下一步去自测、样例库、Coffee Chat、工作坊还是服务页', '沉淀动作：这篇内容能否变成资料包或 FAQ'],
+    nextHref: '/ai-acquisition',
+    nextLabel: '看 AI 获客站诊断',
+    copy: buildResourceCopy({
+      resource: '资料卡-内容商业化闭环画布',
+      scene: '我现在已有的内容主题是：；希望承接的服务方向是：',
+      next: '先做文章 / 样例库 / Coffee Chat / 工作坊 / 服务页的转化路径判断',
+    }),
+  },
+];
 ---
 
 <Layout
-  title="产品库"
-  description="老明的产品库：开源项目、skills、模板与可交付方案"
-  pubDate={new Date('2026-04-24')}
+  title="资料卡"
+  description="AI干货家老明的自助资料卡：AI 工具路线、Skill 样例、个人知识库整理、内容自动化与项目制服务入口。"
+  pubDate={new Date('2026-07-01')}
   heroImage={undefined}
+  showMeta={false}
+  showEngagement={false}
 >
-  <h2>产品库说明</h2>
+  <h2>资料卡说明</h2>
   <p>
-    这里汇总我当前对外开放的 AI 产品资产。你可以把它理解为三层结构：<strong>开源可自助</strong>、<strong>skills 可复用</strong>、<strong>服务可交付</strong>。
+    这里不是单纯罗列工具，而是把站内文章、Skills、知识库方法和线下交流沉淀成可以预览、复制或进一步咨询的 AI 资产。现阶段不做复杂表单，统一通过微信备注承接，先看你要的是自助资料、样例清单，还是项目制交付。
   </p>
 
-  <h2>筛选建议</h2>
-  <ul>
-    <li><strong>想马上上手</strong>：先看 Skills 专栏</li>
-    <li><strong>想看底层实现</strong>：先看 GitHub 开源项目</li>
-    <li><strong>想直接落地</strong>：看服务页，按场景沟通</li>
-  </ul>
+  <section class="path-panel" aria-label="资料领取路线图">
+    <h2>资料领取路线图</h2>
+    <div class="path-steps">
+      {productSteps.map((step, index) => (
+        <div>
+          <span>{String(index + 1).padStart(2, '0')}</span>
+          <p>{step}</p>
+        </div>
+      ))}
+    </div>
+  </section>
 
-  <h2>精选产品</h2>
-  <h3>1) OpenClaw 一站式落地方案</h3>
-  <ul>
-    <li><strong>价值</strong>：把 AI 助手从“可用”做到“可依赖”</li>
-    <li><strong>适合人群</strong>：有明确业务场景，想搭建稳定个人/团队 AI 系统</li>
-    <li><strong>入口</strong>：<a href="/services">查看服务说明</a></li>
-  </ul>
+  <section class="resource-choice-panel" aria-label="按当前状态选资料卡">
+    <div class="panel-head">
+      <p class="product-kicker">Choose Resource</p>
+      <h2>按当前状态选一张资料卡</h2>
+      <p>
+        如果你不知道该复制哪张卡，先按现在的卡点选。每张卡都对应一个可复制模板和一个继续深入的入口。
+      </p>
+    </div>
+    <div class="resource-choice-grid">
+      {resourceChoices.map((choice) => (
+        <article class="resource-choice-card">
+          <h3>{choice.title}</h3>
+          <p>{choice.signal}</p>
+          <div>
+            <a href={choice.resourceHref}>{choice.resourceLabel}</a>
+            <a class="secondary" href={choice.nextHref}>{choice.nextLabel}</a>
+          </div>
+        </article>
+      ))}
+    </div>
+  </section>
 
-  <h3>2) RAG 记忆系统实践</h3>
-  <ul>
-    <li><strong>价值</strong>：让 AI 具备长期记忆与可追溯上下文</li>
-    <li><strong>适合人群</strong>：内容创作者、知识工作者、咨询/服务从业者</li>
-    <li><strong>入口</strong>：<a href="https://github.com/sgsss998/RAG_Memory_System" target="_blank">GitHub 开源仓库</a></li>
-  </ul>
+  <section class="lead-grid" aria-label="可领取资料">
+    {leadAssets.map((asset) => (
+      <article>
+        <div class="asset-topline">
+          <p class="product-kicker">{asset.kicker}</p>
+          <span>{asset.status}</span>
+        </div>
+        <h2>{asset.title}</h2>
+        <p class="maturity">{asset.maturity}</p>
+        <p>{asset.summary}</p>
+        <div class="asset-section">
+          <strong>你会拿到</strong>
+          <ul>
+            {asset.includes.map((item) => <li>{item}</li>)}
+          </ul>
+        </div>
+        <dl>
+          <div>
+            <dt>样例预览</dt>
+            <dd>{asset.preview}</dd>
+          </div>
+          <div>
+            <dt>预期交付</dt>
+            <dd>{asset.expectedOutput}</dd>
+          </div>
+          <div>
+            <dt>适合领取</dt>
+            <dd>{asset.bestFor}</dd>
+          </div>
+          <div>
+            <dt>暂不适合</dt>
+            <dd>{asset.notFor}</dd>
+          </div>
+          <div>
+            <dt>使用边界</dt>
+            <dd>{asset.boundary}</dd>
+          </div>
+          <div>
+            <dt>下一步动作</dt>
+            <dd>{asset.next}</dd>
+          </div>
+        </dl>
+        <p class="claim">微信备注：<code>{asset.claim}</code></p>
+      </article>
+    ))}
+  </section>
 
-  <h3>3) Skills 资产化体系</h3>
-  <ul>
-    <li><strong>价值</strong>：把重复任务沉淀成可复用 skill</li>
-    <li><strong>适合人群</strong>：频繁做文档、写作、自动化流程的人</li>
-    <li><strong>入口</strong>：<a href="/skills">查看 Skills 专栏</a></li>
-  </ul>
+  <section class="self-serve-panel" aria-label="自助资料卡">
+    <div class="panel-head">
+      <p class="product-kicker">Self Serve</p>
+      <h2>先复制一张轻量资料卡</h2>
+      <p>
+        不想等完整资料包时，可以先用下面四张卡做自查。它们不会收集你的信息，只是把首次沟通需要的材料压缩成可复制模板。
+      </p>
+    </div>
+    <div class="self-serve-grid">
+      {selfServeAssets.map((asset) => (
+        <article id={asset.id}>
+          <div class="asset-topline">
+            <p class="product-kicker">{asset.tag}</p>
+            <span>可直接复制</span>
+          </div>
+          <h3>{asset.title}</h3>
+          <p>{asset.useFor}</p>
+          <ul>
+            {asset.items.map((item) => <li>{item}</li>)}
+          </ul>
+          <div class="self-actions">
+            <button type="button" class="copy-resource" data-copy={asset.copy}>复制领取话术</button>
+            <a href={asset.nextHref}>{asset.nextLabel}</a>
+          </div>
+          <p class="copy-resource-status" aria-live="polite"></p>
+        </article>
+      ))}
+    </div>
+  </section>
 
-  <h3>4) 微信文章同步与站点发布 SOP</h3>
-  <ul>
-    <li><strong>价值</strong>：保证公众号到网站同步完整、可验收、可回溯</li>
-    <li><strong>适合人群</strong>：做内容归档、个人品牌站运营的人</li>
-    <li><strong>入口</strong>：<a href="/blog">查看实战文章与流程</a></li>
-  </ul>
+  <section class="preview-sample-panel" aria-label="资料卡公开预览样例">
+    <div class="panel-head">
+      <p class="product-kicker">Preview Samples</p>
+      <h2>先看两张可直接照填的公开样例</h2>
+      <p>
+        下面不是完整版资料包，而是公开预览。它们的作用是让你先判断：自己的问题能不能被描述清楚、能不能验收、值不值得进入诊断或小项目。
+      </p>
+    </div>
+    <div class="preview-sample-grid">
+      {previewSamples.map((sample) => (
+        <article id={sample.id}>
+          <div class="asset-topline">
+            <p class="product-kicker">{sample.tag}</p>
+            <span>公开预览</span>
+          </div>
+          <h3>{sample.title}</h3>
+          <p>{sample.useFor}</p>
+          <p class="sample-source">{sample.source}</p>
+          <dl>
+            {sample.fields.map((field) => (
+              <div>
+                <dt>{field.label}</dt>
+                <dd>{field.example}</dd>
+              </div>
+            ))}
+          </dl>
+          <p class="sample-next">{sample.next}</p>
+          <a href={sample.href}>{sample.action}</a>
+        </article>
+      ))}
+    </div>
+  </section>
 
-  <h2>下一步</h2>
+  <section class="claim-panel" aria-label="领取方式">
+    <h2>领取方式</h2>
+    <p>
+      加微信：<code>{WECHAT}</code>。直接备注上面的关键词，并补一句你现在的使用场景。比如“工具包，我刚开始用 AI 做办公提效”或“知识库自查，我的资料散在 Obsidian、微信和本地文件夹”。
+    </p>
+    <p>
+    这些资料会按成熟度滚动整理；如果你的场景已经很具体，不必等资料包，可以直接走 <a href="/diagnosis">AI 落地自测</a>、<a href="/ai-acquisition">AI 获客站诊断</a> 或 <a href="/services">服务页</a>。
+    </p>
+  </section>
+
+  <section class="maturity-panel" aria-label="资料成熟度">
+    <h2>资料成熟度</h2>
+    <p>
+      这些入口先作为轻量 lead magnet 运行：有些是已验证方法的整理，有些会继续迭代成完整版资料包。公开页面不承诺一次领取就解决完整系统问题；真正进入交付前，仍然要用 AI 自测、脱敏样例和验收口径判断是否值得做。
+    </p>
+    <div class="maturity-scale">
+      <span>L1 入门路线：适合先建立工具分工</span>
+      <span>L2 脱敏样例：适合判断能否做成 Skill 或自查表</span>
+      <span>L3 公开流程：已经和本站内容/服务转化链路联动</span>
+    </div>
+  </section>
+
+  <h3>站内实战文章库</h3>
   <p>
-    不确定从哪个产品开始，可以直接看 <a href="/services">服务页</a>，我会按你的目标、预算和时间给你推荐最短路径。
+    文章是当前最成熟的免费入口，覆盖 RAG、OpenClaw、Codex、Claude Code、办公 Skills、AI 写作和 AI 赚钱实验。
   </p>
+  <ul>
+    <li><a href="/blog/rag-database-method-open-source/">RAG 数据库搭建方法详解</a></li>
+    <li><a href="/blog/ai-word-edit-sop-elegant/">Word 文档格式保真编辑 SOP</a></li>
+    <li><a href="/blog/codex-pro-200-dollar-how-i-use-it/">Codex Pro 使用复盘</a></li>
+  </ul>
+
+  <h2>项目制服务入口</h2>
+  <section class="service-products" aria-label="项目制服务入口">
+    <article>
+      <h3>AI 工作流诊断</h3>
+      <p>适合已经在用 AI，但工具之间没有系统、任务每次都重来的个人或小团队。</p>
+      <a href="/workflow-diagnosis">看诊断服务</a>
+    </article>
+    <article>
+      <h3>Skill / SOP 小项目</h3>
+      <p>适合高频重复的文档、纪要、资料整理、写作、归档和发布流程。</p>
+      <a href="/skill-sop">看 Skill 定制</a>
+    </article>
+    <article>
+      <h3>知识库治理</h3>
+      <p>适合资料散乱、检索不稳、AI 引用不准，需要先整理入口和边界的人。</p>
+      <a href="/services#knowledge-base">看知识库整理</a>
+    </article>
+  </section>
+
+  <h2>怎么选择</h2>
+  <ul>
+    <li><strong>只是入门</strong>：备注“工具包”，先拿轻量资料。</li>
+    <li><strong>想看样例</strong>：备注“Skill 样例”，先看可复用 Skill 应该长什么样。</li>
+    <li><strong>资料很多但用不起来</strong>：备注“知识库自查”，先做资料治理判断。</li>
+    <li><strong>已经有真实流程</strong>：先做 <a href="/diagnosis">AI 落地自测</a>，再判断是否进入服务。</li>
+    <li><strong>在上海想当面聊</strong>：看 <a href="/coffee-chat">Coffee Chat</a>。</li>
+  </ul>
+
+  <ConversionCTA
+    title="先领一个轻量入口，再决定是否深入"
+    note="如果你不确定该领资料包、看 Skill 样例，还是直接做项目，把当前场景发来，我会按成本、收益和可交付性判断最合适的切入方式。"
+    remark="工具包 / Skill 样例 / 知识库自查"
+    briefItems={[
+      '我想领取：工具包 / Skill 样例 / 知识库自查 / 内容自动化',
+      '我的使用场景是：',
+      '如果适合深入，我希望下一步是：',
+    ]}
+    primaryHref="/diagnosis"
+    primaryLabel="AI 落地自测"
+    secondaryHref="/blog"
+    secondaryLabel="先看文章"
+  />
+
+  <script>
+    document.querySelectorAll('.copy-resource').forEach((button) => {
+      button.addEventListener('click', async () => {
+        const trigger = button instanceof HTMLElement ? button : null;
+        const text = trigger?.dataset.copy ?? '';
+        const panel = trigger?.closest('article');
+        const status = panel?.querySelector('.copy-resource-status');
+
+        try {
+          if (!navigator.clipboard || !text) throw new Error('Clipboard unavailable');
+          await navigator.clipboard.writeText(text);
+          if (status) status.textContent = '已复制，可直接粘贴到微信';
+        } catch {
+          if (status) status.textContent = '复制失败，请手动复制卡片内容';
+        }
+      });
+    });
+  </script>
+
+  <style>
+    .path-steps,
+    .lead-grid,
+    .resource-choice-grid,
+    .self-serve-grid,
+    .preview-sample-grid,
+    .service-products {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 1rem;
+      margin: 1.4rem 0 2rem;
+    }
+
+    .lead-grid article,
+    .resource-choice-card,
+    .self-serve-grid article,
+    .preview-sample-grid article,
+    .service-products article,
+    .claim-panel,
+    .maturity-panel,
+    .preview-sample-panel,
+    .self-serve-panel,
+    .resource-choice-panel,
+    .path-panel {
+      padding: 1rem;
+      border: 1px solid rgba(var(--black), 0.08);
+      border-radius: 8px;
+      background: #fff;
+      box-shadow: 0 14px 32px rgba(20, 20, 20, 0.05);
+    }
+
+    .lead-grid article,
+    .path-panel {
+      background: #f7fbff;
+      border-color: rgba(0, 102, 255, 0.14);
+    }
+
+    .path-panel {
+      margin: 1.4rem 0 2rem;
+    }
+
+    .resource-choice-panel {
+      margin: 1.4rem 0 2rem;
+      background: #fffdf7;
+      border-color: rgba(213, 141, 39, 0.18);
+    }
+
+    .resource-choice-grid {
+      margin: 0.5rem 0 0;
+    }
+
+    .resource-choice-card {
+      display: flex;
+      min-height: 100%;
+      flex-direction: column;
+      background: #fff;
+      border-color: rgba(213, 141, 39, 0.16);
+      box-shadow: none;
+    }
+
+    .resource-choice-card h3 {
+      margin: 0 0 0.55rem;
+      font-size: 1.08rem;
+      line-height: 1.35;
+    }
+
+    .resource-choice-card p {
+      flex: 1;
+      margin: 0 0 0.9rem;
+      color: rgb(var(--gray));
+      font-size: 0.92rem;
+      line-height: 1.7;
+    }
+
+    .resource-choice-card div {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.55rem;
+    }
+
+    .resource-choice-card a {
+      display: inline-flex;
+      min-height: 36px;
+      align-items: center;
+      justify-content: center;
+      padding: 0.48rem 0.68rem;
+      color: #8a4d00;
+      font-size: 0.84rem;
+      font-weight: 800;
+      background: #fff8e7;
+      border: 1px solid rgba(213, 141, 39, 0.2);
+      border-radius: 8px;
+      text-decoration: none;
+    }
+
+    .resource-choice-card a.secondary {
+      color: var(--accent);
+      background: #fff;
+      border-color: rgba(0, 102, 255, 0.17);
+    }
+
+    .self-serve-panel {
+      margin: 1.4rem 0 2rem;
+      background: #fbfff8;
+      border-color: rgba(17, 154, 128, 0.18);
+    }
+
+    .preview-sample-panel {
+      margin: 1.4rem 0 2rem;
+      background: #f8fbff;
+      border-color: rgba(0, 102, 255, 0.14);
+    }
+
+    .panel-head {
+      max-width: 760px;
+      margin-bottom: 1rem;
+    }
+
+    .panel-head h2 {
+      margin: 0;
+      font-size: 1.3rem;
+    }
+
+    .panel-head p:last-child {
+      color: rgb(var(--gray));
+      font-size: 0.95rem;
+      line-height: 1.75;
+    }
+
+    .path-panel h2,
+    .maturity-panel h2 {
+      margin-top: 0;
+      font-size: 1.3rem;
+    }
+
+    .path-steps {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 0.7rem;
+      margin: 1rem 0 0;
+    }
+
+    .path-steps div {
+      padding: 0.85rem;
+      background: #fff;
+      border: 1px solid rgba(0, 102, 255, 0.13);
+      border-radius: 8px;
+    }
+
+    .path-steps span {
+      color: var(--accent);
+      font-size: 0.78rem;
+      font-weight: 800;
+    }
+
+    .path-steps p {
+      margin: 0.35rem 0 0;
+      color: rgb(var(--gray));
+      font-size: 0.9rem;
+      line-height: 1.6;
+    }
+
+    .product-kicker {
+      margin: 0;
+      color: var(--accent);
+      font-size: 0.82rem;
+      font-weight: 800;
+    }
+
+    .asset-topline {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 0.75rem;
+      margin-bottom: 0.45rem;
+    }
+
+    .asset-topline span {
+      flex: 0 0 auto;
+      padding: 0.22rem 0.5rem;
+      color: var(--accent);
+      font-size: 0.76rem;
+      font-weight: 800;
+      background: #fff;
+      border: 1px solid rgba(0, 102, 255, 0.15);
+      border-radius: 999px;
+    }
+
+    .lead-grid h2 {
+      margin-top: 0;
+      font-size: 1.25rem;
+    }
+
+    .self-serve-grid h3 {
+      margin: 0 0 0.55rem;
+      font-size: 1.12rem;
+      line-height: 1.35;
+    }
+
+    .preview-sample-grid h3 {
+      margin: 0 0 0.55rem;
+      font-size: 1.14rem;
+      line-height: 1.35;
+    }
+
+    .maturity {
+      margin: -0.25rem 0 0.65rem;
+      color: rgb(var(--black));
+      font-size: 0.84rem;
+      font-weight: 800;
+    }
+
+    .lead-grid p,
+    .lead-grid li,
+    .lead-grid dd,
+    .self-serve-grid p,
+    .self-serve-grid li,
+    .preview-sample-grid p,
+    .preview-sample-grid dd,
+    .service-products p,
+    .service-products a,
+    .claim-panel p,
+    .maturity-panel p {
+      font-size: 0.94rem;
+    }
+
+    .asset-section {
+      margin: 0.8rem 0;
+    }
+
+    .asset-section strong,
+    .lead-grid dt {
+      color: rgb(var(--black));
+      font-size: 0.8rem;
+      font-weight: 800;
+    }
+
+    .lead-grid dl {
+      display: grid;
+      gap: 0.65rem;
+      margin: 0.85rem 0;
+    }
+
+    .preview-sample-grid dl {
+      display: grid;
+      gap: 0.65rem;
+      margin: 0.9rem 0 0;
+    }
+
+    .preview-sample-grid dl div {
+      padding-top: 0.65rem;
+      border-top: 1px solid rgba(var(--black), 0.07);
+    }
+
+    .preview-sample-grid dt {
+      color: rgb(var(--black));
+      font-size: 0.8rem;
+      font-weight: 800;
+    }
+
+    .preview-sample-grid dd {
+      margin: 0.25rem 0 0;
+      color: rgb(var(--gray));
+      line-height: 1.65;
+    }
+
+    .sample-source {
+      margin: 0.65rem 0 0;
+      color: #536271;
+      font-size: 0.9rem !important;
+      line-height: 1.65;
+    }
+
+    .sample-next {
+      margin: 0.9rem 0 0;
+      color: rgb(var(--black));
+      font-weight: 800;
+      line-height: 1.6;
+    }
+
+    .preview-sample-grid a {
+      display: inline-flex;
+      width: fit-content;
+      min-height: 38px;
+      align-items: center;
+      justify-content: center;
+      margin-top: 0.8rem;
+      padding: 0.5rem 0.75rem;
+      color: #fff;
+      font-size: 0.88rem;
+      font-weight: 800;
+      background: var(--accent);
+      border-radius: 8px;
+      text-decoration: none;
+    }
+
+    .lead-grid dl div {
+      padding-top: 0.65rem;
+      border-top: 1px solid rgba(var(--black), 0.07);
+    }
+
+    .lead-grid dd {
+      margin: 0.25rem 0 0;
+      color: rgb(var(--gray));
+      line-height: 1.65;
+    }
+
+    .claim {
+      margin-bottom: 0;
+      font-weight: 800;
+    }
+
+    .self-serve-grid ul {
+      margin: 0.85rem 0 0;
+      padding-left: 1.1rem;
+      color: rgb(var(--gray));
+    }
+
+    .self-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.6rem;
+      margin-top: 1rem;
+    }
+
+    .self-actions button,
+    .self-actions a {
+      display: inline-flex;
+      min-height: 38px;
+      align-items: center;
+      justify-content: center;
+      padding: 0.5rem 0.75rem;
+      color: var(--accent);
+      font: inherit;
+      font-size: 0.88rem;
+      font-weight: 800;
+      background: #fff;
+      border: 1px solid rgba(0, 102, 255, 0.2);
+      border-radius: 8px;
+      cursor: pointer;
+      text-decoration: none;
+    }
+
+    .copy-resource-status {
+      min-height: 1.2rem;
+      margin: 0.45rem 0 0;
+      color: #157347;
+      font-size: 0.84rem !important;
+      font-weight: 700;
+    }
+
+    .claim-panel {
+      margin: 1rem 0 2rem;
+      background: rgba(var(--gray-light), 0.45);
+    }
+
+    .maturity-panel {
+      margin: 1rem 0 2rem;
+      background: #fff;
+    }
+
+    .maturity-scale {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 0.65rem;
+      margin-top: 1rem;
+    }
+
+    .maturity-scale span {
+      padding: 0.75rem;
+      color: rgb(var(--gray-dark));
+      font-size: 0.88rem;
+      font-weight: 700;
+      line-height: 1.55;
+      background: #f7fbff;
+      border: 1px solid rgba(0, 102, 255, 0.14);
+      border-radius: 8px;
+    }
+
+    .claim-panel h2 {
+      margin-top: 0;
+      font-size: 1.3rem;
+    }
+
+    .service-products {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .service-products h3 {
+      margin-top: 0;
+      font-size: 1.1rem;
+    }
+
+    .service-products a {
+      font-weight: 800;
+    }
+
+    @media (max-width: 820px) {
+      .lead-grid,
+      .resource-choice-grid,
+      .self-serve-grid,
+      .preview-sample-grid,
+      .path-steps,
+      .maturity-scale,
+      .service-products {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
 </Layout>

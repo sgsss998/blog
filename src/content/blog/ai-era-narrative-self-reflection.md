@@ -16,13 +16,13 @@ keywords: [AI时代, 自媒体, 内容创作, 复利, 洗稿, 多平台, 真诚,
 
 我一开始想的是，我可以让 AI 帮我洗稿和分发啊，但是后来当我试了几次后，效果差强人意，即使我使用了去 AI 味道的 skill 之后，仍然斧凿痕迹明显，语调和表述方式，明显就是出自 AI 之口。我不能接受这样的效果。但我如果每个洗稿内容都自己把关，亲力亲为，那样又太累了，我根本无法找到一个理想的平衡点。
 
-于是，今天我看到了 Leon 的一个朋友圈：
+后来我看到一组关于内容创作的讨论，核心观点很简单：如果内容本身没有价值，再精巧的分发系统也救不了。
 
-![Leon 朋友圈截图（公众号配图 1）](/images/blog/ai-narrative-self-reflection-02.png)
+![内容创作讨论截图已脱敏（公众号配图 1）](/images/blog/ai-narrative-self-reflection-02.png)
 
-![Leon 朋友圈截图（公众号配图 2）](/images/blog/ai-narrative-self-reflection-03.jpg)
+![内容创作讨论截图已脱敏（公众号配图 2）](/images/blog/ai-narrative-self-reflection-03.jpg)
 
-![Leon 朋友圈截图（公众号配图 3）](/images/blog/ai-narrative-self-reflection-04.jpg)
+![内容创作讨论截图已脱敏（公众号配图 3）](/images/blog/ai-narrative-self-reflection-04.jpg)
 
 这段话启发了我。是的，做 AI 类的自媒体，或者说，输出任何的内容，一定都是 **内容＞形式**，真正好的内容才值得被看见、被分享、被点赞，如果我粗制滥造，一直用 AI 流程化的帮我洗稿，那样的工业垃圾有谁愿意去看？也违背了我做 AI 的初衷。
 

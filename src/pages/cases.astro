@@ -1,0 +1,697 @@
+---
+import Layout from '../layouts/BlogPost.astro';
+import ConversionCTA from '../components/ConversionCTA.astro';
+import TrustBoundary from '../components/TrustBoundary.astro';
+
+const caseItems = [
+  {
+    id: 'case-ai-website',
+    label: '样例 01',
+    title: '个人网站从文章归档升级为 AI 获客系统',
+    category: '内容商业化 / 网站获客',
+    maturity: 'L4 可复跑流程',
+    status: '本站正在运行',
+    input: '公开文章库、服务入口、AI 自测、项目进度、Coffee Chat、工作坊和发布前本地校验。',
+    action: '把“能读文章”改造成“能判断需求、看证据、做自测、加微信、约线下”的转化路径。',
+    artifact: '首页、服务页、AI 自测页、项目看板、Skills 页、产品库、AI 获客站诊断、Coffee Chat、工作坊和本页样例库。',
+    acceptance: '构建通过；文章、图片、CTA、信任边界、发布候选和隐私脱敏均有本地脚本校验。',
+    evidence: '公开文章：我把个人网站改成 AI 获客系统',
+    href: '/blog/ai-website-acquisition-system-2026/',
+    servicePath: '适合进入 AI 获客站诊断、内容系统整理或轻量诊断。',
+    boundary: '不公开私域聊天、未确认报价、未授权原始资料和内部运营细节。',
+  },
+  {
+    id: 'case-office-skill',
+    label: '样例 02',
+    title: '报销材料整理 Skill',
+    category: '办公 Skill / SOP',
+    maturity: 'L3 开源样例',
+    status: '公开复盘完成',
+    input: '脱敏后的凭证类型、材料目录、规则说明、命名要求和缺口核验口径。',
+    action: '把凭证、事由、目录、提交说明和缺失材料拆成可复跑步骤，避免每次靠人工重新核对。',
+    artifact: 'Skill 结构、材料包整理逻辑、验收清单和公开复盘文章。',
+    acceptance: '凭证与事项能对应；文件名清楚；缺口单独列出；不修改事实金额。',
+    evidence: '公开文章：报销 Skill 28 个版本',
+    href: '/blog/reimburse-skill-28-versions-open-source/',
+    externalEvidence: 'GitHub：baoxiao.skill',
+    externalHref: 'https://github.com/sgsss998/baoxiao.skill',
+    servicePath: '适合进入办公 Skill / SOP 小项目。',
+    boundary: '不展示真实商户、人员、金额、单据截图、报销规则原文和未授权附件。',
+  },
+  {
+    id: 'case-word-sop',
+    label: '样例 03',
+    title: 'Word 文档格式保真 SOP',
+    category: '正式文档 / 模板延续',
+    maturity: 'L2 公开文章',
+    status: '方法公开',
+    input: '原 Word 模板、目标内容、历史成品、格式要求和需要人工确认的事实点。',
+    action: '在原模板结构上改内容，并用渲染图和清单核对字体、表格、编号、页眉页脚和段落稳定性。',
+    artifact: '可编辑 DOCX、关键页渲染图、修改说明和验收清单。',
+    acceptance: '打开后版式稳定；编号和表格不乱；关键页面能与原模板逐项核对。',
+    evidence: '公开文章：AI Word 编辑 SOP',
+    href: '/blog/ai-word-edit-sop-elegant/',
+    servicePath: '适合合同、纪要、简历、方案和正式材料的格式保真编辑。',
+    boundary: '不替代法律、财务、人事或专业责任审核；不公开原始模板和私人信息。',
+  },
+  {
+    id: 'case-rag-memory',
+    label: '样例 04',
+    title: '个人知识库与 RAG 预诊断',
+    category: '知识库 / 长期记忆',
+    maturity: 'L2 公开文章',
+    status: '服务化整理中',
+    input: '脱敏目录截图、资料类型清单、检索问题、权限范围和不允许公开的资料边界。',
+    action: '按资料入口、命名规则、切片、检索、引用口径和人工确认点拆出第一批治理优先级。',
+    artifact: '资料入口清单、不可公开范围、检索问题清单、RAG 接入建议和维护节奏。',
+    acceptance: '能回到原始资料路径；能解释引用依据；敏感资料有明确边界。',
+    evidence: '公开文章：RAG 数据库搭建方法详解',
+    href: '/blog/rag-database-method-open-source/',
+    externalEvidence: 'GitHub：RAG Memory System',
+    externalHref: 'https://github.com/sgsss998/RAG_Memory_System',
+    servicePath: '适合进入知识库治理、RAG 接入诊断或长期记忆系统搭建。',
+    boundary: '不公开私有知识库内容、聊天记录、联系人、账号凭证、敏感目录和未脱敏资料源。',
+  },
+  {
+    id: 'case-learning-coach',
+    label: '样例 05',
+    title: 'AI 学习陪练公开样例',
+    category: '学习系统 / AI 陪练',
+    maturity: 'L2 公开文章',
+    status: '方法样例完成',
+    input: '考点名称、错因描述、个人理解版本和复测时间，不需要上传题库原文或付费课件。',
+    action: '把复杂考试学习拆成考点速通、刷题纠错、错题回收和阶段复盘，保留人工判断与记忆责任。',
+    artifact: '学习陪练流程、错因拆分模板、错题回收节奏和阶段复盘表。',
+    acceptance: '能把知识点解释压缩成可用版本；能从错题里提取错因；能安排 3 天和 7 天复测。',
+    evidence: '公开文章：AI 学习陪练公开样例',
+    href: '/blog/ai-exam-coach-template-law-exam/',
+    servicePath: '适合考试、证书、课程学习和长期复盘类 AI 陪练系统。',
+    boundary: '不公开题库原文、付费课件、个人备考记录、标准答案和任何考试结果承诺。',
+  },
+  {
+    id: 'case-research-journal',
+    label: '样例 06',
+    title: 'AI 投研复盘公开样例',
+    category: '研究日志 / 知识库整理',
+    maturity: 'L2 公开文章',
+    status: '方法样例完成',
+    input: '公开信息、研究主题、观点草稿、反方问题和下一次需要检查的公开数据。',
+    action: '把长期研究记录拆成当前观点、支撑证据、反方证据、主要风险和下次检查，避免只沉淀情绪化结论。',
+    artifact: '研究日志五栏模板、脱敏样例、复盘四问和资料库整理方向。',
+    acceptance: '观点和证据分开；风险能被再次检查；旧判断能回看，不以收益或操作结论作为验收。',
+    evidence: '公开文章：AI 投研复盘公开样例',
+    href: '/blog/ai-investment-research-journal-template/',
+    servicePath: '适合长期研究、行业观察、读书笔记和公开资料库整理。',
+    boundary: '不公开账户信息、交易记录、具体金额、私人截图、具体标的建议和收益承诺。',
+  },
+  {
+    id: 'case-coffee-chat',
+    label: '样例 07',
+    title: '上海 AI Coffee Chat 复盘模板',
+    category: '线下交流 / 预诊断',
+    maturity: 'L1 运营模板',
+    status: '私域线索已出现，公开复盘待沉淀',
+    input: '参与者自愿提供的脱敏问题、想聊主题、当前工具栈和希望输出。',
+    action: '把线下交流收束成主题边界、共性问题、可公开结论、下一步动作和下次组局依据。',
+    artifact: '会后复盘模板、主题池、报名话术、组局成熟度、公开复盘台账和转服务判断。',
+    acceptance: '公开复盘只写方法和结构；私人资料、身份、商业计划和未授权内容不进入网站。',
+    evidence: '公开文章：Coffee Chat 复盘模板；Coffee Chat 页公开复盘台账',
+    href: '/blog/shanghai-ai-coffee-chat-recap-template/',
+    servicePath: '适合从轻量交流进入 AI 自测、诊断、Skill 小项目或系统陪跑。',
+    boundary: '不把多人局变成私密材料展示场；不公开参与者身份和个人问题细节。',
+  },
+  {
+    id: 'case-git-memory-os',
+    label: '样例 08',
+    title: 'Git 版长期记忆库 OS',
+    category: 'AI 记忆 / 系统治理',
+    maturity: 'L3 站点事实',
+    status: '架构迭代中',
+    input: '脱敏后的分层架构、准入规则、隐私规则、状态规则和模拟评测摘要。',
+    action: '用版本化方式管理长期上下文，把聊天式记忆整理成可检索、可回滚、可审计的 Git 版规则体系。',
+    artifact: 'AI 长期记忆库 OS 页面、项目看板、边界规则、评测指标和服务交付方向。',
+    acceptance: '能区分稳定规则、阶段事实、敏感内容和公开材料；能看到准入、排除、状态和隐私规则。',
+    evidence: '公开页面：AI 长期记忆库 OS',
+    href: '/memory-os',
+    externalEvidence: 'GitHub：公开主页',
+    externalHref: 'https://github.com/sgsss998',
+    servicePath: '适合想给个人或小团队搭建长期 AI 上下文和知识库的人。',
+    boundary: '不公开真实记忆内容、私人聊天、联系人、私有仓库、账号凭证和内部资料。',
+  },
+  {
+    id: 'case-local-skill-library',
+    label: '样例 09',
+    title: '本地 Skill 资产盘点与公开陈列区',
+    category: 'Skill 资产 / 商业展示',
+    maturity: 'L3 站点事实',
+    status: '公开矩阵已上线',
+    input: '本地长期沉淀的 Word、Excel、会议纪要、来访接待、报销整理、写作、图表、PPT、正式文档、网文和周报类 Skill。',
+    action: '把内部可执行 Skill 转译成公开用途、交付物、验收口径和脱敏边界，让访客能判断哪些重复任务适合做成服务。',
+    artifact: 'Skills 页公开资产矩阵、11 张本地 Skill 资产卡、首次沟通材料包、服务包选型和发布前校验脚本。',
+    acceptance: '每张卡只展示用途、公开交付物和不可公开范围；验证脚本检查本地 Skill 资产盘点、卡片数量和隐私边界。',
+    evidence: '公开页面：Skills 本地资产盘点',
+    href: '/skills',
+    servicePath: '适合进入 Skill/SOP 小项目、文档自动化包、知识库治理包或内容生产包。',
+    boundary: '不公开本地路径、原始 Skill 全文、公司信息、真名、内部模板、后台数据、报销单据、周报原文和未授权业务材料。',
+  },
+];
+
+const scenarioGuides = [
+  {
+    title: '文档和办公流程',
+    signal: 'Word、纪要、报销、归档、PPT、模板反复返工。',
+    caseHref: '#case-office-skill',
+    caseLabel: '看办公 Skill 样例',
+    serviceHref: '/skill-sop',
+    serviceLabel: '走 Skill/SOP 小项目',
+  },
+  {
+    title: '知识库和长期记忆',
+    signal: '资料分散、找不到上下文、AI 引用不稳定。',
+    caseHref: '#case-rag-memory',
+    caseLabel: '看 RAG 预诊断样例',
+    serviceHref: '/services#knowledge-base',
+    serviceLabel: '走知识库治理',
+  },
+  {
+    title: '内容商业化和获客站',
+    signal: '有文章、项目或个人品牌，但服务入口和证据链断开。',
+    caseHref: '#case-ai-website',
+    caseLabel: '看获客站诊断',
+    serviceHref: '/ai-acquisition',
+    serviceLabel: '看获客站诊断',
+  },
+  {
+    title: '学习陪练和研究复盘',
+    signal: '想把备考、读书、行业研究或公开资料整理成长期复盘系统。',
+    caseHref: '#case-learning-coach',
+    caseLabel: '看学习陪练样例',
+    serviceHref: '#case-research-journal',
+    serviceLabel: '看研究日志样例',
+  },
+  {
+    title: '上海 Coffee Chat / 预诊断',
+    signal: '问题还不够成项目，但想当面把工具、资料和下一步拆清楚。',
+    caseHref: '#case-coffee-chat',
+    caseLabel: '看 Coffee Chat 模板',
+    serviceHref: '/coffee-chat',
+    serviceLabel: '看活动入口',
+  },
+  {
+    title: 'Skill 资产陈列和脱敏发布',
+    signal: '你已经有很多流程、提示词或自动化脚本，但客户看不懂，也不适合直接公开原文。',
+    caseHref: '#case-local-skill-library',
+    caseLabel: '看 Skill 资产盘点',
+    serviceHref: '/skills',
+    serviceLabel: '看 Skills 页',
+  },
+];
+
+const caseStructuredData = {
+  '@context': 'https://schema.org',
+  '@type': 'CollectionPage',
+  '@id': 'https://ailaoming.com/cases/#collection',
+  name: 'AI 干货家老明公开样例库',
+  description: '公开展示 AI 工作流、办公 Skill、知识库、网站获客和上海 Coffee Chat 的脱敏样例、验收口径与服务路径。',
+  url: 'https://ailaoming.com/cases/',
+  inLanguage: 'zh-CN',
+  mainEntity: caseItems.map((item) => ({
+    '@type': 'CreativeWork',
+    name: item.title,
+    about: item.category,
+    url: `https://ailaoming.com${item.href}`,
+  })),
+};
+---
+
+<Layout
+  title="公开样例库"
+  description="AI干货家老明的公开样例库：展示脱敏输入、公开产物、验收口径、边界说明和下一步服务路径。"
+  pubDate={new Date('2026-07-02')}
+  heroImage={undefined}
+  showMeta={false}
+  showEngagement={false}
+>
+  <script type="application/ld+json" set:html={JSON.stringify(caseStructuredData)}></script>
+
+  <section class="case-hero">
+    <p class="eyebrow">Proof Library</p>
+    <h2>公开样例库</h2>
+    <p>
+      这里放的是可以公开核验的脱敏样例和自有项目，不写未授权材料，也不把私人信息包装成所谓案例。每条样例都按同一套结构展示：脱敏输入、处理动作、公开产物、验收口径、边界说明和下一步服务路径。
+    </p>
+    <div class="case-summary" aria-label="样例库摘要">
+      <div>
+        <strong>{caseItems.length}</strong>
+        <span>公开样例</span>
+      </div>
+      <div>
+        <strong>4</strong>
+        <span>证据等级</span>
+      </div>
+      <div>
+        <strong>0</strong>
+        <span>原始私密材料</span>
+      </div>
+    </div>
+  </section>
+
+  <TrustBoundary
+    compact={true}
+    title="样例库只展示能公开复查的部分"
+    intro="商业站需要可信度，但可信度不能靠泄露资料换来。这里默认只展示方法、结构、公开产物和验收口径，所有未授权原始资料都留在公开边界之外。"
+  />
+
+  <section class="scenario-guide" aria-label="按问题选择样例">
+    <div class="section-head">
+      <p class="eyebrow">Choose by Problem</p>
+      <h2>按你的问题先选一类样例</h2>
+      <p>如果你还不知道该看哪张卡，先按自己的问题归类。每类都给一个样例入口和一个下一步服务入口。</p>
+    </div>
+    <div class="scenario-grid">
+      {scenarioGuides.map((guide) => (
+        <article class="scenario-card">
+          <h3>{guide.title}</h3>
+          <p>{guide.signal}</p>
+          <div>
+            <a href={guide.caseHref}>{guide.caseLabel}</a>
+            <a class="secondary" href={guide.serviceHref}>{guide.serviceLabel}</a>
+          </div>
+        </article>
+      ))}
+    </div>
+  </section>
+
+  <section class="case-grid" aria-label="公开样例卡">
+    {caseItems.map((item) => (
+      <article id={item.id}>
+        <div class="case-head">
+          <span>{item.label}</span>
+          <strong>{item.maturity}</strong>
+        </div>
+        <h3>{item.title}</h3>
+        <p class="case-meta">{item.category} · {item.status}</p>
+        <dl>
+          <div>
+            <dt>脱敏输入</dt>
+            <dd>{item.input}</dd>
+          </div>
+          <div>
+            <dt>处理动作</dt>
+            <dd>{item.action}</dd>
+          </div>
+          <div>
+            <dt>公开产物</dt>
+            <dd>{item.artifact}</dd>
+          </div>
+          <div>
+            <dt>验收口径</dt>
+            <dd>{item.acceptance}</dd>
+          </div>
+          <div>
+            <dt>服务路径</dt>
+            <dd>{item.servicePath}</dd>
+          </div>
+          <div>
+            <dt>不公开</dt>
+            <dd>{item.boundary}</dd>
+          </div>
+        </dl>
+        <div class="proof-links">
+          <a class="case-link" href={item.href}>{item.evidence}</a>
+          {item.externalHref && (
+            <a class="case-link secondary" href={item.externalHref} target="_blank" rel="noopener noreferrer">
+              {item.externalEvidence}
+            </a>
+          )}
+        </div>
+      </article>
+    ))}
+  </section>
+
+  <section class="case-method" aria-label="如何使用样例库">
+    <div>
+      <p class="eyebrow">How to Read</p>
+      <h2>看样例时，重点看三件事</h2>
+    </div>
+    <div class="method-grid">
+      <article>
+        <span>01</span>
+        <h3>你的输入是否相似</h3>
+        <p>如果你也有稳定模板、重复流程、资料目录或内容库，才适合继续拆成诊断或小项目。</p>
+      </article>
+      <article>
+        <span>02</span>
+        <h3>验收口径是否清楚</h3>
+        <p>好的 AI 交付不是“看起来不错”，而是能说明输出、格式、引用、边界和失败接管点。</p>
+      </article>
+      <article>
+        <span>03</span>
+        <h3>边界是否能接受</h3>
+        <p>如果需求必须展示原始私密材料、绕过规则或替代专业责任，就不适合进入公开样例或服务交付。</p>
+      </article>
+    </div>
+  </section>
+
+  <ConversionCTA
+    title="带一个类似样例来判断能不能做"
+    note="不用先写完整需求。选一个最接近你的公开样例，再发我一段脱敏描述，我会先判断它适合 Coffee Chat、AI 自测、获客站诊断，还是 Skill/SOP 小项目。"
+    remark="公开样例库"
+    briefItems={[
+      '我看完样例库，最接近我的场景是：',
+      '我的脱敏输入材料大概是：',
+      '我希望先 Coffee Chat / AI 自测 / 获客站诊断 / 诊断 / Skill 小项目：',
+    ]}
+    primaryHref="/diagnosis"
+    primaryLabel="AI 落地自测"
+    secondaryHref="/services"
+    secondaryLabel="看服务方案"
+  />
+</Layout>
+
+<style>
+  .case-hero {
+    margin-bottom: 1.4rem;
+  }
+
+  .eyebrow {
+    margin: 0 0 0.65rem;
+    color: var(--accent);
+    font-size: 0.82rem;
+    font-weight: 800;
+    letter-spacing: 0;
+  }
+
+  .case-hero h2,
+  .section-head h2,
+  .case-method h2 {
+    margin: 0;
+  }
+
+  .case-hero p,
+  .section-head p {
+    color: rgb(var(--gray));
+    line-height: 1.8;
+  }
+
+  .section-head {
+    max-width: 760px;
+    margin-bottom: 1rem;
+  }
+
+  .case-summary {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.8rem;
+    margin-top: 1.2rem;
+  }
+
+  .case-summary div,
+  .case-grid article,
+  .case-method {
+    background: #fff;
+    border: 1px solid rgba(var(--black), 0.08);
+    border-radius: 8px;
+    box-shadow: 0 16px 34px rgba(20, 20, 20, 0.045);
+  }
+
+  .case-summary div {
+    padding: 1rem;
+  }
+
+  .case-summary strong {
+    display: block;
+    color: rgb(var(--black));
+    font-size: 1.45rem;
+    line-height: 1;
+  }
+
+  .case-summary span {
+    display: block;
+    margin-top: 0.35rem;
+    color: rgb(var(--gray));
+    font-size: 0.88rem;
+  }
+
+  .scenario-guide {
+    margin: 1.6rem 0 2rem;
+  }
+
+  .scenario-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.8rem;
+  }
+
+  .scenario-card {
+    display: flex;
+    min-width: 0;
+    flex-direction: column;
+    gap: 0.75rem;
+    padding: 1rem;
+    background: #fff;
+    border: 1px solid rgba(var(--black), 0.08);
+    border-radius: 8px;
+    box-shadow: 0 14px 30px rgba(20, 20, 20, 0.04);
+  }
+
+  .scenario-card h3 {
+    margin: 0;
+    color: rgb(var(--black));
+    font-size: 1rem;
+    line-height: 1.35;
+  }
+
+  .scenario-card p {
+    margin: 0;
+    color: rgb(var(--gray));
+    font-size: 0.86rem;
+    line-height: 1.65;
+  }
+
+  .scenario-card div {
+    display: grid;
+    gap: 0.45rem;
+    margin-top: auto;
+  }
+
+  .scenario-card a {
+    display: inline-flex;
+    min-height: 36px;
+    align-items: center;
+    justify-content: center;
+    padding: 0.45rem 0.62rem;
+    color: #fff;
+    background: var(--accent);
+    border: 1px solid var(--accent);
+    border-radius: 8px;
+    font-size: 0.82rem;
+    font-weight: 800;
+    line-height: 1.25;
+    text-align: center;
+    text-decoration: none;
+  }
+
+  .scenario-card a.secondary {
+    color: rgb(var(--black));
+    background: #fff;
+    border-color: rgba(var(--black), 0.12);
+  }
+
+  .case-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1rem;
+    margin: 2rem 0;
+  }
+
+  .case-grid article {
+    display: flex;
+    min-width: 0;
+    flex-direction: column;
+    gap: 0.85rem;
+    padding: 1.1rem;
+  }
+
+  #case-local-skill-library {
+    grid-column: 1 / -1;
+  }
+
+  .case-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.65rem;
+  }
+
+  .case-head span,
+  .case-head strong {
+    display: inline-flex;
+    min-height: 1.75rem;
+    align-items: center;
+    padding: 0.14rem 0.55rem;
+    border-radius: 999px;
+    font-size: 0.75rem;
+    font-weight: 800;
+    line-height: 1.2;
+  }
+
+  .case-head span {
+    background: #f7fbff;
+    color: var(--accent);
+  }
+
+  .case-head strong {
+    background: #f5f7f8;
+    color: rgb(var(--gray-dark));
+  }
+
+  .case-grid h3 {
+    margin: 0;
+    color: rgb(var(--black));
+    font-size: 1.12rem;
+    line-height: 1.35;
+  }
+
+  .case-meta {
+    margin: -0.4rem 0 0;
+    color: rgb(var(--gray));
+    font-size: 0.88rem;
+  }
+
+  .case-grid dl {
+    display: grid;
+    gap: 0.65rem;
+    margin: 0;
+  }
+
+  .case-grid dl div {
+    display: grid;
+    grid-template-columns: 4.8rem minmax(0, 1fr);
+    gap: 0.7rem;
+    padding-top: 0.65rem;
+    border-top: 1px solid rgba(var(--black), 0.07);
+  }
+
+  .case-grid dt {
+    color: rgb(var(--black));
+    font-size: 0.78rem;
+    font-weight: 800;
+    line-height: 1.5;
+  }
+
+  .case-grid dd {
+    margin: 0;
+    color: rgb(var(--gray));
+    font-size: 0.86rem;
+    line-height: 1.65;
+  }
+
+  .proof-links {
+    display: grid;
+    gap: 0.45rem;
+    margin-top: auto;
+  }
+
+  .case-link {
+    display: inline-flex;
+    min-height: 38px;
+    align-items: center;
+    justify-content: center;
+    padding: 0.5rem 0.75rem;
+    color: var(--accent);
+    border: 1px solid rgba(0, 102, 255, 0.2);
+    border-radius: 8px;
+    font-size: 0.88rem;
+    font-weight: 800;
+    text-decoration: none;
+  }
+
+  .case-link.secondary {
+    color: rgb(var(--gray-dark));
+    background: #fff;
+    border-color: rgba(var(--black), 0.1);
+  }
+
+  .case-method {
+    display: grid;
+    grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.35fr);
+    gap: 1rem;
+    margin: 2rem 0;
+    padding: 1.2rem;
+    background: #f7fbff;
+    border-color: rgba(0, 102, 255, 0.14);
+  }
+
+  .method-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.75rem;
+  }
+
+  .method-grid article {
+    padding: 0.95rem;
+    background: #fff;
+    border: 1px solid rgba(var(--black), 0.08);
+    border-radius: 8px;
+  }
+
+  .method-grid span {
+    color: var(--accent);
+    font-size: 0.78rem;
+    font-weight: 800;
+  }
+
+  .method-grid h3 {
+    margin: 0.45rem 0;
+    font-size: 0.98rem;
+    line-height: 1.35;
+  }
+
+  .method-grid p {
+    margin: 0;
+    color: rgb(var(--gray));
+    font-size: 0.86rem;
+    line-height: 1.65;
+  }
+
+  .case-hero,
+  .scenario-guide,
+  .case-grid,
+  .case-method {
+    width: min(960px, calc(100vw - 2rem));
+    margin-left: calc(50% - min(480px, calc(50vw - 1rem)));
+  }
+
+  @media (max-width: 900px) {
+    .case-grid,
+    .scenario-grid,
+    .case-method,
+    .method-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (max-width: 620px) {
+    .case-hero,
+    .scenario-guide,
+    .case-grid,
+    .case-method {
+      margin-left: calc(50% - 50vw + 2rem);
+    }
+
+    .case-summary {
+      grid-template-columns: 1fr;
+    }
+
+    .case-grid dl div {
+      grid-template-columns: 1fr;
+      gap: 0.3rem;
+    }
+
+    .case-head {
+      align-items: flex-start;
+      flex-direction: column;
+    }
+  }
+</style>

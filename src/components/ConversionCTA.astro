@@ -1,0 +1,251 @@
+---
+import { WECHAT } from '../consts';
+
+interface Props {
+  title?: string;
+  eyebrow?: string;
+  note?: string;
+  remark?: string;
+  briefTitle?: string;
+  briefItems?: string[];
+  qualificationItems?: string[];
+  primaryHref?: string;
+  primaryLabel?: string;
+  secondaryHref?: string;
+  secondaryLabel?: string;
+  briefHref?: string;
+  briefLabel?: string;
+}
+
+const {
+  title = '带着一个具体问题来聊',
+  eyebrow = '下一步',
+  note = '适合先把目标、资料源、重复劳动和交付标准说清楚，再判断该做咨询、项目制交付，还是先参加上海 Coffee Chat。',
+  remark = 'AI 服务 / Coffee Chat / 知识库整理',
+  briefTitle = '先复制这份咨询模板',
+  briefItems = [
+    '我现在想解决的流程是：',
+    '目前资料、工具或样例在：',
+    '我希望先线上诊断 / 上海线下聊 / 做成 Skill：',
+  ],
+  qualificationItems = [
+    '预算意向：自学 / 轻量诊断 / 单流程小项目 / 阶段陪跑 / 暂不确定',
+    '期望启动时间：本周 / 本月 / 先预沟通',
+    '是否接受先诊断再项目：是 / 否 / 需要先了解',
+    '隐私边界：我会先提供脱敏描述，不直接发送原始敏感材料。',
+  ],
+  primaryHref = '/services',
+  primaryLabel = '服务方案',
+  secondaryHref = '/projects',
+  secondaryLabel = '查看项目进度',
+  briefHref = '/brief',
+  briefLabel = '先填需求卡',
+} = Astro.props;
+
+const briefCopy = [`微信：${WECHAT}`, `备注：${remark}`, '来源：ailaoming.com', ...briefItems, ...qualificationItems].join('\n');
+---
+
+<section class="conversion-cta" aria-label="联系与转化入口">
+  <div>
+    <p class="cta-eyebrow">{eyebrow}</p>
+    <h2>{title}</h2>
+    <p>{note}</p>
+  </div>
+  <div class="cta-panel">
+    <p class="label">微信</p>
+    <p class="wechat"><code>{WECHAT}</code></p>
+    <p class="hint">备注：{remark}。右上角微信图标可查看二维码。</p>
+    <button type="button" class="copy-wechat" data-copy={WECHAT}>复制微信号</button>
+    <p class="wechat-copy-status" aria-live="polite"></p>
+    <div class="brief-card">
+      <p class="brief-title">{briefTitle}</p>
+      <ol>
+        {briefItems.map((item) => <li>{item}</li>)}
+        {qualificationItems.map((item) => <li>{item}</li>)}
+      </ol>
+      <button type="button" class="copy-brief" data-copy={briefCopy}>复制咨询模板</button>
+      <p class="copy-status" aria-live="polite"></p>
+    </div>
+    <div class="actions">
+      <a class="primary" href={primaryHref}>{primaryLabel}</a>
+      <a class="secondary" href={briefHref}>{briefLabel}</a>
+      <a class="secondary" href={secondaryHref}>{secondaryLabel}</a>
+    </div>
+  </div>
+</section>
+
+<script>
+  document.querySelectorAll('.copy-brief').forEach((button) => {
+    button.addEventListener('click', async () => {
+      const trigger = button instanceof HTMLElement ? button : null;
+      const text = trigger?.dataset.copy ?? '';
+      const panel = trigger?.closest('.brief-card');
+      const status = panel?.querySelector('.copy-status');
+
+      try {
+        if (!navigator.clipboard || !text) throw new Error('Clipboard unavailable');
+        await navigator.clipboard.writeText(text);
+        if (status) status.textContent = '已复制，可直接粘贴到微信';
+      } catch {
+        if (status) status.textContent = '复制失败，请手动复制上面的内容';
+      }
+    });
+  });
+
+  document.querySelectorAll('.copy-wechat').forEach((button) => {
+    button.addEventListener('click', async () => {
+      const trigger = button instanceof HTMLElement ? button : null;
+      const text = trigger?.dataset.copy ?? '';
+      const panel = trigger?.closest('.cta-panel');
+      const status = panel?.querySelector('.wechat-copy-status');
+
+      try {
+        if (!navigator.clipboard || !text) throw new Error('Clipboard unavailable');
+        await navigator.clipboard.writeText(text);
+        if (status) status.textContent = '微信号已复制';
+      } catch {
+        if (status) status.textContent = '复制失败，请手动复制微信号';
+      }
+    });
+  });
+</script>
+
+<style>
+  .conversion-cta {
+    display: grid;
+    grid-template-columns: minmax(0, 1.05fr) minmax(260px, 0.95fr);
+    gap: 1rem;
+    margin: 2.5rem 0 0;
+    padding: 1.35rem;
+    background: rgba(var(--gray-light), 0.5);
+    border: 1px solid rgba(var(--black), 0.08);
+    border-radius: 8px;
+  }
+  .cta-eyebrow,
+  .label {
+    margin: 0 0 0.55rem;
+    color: var(--accent);
+    font-size: 0.85rem;
+    font-weight: 700;
+  }
+  .conversion-cta h2 {
+    margin: 0 0 0.75rem;
+    font-size: 1.45rem;
+  }
+  .conversion-cta p {
+    margin: 0;
+    color: rgb(var(--gray));
+  }
+  .cta-panel {
+    padding: 1rem;
+    background: #fff;
+    border: 1px solid rgba(var(--black), 0.08);
+    border-radius: 8px;
+  }
+  .wechat {
+    margin-bottom: 0.35rem;
+  }
+  .wechat code {
+    color: rgb(var(--black));
+    font-weight: 700;
+  }
+  .hint {
+    font-size: 0.92rem;
+  }
+  .copy-wechat {
+    display: inline-flex;
+    min-height: 36px;
+    align-items: center;
+    justify-content: center;
+    margin-top: 0.75rem;
+    padding: 0.45rem 0.75rem;
+    color: var(--accent);
+    font: inherit;
+    font-size: 0.9rem;
+    font-weight: 800;
+    background: #fff;
+    border: 1px solid rgba(0, 102, 255, 0.2);
+    border-radius: 8px;
+    cursor: pointer;
+  }
+  .wechat-copy-status {
+    min-height: 1.2rem;
+    margin-top: 0.4rem !important;
+    color: #157347 !important;
+    font-size: 0.84rem;
+    font-weight: 700;
+  }
+  .brief-card {
+    margin-top: 0.9rem;
+    padding: 0.85rem;
+    background: rgba(var(--gray-light), 0.48);
+    border: 1px solid rgba(var(--black), 0.07);
+    border-radius: 8px;
+  }
+  .brief-title {
+    color: rgb(var(--black)) !important;
+    font-size: 0.9rem;
+    font-weight: 800;
+  }
+  .brief-card ol {
+    margin: 0.9rem 0 0;
+    padding-left: 1.15rem;
+    color: rgb(var(--gray));
+    font-size: 0.95rem;
+  }
+  .brief-card li + li {
+    margin-top: 0.35rem;
+  }
+  .copy-brief {
+    width: 100%;
+    min-height: 40px;
+    margin-top: 0.85rem;
+    padding: 0.55rem 0.75rem;
+    color: var(--accent);
+    font: inherit;
+    font-weight: 800;
+    background: #fff;
+    border: 1px solid rgba(0, 102, 255, 0.2);
+    border-radius: 8px;
+    cursor: pointer;
+  }
+  .copy-status {
+    min-height: 1.2rem;
+    margin-top: 0.45rem !important;
+    color: rgb(var(--gray));
+    font-size: 0.84rem;
+  }
+  .actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.65rem;
+    margin-top: 1rem;
+  }
+  .actions a {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 40px;
+    padding: 0.55rem 0.85rem;
+    border-radius: 8px;
+    font-weight: 700;
+  }
+  .primary {
+    background: var(--accent);
+    color: #fff;
+  }
+  .secondary {
+    background: #fff;
+    border: 1px solid rgba(var(--black), 0.12);
+    color: rgb(var(--black));
+  }
+  @media (max-width: 720px) {
+    .conversion-cta {
+      grid-template-columns: 1fr;
+      padding: 1rem;
+    }
+    .actions a {
+      width: 100%;
+    }
+  }
+</style>

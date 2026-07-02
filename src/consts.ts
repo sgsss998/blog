@@ -2,7 +2,7 @@
 // You can import this data from anywhere in your site by using the `import` keyword.
 
 export const SITE_TITLE = 'AI干货家老明';
-export const SITE_DESCRIPTION = '老明的个人博客 | AI实战、效率工具、自我进化';
+export const SITE_DESCRIPTION = '个人 AI 系统落地服务 | AI 工作流、知识库、自动化与上海 Coffee Chat';
 export const AUTHOR = '老明';
 export const WECHAT = 'soplaoming';
 

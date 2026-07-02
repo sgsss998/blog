@@ -1,0 +1,583 @@
+---
+import BaseHead from '../components/BaseHead.astro';
+import ConversionCTA from '../components/ConversionCTA.astro';
+import FAQSection from '../components/FAQSection.astro';
+import Footer from '../components/Footer.astro';
+import Header from '../components/Header.astro';
+import TrustBoundary from '../components/TrustBoundary.astro';
+
+const architectureLayers = [
+  {
+    level: 'L0-L1',
+    title: '系统规则与原始证据',
+    body: '先把系统规则、原始材料和来源关系分开。原始层只做证据保留，不默认进入长期记忆。',
+  },
+  {
+    level: 'L2-L3',
+    title: '日记忆与阶段压缩',
+    body: '每天的临时上下文进入候选池，周/月层负责压缩趋势，避免把一次性待办误当成长期事实。',
+  },
+  {
+    level: 'L4-L6',
+    title: '长期事实、项目和人物线索',
+    body: '只把稳定偏好、长期项目、反复出现的事实和必要关系线索沉淀到默认读取层。',
+  },
+  {
+    level: 'L7-L10',
+    title: 'SOP、决策、索引和治理',
+    body: '把可复用工作流、关键取舍、检索入口、质量审计和评测报告放到独立层级。',
+  },
+];
+
+const policyRules = [
+  {
+    title: '准入规则',
+    body: '只有稳定偏好、长期规则、项目主线、SOP、重要决策和已验证踩坑经验才进入长期层。',
+  },
+  {
+    title: '排除规则',
+    body: '一次性 todo、单次情绪、临时话术、未验证推断和很快过期的截图状态不默认进入长期层。',
+  },
+  {
+    title: '状态规则',
+    body: '每条记忆必须能区分 active、stale_possible、outdated、archived，避免旧事实继续误导 AI。',
+  },
+  {
+    title: '隐私规则',
+    body: '存储层可以真实，公开输出层必须脱敏。外发材料不展示联系人、原始聊天、路径、密钥或敏感项目内容。',
+  },
+];
+
+const evalRows = [
+  {
+    version: 'v0.1',
+    precision: '0.199',
+    recall: '0.990',
+    privacy: '0.000',
+    staleLeak: '0.180',
+    steps: '6.20',
+    result: '未通过',
+  },
+  {
+    version: 'v0.3',
+    precision: '0.939',
+    recall: '0.990',
+    privacy: '1.000',
+    staleLeak: '0.180',
+    steps: '4.90',
+    result: '未通过',
+  },
+  {
+    version: 'v0.4',
+    precision: '1.000',
+    recall: '0.990',
+    privacy: '1.000',
+    staleLeak: '0.000',
+    steps: '4.90',
+    result: '未通过',
+  },
+  {
+    version: 'v1.0',
+    precision: '1.000',
+    recall: '0.990',
+    privacy: '1.000',
+    staleLeak: '0.000',
+    steps: '3.10',
+    result: '通过',
+  },
+];
+
+const deliverables = [
+  {
+    title: '记忆架构诊断',
+    fit: '适合已经有大量聊天、笔记、项目材料，但 AI 每次都要重新喂背景的人。',
+    output: '输出分层目录、默认读取规则、禁入项和第一批整理优先级。',
+  },
+  {
+    title: 'Git 版上下文仓库',
+    fit: '适合想用 Git 管理版本、回滚、审计和长期协作上下文的人。',
+    output: '输出目录结构、front matter 规范、索引入口、决策日志和维护流程。',
+  },
+  {
+    title: '隐私与身份防火墙',
+    fit: '适合有多个身份、多个项目或公私资料混在一起的人。',
+    output: '输出隐私等级、公开输出边界、敏感材料处理规则和审计清单。',
+  },
+  {
+    title: '评测与治理脚本',
+    fit: '适合需要长期维护，担心重复、过期、噪音和错误事实不断积累的人。',
+    output: '输出 lint、重复扫描、过期事实扫描、隐私审计和模拟评测指标。',
+  },
+];
+
+const copyBriefItems = [
+  '我现在的记忆/知识库主要散在：聊天记录 / Obsidian / 本地文件 / Git 仓库 / 其他：',
+  '我最想解决的问题是：AI 经常忘背景 / 资料找不到 / 隐私边界不清 / 旧事实误导 / 其他：',
+  '我希望先做：架构诊断 / Git 记忆仓库 / 隐私规则 / 评测治理 / 暂不确定',
+];
+
+const memoryOsFaqs = [
+  {
+    question: '这个页面展示的是你的私有记忆内容吗？',
+    answer: '不是。页面只展示脱敏后的架构、准入规则、隐私分级、评测指标和服务路径，不展示真实记忆条目、联系人、原始聊天、本地路径或私有仓库内容。',
+  },
+  {
+    question: 'Git 版长期记忆库和普通 RAG 有什么区别？',
+    answer: 'RAG 更偏检索，Git 版记忆库更偏治理：它关心事实从哪里来、是否过期、能不能回滚、哪些内容默认读取、哪些内容必须先核验。',
+  },
+  {
+    question: '适合团队用吗？',
+    answer: '可以参考，但要先做权限和边界设计。个人版强调身份防火墙和长期上下文，团队版还需要角色权限、审批流程和共享索引规则。',
+  },
+];
+
+const memoryOsStructuredData = {
+  '@context': 'https://schema.org',
+  '@type': 'Service',
+  '@id': 'https://ailaoming.com/memory-os/#service',
+  name: 'AI 长期记忆库 OS',
+  url: 'https://ailaoming.com/memory-os/',
+  provider: {
+    '@type': 'Person',
+    name: '老明',
+    url: 'https://ailaoming.com/',
+  },
+  serviceType: 'AI memory system and personal knowledge governance',
+  areaServed: 'CN',
+  description: '基于 Git、Markdown、分层记忆、隐私分级和评测治理的 AI 长期上下文系统公开样例。',
+};
+---
+
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <BaseHead
+      title="AI 长期记忆库 OS"
+      description="一个脱敏公开的 Git 版 AI 长期记忆库样例：分层架构、准入规则、隐私分级、评测治理和服务路径。"
+    />
+    <script type="application/ld+json" set:html={JSON.stringify(memoryOsStructuredData)}></script>
+  </head>
+  <body>
+    <Header />
+    <main>
+      <section class="hero">
+        <div>
+          <p class="eyebrow">Memory OS</p>
+          <h1>AI 长期记忆库 OS：把上下文做成可维护资产</h1>
+          <p class="tagline">
+            这不是把聊天记录全部塞给 AI，而是把长期事实、项目上下文、SOP、决策记录、隐私边界和评测治理做成一套可检索、可回滚、可审计的 Git 版记忆系统。
+          </p>
+          <div class="hero-actions">
+            <a class="btn primary" href="#architecture">看分层架构</a>
+            <a class="btn secondary" href="#deliverables">看可交付方向</a>
+          </div>
+        </div>
+        <aside class="hero-panel" aria-label="公开边界">
+          <strong>公开边界</strong>
+          <p>本站只展示脱敏方法论，不展示真实记忆条目、私有仓库、本地路径、联系人、原始聊天、账号凭证和敏感项目材料。</p>
+        </aside>
+      </section>
+
+      <section class="section" id="architecture">
+        <div class="section-head">
+          <p class="eyebrow">Architecture</p>
+          <h2>不是一坨资料，而是分层记忆系统</h2>
+          <p>核心原则是：原始证据、短期上下文、长期事实、项目记忆、SOP、决策和治理报告分开放。AI 先读索引，再按任务读具体层。</p>
+        </div>
+        <div class="architecture-grid">
+          {architectureLayers.map((layer) => (
+            <article>
+              <span>{layer.level}</span>
+              <h3>{layer.title}</h3>
+              <p>{layer.body}</p>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      <section class="section policy-section">
+        <div class="section-head">
+          <p class="eyebrow">Policy</p>
+          <h2>长期记忆必须有准入、排除和状态规则</h2>
+        </div>
+        <div class="policy-grid">
+          {policyRules.map((rule) => (
+            <article>
+              <h3>{rule.title}</h3>
+              <p>{rule.body}</p>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      <section class="section eval-section">
+        <div class="section-head">
+          <p class="eyebrow">Evaluation</p>
+          <h2>用模拟评测约束记忆系统质量</h2>
+          <p>公开指标来自脱敏后的模拟评测摘要，只用于说明治理方法，不代表对任何私有数据内容的公开。</p>
+        </div>
+        <div class="eval-table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>版本</th>
+                <th>Precision</th>
+                <th>Recall</th>
+                <th>Privacy</th>
+                <th>Stale Leak</th>
+                <th>Avg Steps</th>
+                <th>结果</th>
+              </tr>
+            </thead>
+            <tbody>
+              {evalRows.map((row) => (
+                <tr>
+                  <td>{row.version}</td>
+                  <td>{row.precision}</td>
+                  <td>{row.recall}</td>
+                  <td>{row.privacy}</td>
+                  <td>{row.staleLeak}</td>
+                  <td>{row.steps}</td>
+                  <td>{row.result}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <p class="eval-note">
+          v1.0 通过模拟阈值的关键不是“记得更多”，而是同时引入 metadata、隐私审计、长期准入门槛、过期事实扫描、重复扫描和 active context。
+        </p>
+      </section>
+
+      <TrustBoundary
+        compact={true}
+        eyebrow="边界"
+        title="记忆系统尤其要先保护边界"
+        intro="长期记忆库越有用，越要把公开输出边界写清楚。存储层、检索层、公开表达层必须分开。"
+        items={[
+          {
+            title: '存储层可以真实',
+            body: '私有仓库可以保存必要上下文，但必须用隐私等级、来源、状态和更新时间标记。',
+          },
+          {
+            title: '公开层必须脱敏',
+            body: '对外页面只展示结构、方法、指标和边界，不展示任何私有记忆条目。',
+          },
+          {
+            title: '易变事实要回源',
+            body: '项目状态、法律、交易、地址、联系人等内容不能只靠旧记忆，使用前必须核验来源。',
+          },
+          {
+            title: '高风险内容不进普通记忆',
+            body: '密钥、证件、合同密件、账号凭证和未授权材料不进入普通长期记忆层。',
+          },
+        ]}
+      />
+
+      <section class="section" id="deliverables">
+        <div class="section-head">
+          <p class="eyebrow">Deliverables</p>
+          <h2>可以转成四类服务交付</h2>
+        </div>
+        <div class="deliverable-grid">
+          {deliverables.map((item) => (
+            <article>
+              <h3>{item.title}</h3>
+              <p>{item.fit}</p>
+              <strong>{item.output}</strong>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      <section class="section route-section">
+        <div class="section-head">
+          <p class="eyebrow">Next Step</p>
+          <h2>如果你也想做长期 AI 上下文系统</h2>
+          <p>第一次不用交出原始资料。先发一个目录样例、一个失败问题和一条希望 AI 长期记住的规则，就能判断该做架构诊断、知识库治理，还是先走 Coffee Chat。</p>
+        </div>
+        <div class="route-grid">
+          <a href="/products#resource-knowledge-check">
+            <span>01</span>
+            <strong>先拿知识库自查表</strong>
+            <p>适合资料很多但还没有整理入口的人。</p>
+          </a>
+          <a href="/diagnosis">
+            <span>02</span>
+            <strong>先做 AI 落地自测</strong>
+            <p>判断资料基础、流程清晰度、交付价值和风险边界。</p>
+          </a>
+          <a href="/coffee-chat">
+            <span>03</span>
+            <strong>上海线下预诊断</strong>
+            <p>适合当面拆一个真实知识库或长期记忆问题。</p>
+          </a>
+        </div>
+      </section>
+
+      <FAQSection title="AI 长期记忆库常见问题" items={memoryOsFaqs} />
+
+      <ConversionCTA
+        title="先判断你的记忆系统该怎么搭"
+        note="把你现在的资料入口、一个失败检索问题和隐私边界发来，我先判断适合做 Git 记忆仓库、RAG 接入、知识库治理，还是只需要一个轻量索引。"
+        remark="AI 长期记忆库 OS"
+        briefItems={copyBriefItems}
+        primaryHref="/diagnosis"
+        primaryLabel="先做 AI 自测"
+        secondaryHref="/services#knowledge-base"
+        secondaryLabel="看知识库服务"
+        briefHref="/brief"
+        briefLabel="复制需求卡"
+      />
+    </main>
+    <Footer />
+  </body>
+</html>
+
+<style>
+  main {
+    width: 1080px;
+  }
+
+  .hero {
+    display: grid;
+    grid-template-columns: minmax(0, 1.35fr) minmax(280px, 0.75fr);
+    gap: 1.2rem;
+    align-items: stretch;
+    padding: 3.6rem 0 2.4rem;
+  }
+
+  .eyebrow {
+    margin: 0 0 0.7rem;
+    color: var(--accent);
+    font-size: 0.84rem;
+    font-weight: 800;
+  }
+
+  h1 {
+    margin: 0;
+    font-size: 2.65rem;
+    line-height: 1.15;
+  }
+
+  .tagline {
+    max-width: 780px;
+    margin: 1rem 0 0;
+    color: rgb(var(--gray));
+    font-size: 1.08rem;
+  }
+
+  .hero-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.8rem;
+    margin-top: 1.45rem;
+  }
+
+  .btn {
+    display: inline-flex;
+    min-height: 42px;
+    align-items: center;
+    justify-content: center;
+    padding: 0.62rem 0.92rem;
+    border-radius: 8px;
+    font-weight: 800;
+  }
+
+  .btn.primary {
+    color: #fff;
+    background: var(--accent);
+  }
+
+  .btn.secondary {
+    color: rgb(var(--black));
+    background: #fff;
+    border: 1px solid rgba(var(--black), 0.12);
+  }
+
+  .hero-panel,
+  .architecture-grid article,
+  .policy-grid article,
+  .deliverable-grid article,
+  .route-grid a {
+    background: #fff;
+    border: 1px solid rgba(var(--black), 0.08);
+    border-radius: 8px;
+    box-shadow: var(--box-shadow);
+  }
+
+  .hero-panel {
+    padding: 1.15rem;
+  }
+
+  .hero-panel strong {
+    color: rgb(var(--black));
+  }
+
+  .hero-panel p {
+    color: rgb(var(--gray));
+  }
+
+  .section {
+    margin: 3rem 0;
+  }
+
+  .section-head {
+    max-width: 760px;
+    margin-bottom: 1.25rem;
+  }
+
+  .section-head h2 {
+    margin: 0;
+    font-size: 1.75rem;
+  }
+
+  .section-head p:last-child {
+    margin: 0.65rem 0 0;
+    color: rgb(var(--gray));
+  }
+
+  .architecture-grid,
+  .policy-grid,
+  .deliverable-grid,
+  .route-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 0.85rem;
+  }
+
+  .policy-grid,
+  .deliverable-grid,
+  .route-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .architecture-grid article,
+  .policy-grid article,
+  .deliverable-grid article,
+  .route-grid a {
+    padding: 1rem;
+  }
+
+  .architecture-grid span,
+  .route-grid span {
+    display: inline-flex;
+    min-width: 2.5rem;
+    min-height: 2rem;
+    align-items: center;
+    justify-content: center;
+    color: var(--accent);
+    background: rgba(0, 102, 255, 0.07);
+    border: 1px solid rgba(0, 102, 255, 0.16);
+    border-radius: 8px;
+    font-size: 0.78rem;
+    font-weight: 900;
+  }
+
+  .architecture-grid h3,
+  .policy-grid h3,
+  .deliverable-grid h3 {
+    margin: 0.8rem 0 0.45rem;
+    font-size: 1rem;
+  }
+
+  .architecture-grid p,
+  .policy-grid p,
+  .deliverable-grid p,
+  .route-grid p {
+    margin: 0;
+    color: rgb(var(--gray));
+    font-size: 0.92rem;
+    line-height: 1.65;
+  }
+
+  .deliverable-grid strong {
+    display: block;
+    margin-top: 0.75rem;
+    color: rgb(var(--black));
+    font-size: 0.92rem;
+    line-height: 1.6;
+  }
+
+  .eval-section,
+  .policy-section,
+  .route-section {
+    padding: 1rem;
+    background: #f7fbff;
+    border: 1px solid rgba(0, 102, 255, 0.1);
+    border-radius: 8px;
+  }
+
+  .eval-table-wrap {
+    overflow-x: auto;
+    background: #fff;
+    border: 1px solid rgba(var(--black), 0.08);
+    border-radius: 8px;
+  }
+
+  table {
+    width: 100%;
+    min-width: 720px;
+    border-collapse: collapse;
+    font-size: 0.9rem;
+  }
+
+  th,
+  td {
+    padding: 0.75rem;
+    border-bottom: 1px solid rgba(var(--black), 0.08);
+    text-align: left;
+  }
+
+  th {
+    color: rgb(var(--black));
+    background: rgba(var(--gray-light), 0.42);
+  }
+
+  td {
+    color: rgb(var(--gray));
+  }
+
+  tr:last-child td {
+    border-bottom: 0;
+  }
+
+  .eval-note {
+    margin: 0.9rem 0 0;
+    color: rgb(var(--gray));
+    font-size: 0.92rem;
+    line-height: 1.7;
+  }
+
+  .route-grid a {
+    color: rgb(var(--black));
+    text-decoration: none;
+  }
+
+  .route-grid strong {
+    display: block;
+    margin: 0.7rem 0 0.45rem;
+  }
+
+  @media (max-width: 900px) {
+    main {
+      width: calc(100% - 2rem);
+    }
+
+    .hero,
+    .architecture-grid,
+    .policy-grid,
+    .deliverable-grid,
+    .route-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .hero {
+      padding-top: 2.4rem;
+    }
+
+    h1 {
+      font-size: 2.08rem;
+    }
+  }
+</style>
