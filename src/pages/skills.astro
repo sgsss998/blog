@@ -1,35 +1,83 @@
 ---
 import Layout from '../layouts/BlogPost.astro';
+import SkillShowcase from '../components/SkillShowcase.astro';
+import ConversionCTA from '../components/ConversionCTA.astro';
 ---
 
 <Layout
   title="Skills 专栏"
-  description="老明的 skills 专栏：可复用、可落地的 AI 技能资产"
-  pubDate={new Date('2026-04-24')}
+  description="AI干货家老明的 Skills 专栏：把报销、Word、会议纪要、写作、资料归档和公众号同步做成可复用 AI 技能资产。"
+  pubDate={new Date('2026-07-01')}
   heroImage={undefined}
+  showMeta={false}
+  showEngagement={false}
 >
-  <h2>为什么做 Skills 专栏</h2>
+  <h2>Skills 是什么</h2>
   <p>
-    我把高频重复任务拆成标准化 skill：固定输入、固定输出、固定验收。这样同类任务可以持续复用，而不是每次从零开始。
+    我理解的 Skill，不是一个好看的提示词，而是一套可以反复执行的工作规程：明确输入、明确边界、明确步骤、明确验收。它要解决的是“这件事每次都很烦、每次都容易返工、但又有稳定规律”的问题。
   </p>
 
-  <h2>Skills 结构</h2>
+  <SkillShowcase />
+
+  <h2>我的 Skill 标准</h2>
   <ul>
-    <li><strong>输入标准</strong>：你需要提供哪些材料</li>
-    <li><strong>输出标准</strong>：最终交付什么格式</li>
-    <li><strong>质量标准</strong>：如何判断这次执行是否达标</li>
+    <li><strong>输入清楚</strong>：需要哪些文件、截图、模板、样例和背景信息。</li>
+    <li><strong>过程可控</strong>：AI 做什么、人工确认什么、哪些动作必须禁止。</li>
+    <li><strong>输出可验收</strong>：最终文件、命名、格式、链接、校验项都能检查。</li>
+    <li><strong>能复用</strong>：不是只为一次任务写答案，而是沉淀成下一次还能跑的流程。</li>
   </ul>
 
-  <h2>当前方向</h2>
-  <ul>
-    <li>写作与去 AI 味道优化</li>
-    <li>文档处理与工作流自动化</li>
-    <li>公众号内容生产与同步发布</li>
-    <li>RAG 与记忆系统辅助技能</li>
-  </ul>
-
-  <h2>怎么使用</h2>
+  <h2>已验证方向</h2>
+  <h3>报销材料整理</h3>
   <p>
-    你可以先从 <a href="/products">产品库</a> 找到对应方向，再结合 <a href="/services">服务页</a> 选择自助或协作落地。
+    痛点不是“写得漂亮”，而是凭证、事由、命名、压缩包和财务核验能否对应。适合财务报销、行政材料和项目归档。
   </p>
+
+  <h3>Word 文档格式保真编辑</h3>
+  <p>
+    目标是保留原 Word 模板的字体、间距、表格、编号和版式，避免 AI 一改文档就炸格式。适合合同、会议纪要、简历、接待方案。
+  </p>
+
+  <h3>会议纪要与接待文档</h3>
+  <p>
+    从议程、录音转写、参会信息到正式纪要和来访日程，强调结构稳定、语气正式、可直接发出。
+  </p>
+
+  <h3>去 AI 味写作</h3>
+  <p>
+    把空泛、套路化、总分总的 AI 文，改成有事实、有节奏、有真实人味的可读内容。适合公众号、小红书、个人表达和商业文案。
+  </p>
+
+  <h3>公众号到网站同步</h3>
+  <p>
+    已有完整 SOP：公众号正文抓取、图片本地化、Markdown 入库、自动校验、Astro 构建、Vercel 发布。
+  </p>
+
+  <h2>适合定制 Skill 的任务</h2>
+  <ul>
+    <li>每周或每月重复发生。</li>
+    <li>每次输入材料类似，但细节不同。</li>
+    <li>对格式、命名、事实准确性有要求。</li>
+    <li>人工做很烦，但完全自动化又有风险。</li>
+  </ul>
+
+  <h2>下一步</h2>
+  <p>
+    如果你有一个重复任务，可以先发我一个真实样例和你希望的最终结果。我会判断它适不适合做成 Skill，以及应该做成个人版、团队版还是一次性 SOP。
+  </p>
+
+  <ConversionCTA
+    title="把一个重复任务做成 Skill"
+    note="发我一个真实样例、现有模板和你希望的最终结果。我先判断它适合做文档自动化包、内容生产包，还是知识库治理包。"
+    remark="Skill 定制"
+    briefItems={[
+      '我想做成 Skill 的重复任务是：',
+      '我能提供的脱敏样例或模板是：',
+      '我希望最终输出长这样：',
+    ]}
+    primaryHref="/services"
+    primaryLabel="查看服务包"
+    secondaryHref="/products"
+    secondaryLabel="看产品库"
+  />
 </Layout>

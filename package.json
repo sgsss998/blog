@@ -10,7 +10,12 @@
     "build": "astro build",
     "preview": "astro preview",
     "astro": "astro",
-    "validate:wechat": "python3 scripts/validate_wechat_sync.py"
+    "health:content": "node scripts/check_content_health.mjs",
+    "validate:site": "node scripts/validate_site_release.mjs",
+    "validate:wechat": "python3 scripts/validate_wechat_sync.py",
+    "release:candidates": "node scripts/check_release_candidates.mjs",
+    "release:approval": "node scripts/generate_publish_approval.mjs",
+    "ops:audit": "node scripts/generate_ops_audit.mjs"
   },
   "dependencies": {
     "@astrojs/mdx": "^5.0.2",

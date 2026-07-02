@@ -1,0 +1,138 @@
+---
+interface TrustItem {
+  title: string;
+  body: string;
+}
+
+interface Props {
+  eyebrow?: string;
+  title?: string;
+  intro?: string;
+  items?: TrustItem[];
+  compact?: boolean;
+}
+
+const {
+  eyebrow = '信任边界',
+  title = '先把能做什么、不能做什么说清楚',
+  intro = 'AI 落地最怕两件事：一是把问题说得太大，二是把隐私和责任边界说得太晚。我的默认做法是先用脱敏样例跑小闭环，再决定是否进入更深的交付。',
+  items = [
+    {
+      title: '先脱敏，再判断',
+      body: '能用样例说明问题，就不使用原始敏感材料；公开展示只保留方法、结构和结果，不展示私人信息、内部文件和未授权内容。',
+    },
+    {
+      title: '先小闭环，再扩展',
+      body: '不承诺万能系统。先挑一个高频流程跑通输入、输出和验收，再决定是否沉淀成 Skill、SOP、知识库或长期系统。',
+    },
+    {
+      title: '交付要能复跑',
+      body: '交付物尽量包含输入要求、执行步骤、输出标准和验收口径，让同类任务下次能继续使用，而不是只得到一次聊天结论。',
+    },
+    {
+      title: '高风险需求不接',
+      body: '不做伪造材料、批量骚扰、绕过规则和替代专业责任的需求；涉及法律、财务、医疗、投资等事项，只整理流程，不替你做最终判断。',
+    },
+  ],
+  compact = false,
+} = Astro.props;
+---
+
+<section class:list={['trust-boundary', { compact }]} aria-label="交付边界与信任说明">
+  <div class="trust-head">
+    <p class="eyebrow">{eyebrow}</p>
+    <h2>{title}</h2>
+    <p>{intro}</p>
+  </div>
+  <div class="trust-grid">
+    {items.map((item) => (
+      <article>
+        <h3>{item.title}</h3>
+        <p>{item.body}</p>
+      </article>
+    ))}
+  </div>
+</section>
+
+<style>
+  .trust-boundary {
+    margin: 3.2rem 0;
+    padding: 1.4rem;
+    background: #f7fbff;
+    border: 1px solid rgba(0, 102, 255, 0.14);
+    border-radius: 8px;
+  }
+
+  .trust-boundary.compact {
+    margin: 2rem 0;
+  }
+
+  .trust-head {
+    max-width: 760px;
+    margin-bottom: 1.1rem;
+  }
+
+  .eyebrow {
+    margin: 0 0 0.55rem;
+    color: var(--accent);
+    font-size: 0.82rem;
+    font-weight: 800;
+  }
+
+  .trust-head h2 {
+    margin: 0;
+    color: rgb(var(--black));
+    font-size: 1.65rem;
+    line-height: 1.28;
+  }
+
+  .trust-head p {
+    margin: 0.75rem 0 0;
+    color: rgb(var(--gray));
+    line-height: 1.75;
+  }
+
+  .trust-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 0.8rem;
+  }
+
+  .trust-grid article {
+    min-width: 0;
+    padding: 1rem;
+    background: #fff;
+    border: 1px solid rgba(var(--black), 0.08);
+    border-radius: 8px;
+  }
+
+  .trust-grid h3 {
+    margin: 0 0 0.45rem;
+    color: rgb(var(--black));
+    font-size: 1rem;
+    line-height: 1.35;
+  }
+
+  .trust-grid p {
+    margin: 0;
+    color: rgb(var(--gray));
+    font-size: 0.9rem;
+    line-height: 1.65;
+  }
+
+  @media (max-width: 900px) {
+    .trust-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (max-width: 620px) {
+    .trust-boundary {
+      padding: 1rem;
+    }
+
+    .trust-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

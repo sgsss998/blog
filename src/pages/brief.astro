@@ -1,0 +1,566 @@
+---
+import BaseHead from '../components/BaseHead.astro';
+import ConversionCTA from '../components/ConversionCTA.astro';
+import Footer from '../components/Footer.astro';
+import Header from '../components/Header.astro';
+import TrustBoundary from '../components/TrustBoundary.astro';
+import { WECHAT } from '../consts';
+
+const briefTypes = [
+  {
+    id: 'workflow-diagnosis',
+    tag: '诊断 Brief',
+    title: 'AI 工作流诊断需求卡',
+    bestFor: '已经有一个反复做、反复返工的具体流程，但还不知道 AI 能接手哪一段。',
+    notFor: '只有泛泛方向、没有真实任务，或希望 AI 替代最终专业判断。',
+    fields: [
+      '我想优化的流程是：',
+      '这个流程现在每周/月大约发生：',
+      '目前使用的工具、资料入口或模板是：',
+      '最容易返工或拖延的步骤是：',
+      '我希望 AI 接手的部分是：',
+      '必须由人确认的部分是：',
+      '预算意向：轻量诊断 / 单流程小项目 / 阶段陪跑 / 暂不确定',
+      '期望启动时间：本周 / 本月 / 先预沟通',
+      '隐私边界：我先提供脱敏样例，不直接发送原始敏感材料。',
+    ],
+    next: '适合继续进入 AI 自测或一次流程诊断。',
+    route: '/workflow-diagnosis',
+    routeLabel: '看诊断服务',
+  },
+  {
+    id: 'skill-sop',
+    tag: 'Skill Brief',
+    title: 'Skill / SOP 小项目需求卡',
+    bestFor: '输入、输出和验收口径相对稳定，想把重复任务固化成可复跑流程。',
+    notFor: '需求每天变、没有样例、不接受人工核验，只想要一个万能提示词。',
+    fields: [
+      '任务名称：',
+      '重复频率：每周/月大约几次：',
+      '输入材料：模板、文档、截图、规则说明分别在哪里：',
+      '目标输出：最终要得到文件、清单、文章、目录还是其他：',
+      '验收口径：哪些点错了就必须人工接管：',
+      '现有失败样例或返工原因：',
+      '预算意向：单流程小项目 / 阶段陪跑 / 暂不确定',
+      '期望启动时间：本周 / 本月 / 先预沟通',
+      '隐私边界：只先发脱敏样例，真实材料等范围确认后再判断。',
+    ],
+    next: '适合继续看交付流程或进入服务页确认 Skill/SOP 边界。',
+    route: '/skill-sop',
+    routeLabel: '看 Skill/SOP 小项目',
+  },
+  {
+    id: 'knowledge-base',
+    tag: '资料治理 Brief',
+    title: '个人知识库整理需求卡',
+    bestFor: '资料散在 Obsidian、本地文件夹、网盘、微信记录或历史项目里，AI 经常找不准上下文。',
+    notFor: '资料量很少、暂时只需要普通搜索，或还不愿意先整理资料入口。',
+    fields: [
+      '资料主要散在：Obsidian / 本地文件夹 / 网盘 / 微信 / 其他：',
+      '最常找不到的资料是：',
+      '希望 AI 回答的 3 个典型问题是：',
+      '现有命名、目录或索引规则是：',
+      '哪些资料不能公开、不能上传、不能进库：',
+      '希望最终能输出：索引页 / RAG 入口 / 目录规则 / 检索 SOP / 其他：',
+      '预算意向：资料入口盘点 / 知识库治理 / RAG 接入 / 暂不确定',
+      '期望启动时间：本周 / 本月 / 先预沟通',
+      '隐私边界：第一次只看目录样例和脱敏问题，不看原始敏感内容。',
+    ],
+    next: '适合先做资料入口盘点，再判断是否进入知识库治理、Memory OS 或 RAG 接入。',
+    route: '/delivery',
+    routeLabel: '看交付流程',
+  },
+  {
+    id: 'ai-acquisition',
+    tag: '获客 Brief',
+    title: 'AI 获客站诊断需求卡',
+    bestFor: '已经有文章、项目、资料包或个人品牌，但服务入口、证据资产和线索路径没有接起来。',
+    notFor: '完全没有内容资产、只想买流量，或希望承诺线索数量和收益结果。',
+    fields: [
+      '当前内容资产：公众号 / 小红书 / 个人网站 / 项目看板 / 资料包 / 其他：',
+      '主要想承接的 AI 业务：工作流诊断 / 知识库整理 / Skill-SOP / 工作坊 / 其他：',
+      '现在最卡的一步是：有内容但没线索 / 有线索但不合格 / 服务页说不清 / 证据不足 / 不知道怎么报价：',
+      '可以公开展示的材料是：文章链接 / 项目页面 / 脱敏样例 / 公开工具 / 暂无：',
+      '不能公开的边界是：',
+      '希望本次输出：漏斗图 / 页面优先级 / 需求卡模板 / Coffee Chat 承接路径 / 发布检查清单：',
+      '预算意向：获客站诊断 / 页面改造 / 内容系统整理 / 阶段陪跑 / 暂不确定',
+      '期望启动时间：本周 / 本月 / 先预沟通',
+      '隐私边界：只先发公开链接或脱敏描述，不发送原始敏感材料。',
+    ],
+    next: '适合继续进入 AI 获客站诊断页面，看内容如何转成合格线索。',
+    route: '/ai-acquisition',
+    routeLabel: '看获客站诊断',
+  },
+  {
+    id: 'coffee-chat',
+    tag: 'Coffee Chat Brief',
+    title: '上海 AI Coffee Chat 预约卡',
+    bestFor: '问题有现实上下文，需要当面把方向、工具、内容变现或项目落地拆清楚。',
+    notFor: '只想蹭热点、现场解决违法违规需求，或不接受先脱敏描述问题。',
+    fields: [
+      '报名备注：Coffee Chat 报名',
+      '我想聊的主题是：AI 工具 / 内容变现 / 知识库 / 工作流 / 其他：',
+      '当前卡点是：',
+      '我已经尝试过的方法是：',
+      '希望聊完得到：方向判断 / 下一步清单 / 是否进入诊断 / 是否进入小项目：',
+      '人在上海的区域或可接受时间段：',
+      '预算意向：线下轻量交流 / 后续诊断 / 小项目 / 暂不确定',
+      '期望启动时间：本周 / 本月 / 先预沟通',
+      '隐私边界：现场只讨论脱敏问题，不公开私人聊天和未确认结果。',
+    ],
+    next: '适合继续进入 Coffee Chat 页面，看报名方式和公开复盘台账。',
+    route: '/coffee-chat',
+    routeLabel: '看 Coffee Chat',
+  },
+  {
+    id: 'workshop',
+    tag: 'Workshop Brief',
+    title: '上海 AI 小型工作坊预审卡',
+    bestFor: '同一主题有 3-8 人，想围绕 AI 工作流、知识库、Skill/SOP 或内容商业化做一次高密度拆解。',
+    notFor: '主题太分散、只想听概念、不愿说明材料边界，或希望多人场处理私密原始材料。',
+    fields: [
+      '备注：上海 AI 工作坊预审',
+      '工作坊主题：AI 工作流 / 知识库-RAG / Skill-SOP / 内容商业化 / 其他：',
+      '预计人数：3-4 人 / 5-8 人 / 暂不确定：',
+      '参与者背景：个人创作者 / 知识工作者 / 小团队 / 创业项目 / 其他：',
+      '共同卡点是：',
+      '可以提供的脱敏样例是：',
+      '希望现场输出：流程图 / Skill 草图 / 资料清单 / 内容转化路径 / 下一步项目范围：',
+      '形式偏好：上海线下公开场所 / 线上 / 先预沟通：',
+      '预算意向：小班工作坊 / 后续诊断 / 小项目 / 阶段陪跑 / 暂不确定',
+      '期望启动时间：本周 / 本月 / 先预沟通',
+      '隐私边界：只先发脱敏描述，不发送原始敏感材料。',
+    ],
+    next: '适合继续进入上海 AI 小型工作坊页面，看预审条件、流程和隐私边界。',
+    route: '/workshop',
+    routeLabel: '看工作坊预审',
+  },
+];
+
+const triageSignals = [
+  {
+    title: '能填出 6 项以上',
+    copy: '需求已经相对清楚，可以直接发微信，我会先判断该进诊断、Skill 小项目还是知识库治理。',
+  },
+  {
+    title: '只能填出 3-5 项',
+    copy: '先做 AI 自测或拿资料卡，把资料入口、流程频率、验收口径补齐。',
+  },
+  {
+    title: '只能填出 0-2 项',
+    copy: '暂时不适合报价，先走 Coffee Chat 或自学资料，把问题压缩成一个真实场景。',
+  },
+  {
+    title: '涉及敏感或高风险',
+    copy: '先写清不可公开范围、人工确认点和不做事项；不接伪造、绕规、骚扰和替代专业责任的需求。',
+  },
+];
+
+const buildBriefCopy = (type) => [
+  `微信：${WECHAT}`,
+  `备注：${type.title}`,
+  '来源：ailaoming.com/brief',
+  '是否接受先诊断再项目：是 / 否 / 需要先了解',
+  ...type.fields,
+].join('\n');
+
+const briefStructuredData = {
+  '@context': 'https://schema.org',
+  '@type': 'WebPage',
+  '@id': 'https://ailaoming.com/brief/#consultation-brief',
+  name: 'AI 咨询需求卡',
+  url: 'https://ailaoming.com/brief/',
+  inLanguage: 'zh-CN',
+  description: '用于 AI 工作流诊断、Skill/SOP 小项目、个人知识库整理、AI 获客站诊断、上海 AI Coffee Chat 和上海 AI 小型工作坊的公开需求卡模板。',
+  about: ['AI 工作流诊断', 'Skill/SOP 定制', '个人知识库整理', 'AI 获客站诊断', '上海 AI Coffee Chat', '上海 AI 小型工作坊'],
+};
+---
+
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <BaseHead
+      title="AI 咨询需求卡"
+      description="复制一张公开脱敏的 AI 咨询需求卡，把工作流诊断、Skill/SOP、知识库治理或上海 Coffee Chat 的需求说清楚。"
+    />
+    <script type="application/ld+json" set:html={JSON.stringify(briefStructuredData)}></script>
+  </head>
+  <body>
+    <Header />
+    <main>
+      <section class="hero">
+        <div>
+          <p class="eyebrow">Consultation Brief</p>
+          <h1>先复制一张需求卡，再来聊 AI 落地</h1>
+          <p class="tagline">
+            很多 AI 项目卡住，不是因为工具不够，而是需求没有说清：资料在哪里、流程重复到什么程度、怎样算验收、哪些边界不能碰。这里把第一次沟通前最该准备的信息压缩成六张可复制需求卡。
+          </p>
+          <div class="hero-actions">
+            <a class="btn primary" href="#brief-cards">选择需求卡</a>
+            <a class="btn secondary" href="/diagnosis">先做 AI 自测</a>
+            <a class="btn secondary" href="/roi-calculator">先估算 ROI</a>
+            <a class="btn secondary" href="/delivery">看交付流程</a>
+            <a class="btn secondary" href="/trust">看隐私边界</a>
+          </div>
+        </div>
+        <aside class="hero-panel" aria-label="隐私说明">
+          <strong>不提交表单</strong>
+          <p>这个页面只在浏览器里复制模板，不上传、不存储、不接第三方表单。真正沟通时，也建议先用脱敏样例描述问题。</p>
+          <p>复制模板会自动带上 来源：ailaoming.com/brief，方便后续判断线索来自哪一页。</p>
+          <a href="/trust">不确定资料能不能发，先看信任与隐私边界。</a>
+        </aside>
+      </section>
+
+      <section class="triage-panel" aria-label="需求成熟度判断">
+        <div class="section-head">
+          <p class="eyebrow">Triage</p>
+          <h2>复制前先判断需求成熟度</h2>
+          <p>能填得越具体，越容易判断是否值得进入诊断或小项目；填不出来也没关系，先退回资料卡或 Coffee Chat。</p>
+        </div>
+        <div class="triage-grid">
+          {triageSignals.map((signal) => (
+            <article>
+              <h3>{signal.title}</h3>
+              <p>{signal.copy}</p>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      <section id="brief-cards" class="brief-grid" aria-label="AI 咨询需求卡">
+        {briefTypes.map((type) => (
+          <article id={type.id} class="consultation-brief-card">
+            <div class="brief-head">
+              <p class="eyebrow">{type.tag}</p>
+              <h2>{type.title}</h2>
+            </div>
+            <dl class="fit-list">
+              <div>
+                <dt>适合</dt>
+                <dd>{type.bestFor}</dd>
+              </div>
+              <div>
+                <dt>不适合</dt>
+                <dd>{type.notFor}</dd>
+              </div>
+            </dl>
+            <div class="field-list">
+              <p>复制后逐项补充</p>
+              <ol>
+                {type.fields.map((field) => <li>{field}</li>)}
+              </ol>
+            </div>
+            <p class="next-step">{type.next}</p>
+            <div class="brief-actions">
+              <button type="button" class="copy-brief-card" data-copy={buildBriefCopy(type)}>复制这张需求卡</button>
+              <a href={type.route}>{type.routeLabel}</a>
+            </div>
+            <p class="copy-status" aria-live="polite"></p>
+          </article>
+        ))}
+      </section>
+
+      <TrustBoundary
+        compact={true}
+        eyebrow="信任边界"
+        title="需求卡只帮助说清问题，不要求你交出原始资料"
+        intro="第一次沟通只需要公开可说的背景、脱敏样例和不可公开边界。真实材料、公司信息、私人聊天、财务/法律/医疗/投资结论，都不应该在需求卡里直接暴露。"
+      />
+
+      <ConversionCTA
+        title="复制需求卡后，发一段脱敏描述就够"
+        note="如果你已经能填出一张需求卡，把它和一个脱敏样例发来，我会先判断这件事适合 Coffee Chat、轻量诊断、Skill/SOP 小项目，还是先做资料治理。"
+        remark="AI 咨询需求卡"
+        briefItems={[
+          '我选择的需求卡是：工作流诊断 / Skill-SOP / 知识库整理 / AI 获客站诊断 / Coffee Chat / 工作坊',
+          '我已经能填出的字段有：',
+          '我希望下一步是：自测 / Coffee Chat / 诊断 / 小项目',
+        ]}
+        primaryHref="/services"
+        primaryLabel="查看服务方案"
+        secondaryHref="/cases"
+        secondaryLabel="看公开样例"
+      />
+    </main>
+    <Footer />
+
+    <script>
+      document.querySelectorAll('.copy-brief-card').forEach((button) => {
+        button.addEventListener('click', async () => {
+          const trigger = button instanceof HTMLElement ? button : null;
+          const text = trigger?.dataset.copy ?? '';
+          const card = trigger?.closest('.consultation-brief-card');
+          const status = card?.querySelector('.copy-status');
+
+          try {
+            if (!navigator.clipboard || !text) throw new Error('Clipboard unavailable');
+            await navigator.clipboard.writeText(text);
+            if (status) status.textContent = '已复制，可直接粘贴到微信补充';
+          } catch {
+            if (status) status.textContent = '复制失败，请手动复制上面的字段';
+          }
+        });
+      });
+    </script>
+  </body>
+</html>
+
+<style>
+  main {
+    width: 960px;
+    max-width: calc(100% - 2rem);
+    margin: 0 auto;
+    padding: 2rem 0 4rem;
+  }
+
+  .hero {
+    display: grid;
+    grid-template-columns: minmax(0, 1.2fr) minmax(260px, 0.8fr);
+    gap: 1.2rem;
+    align-items: stretch;
+    padding: 2rem 0 1.2rem;
+  }
+
+  .eyebrow {
+    margin: 0 0 0.55rem;
+    color: var(--accent);
+    font-size: 0.82rem;
+    font-weight: 800;
+    letter-spacing: 0;
+  }
+
+  h1 {
+    margin: 0;
+    color: rgb(var(--black));
+    font-size: clamp(2.05rem, 7vw, 3.65rem);
+    line-height: 1.02;
+    letter-spacing: 0;
+  }
+
+  h2,
+  h3 {
+    color: rgb(var(--black));
+    letter-spacing: 0;
+  }
+
+  .tagline {
+    max-width: 720px;
+    margin: 1rem 0 0;
+    color: rgb(var(--gray));
+    font-size: 1.04rem;
+    line-height: 1.8;
+  }
+
+  .hero-actions,
+  .brief-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.7rem;
+    margin-top: 1rem;
+  }
+
+  .btn,
+  .brief-actions a,
+  .copy-brief-card {
+    display: inline-flex;
+    min-height: 42px;
+    align-items: center;
+    justify-content: center;
+    padding: 0.65rem 0.9rem;
+    border-radius: 8px;
+    font: inherit;
+    font-weight: 800;
+    line-height: 1.2;
+    text-decoration: none;
+  }
+
+  .btn.primary,
+  .copy-brief-card {
+    color: #fff;
+    background: var(--accent);
+    border: 1px solid var(--accent);
+    cursor: pointer;
+  }
+
+  .btn.secondary,
+  .brief-actions a {
+    color: rgb(var(--black));
+    background: #fff;
+    border: 1px solid rgba(var(--black), 0.12);
+  }
+
+  .hero-panel,
+  .triage-panel,
+  .consultation-brief-card {
+    border: 1px solid rgba(var(--black), 0.08);
+    border-radius: 8px;
+    background: #fff;
+    box-shadow: 0 14px 32px rgba(20, 20, 20, 0.05);
+  }
+
+  .hero-panel {
+    padding: 1rem;
+    background: #f7fbff;
+    border-color: rgba(0, 102, 255, 0.14);
+  }
+
+  .hero-panel strong {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: rgb(var(--black));
+  }
+
+  .hero-panel p,
+  .section-head p,
+  .triage-grid p,
+  .fit-list dd,
+  .field-list li,
+  .next-step {
+    color: rgb(var(--gray));
+    line-height: 1.68;
+  }
+
+  .triage-panel {
+    margin: 1.5rem 0;
+    padding: 1rem;
+    background: #f7fbff;
+    border-color: rgba(0, 102, 255, 0.14);
+  }
+
+  .section-head {
+    max-width: 760px;
+    margin-bottom: 1rem;
+  }
+
+  .section-head h2 {
+    margin: 0 0 0.6rem;
+    font-size: 1.45rem;
+  }
+
+  .section-head p {
+    margin: 0;
+  }
+
+  .triage-grid,
+  .brief-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1rem;
+  }
+
+  .triage-grid article {
+    padding: 1rem;
+    background: #fff;
+    border: 1px solid rgba(var(--black), 0.08);
+    border-radius: 8px;
+  }
+
+  .triage-grid h3,
+  .brief-card h2 {
+    margin: 0 0 0.5rem;
+    font-size: 1.15rem;
+  }
+
+  .consultation-brief-card {
+    display: flex;
+    min-width: 0;
+    flex-direction: column;
+    padding: 1rem;
+  }
+
+  .fit-list {
+    display: grid;
+    gap: 0.65rem;
+    margin: 0.8rem 0 0;
+  }
+
+  .fit-list div {
+    padding-top: 0.65rem;
+    border-top: 1px solid rgba(var(--black), 0.07);
+  }
+
+  .fit-list dt {
+    color: rgb(var(--black));
+    font-size: 0.8rem;
+    font-weight: 800;
+  }
+
+  .fit-list dd {
+    margin: 0.25rem 0 0;
+    font-size: 0.94rem;
+  }
+
+  .field-list {
+    margin-top: 0.9rem;
+    padding: 0.85rem;
+    background: rgba(var(--gray-light), 0.48);
+    border: 1px solid rgba(var(--black), 0.07);
+    border-radius: 8px;
+  }
+
+  .field-list p {
+    margin: 0;
+    color: rgb(var(--black));
+    font-size: 0.9rem;
+    font-weight: 800;
+  }
+
+  .field-list ol {
+    margin: 0.75rem 0 0;
+    padding-left: 1.1rem;
+  }
+
+  .field-list li {
+    font-size: 0.92rem;
+  }
+
+  .field-list li + li {
+    margin-top: 0.3rem;
+  }
+
+  .next-step {
+    margin: 0.9rem 0 0;
+    font-size: 0.94rem;
+    font-weight: 700;
+  }
+
+  .brief-actions {
+    margin-top: auto;
+    padding-top: 1rem;
+  }
+
+  .copy-brief-card {
+    flex: 1 1 180px;
+  }
+
+  .brief-actions a {
+    flex: 1 1 150px;
+  }
+
+  .copy-status {
+    min-height: 1.2rem;
+    margin: 0.55rem 0 0;
+    color: #157347;
+    font-size: 0.86rem;
+    font-weight: 800;
+  }
+
+  @media (max-width: 760px) {
+    main {
+      max-width: calc(100% - 1rem);
+      padding-top: 1rem;
+    }
+
+    .hero,
+    .triage-grid,
+    .brief-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .brief-actions a,
+    .copy-brief-card,
+    .hero-actions a {
+      width: 100%;
+    }
+  }
+</style>

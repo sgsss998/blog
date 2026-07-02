@@ -1,0 +1,791 @@
+---
+import BaseHead from '../components/BaseHead.astro';
+import ConversionCTA from '../components/ConversionCTA.astro';
+import FAQSection from '../components/FAQSection.astro';
+import Footer from '../components/Footer.astro';
+import Header from '../components/Header.astro';
+import TrustBoundary from '../components/TrustBoundary.astro';
+import { WECHAT } from '../consts';
+
+const fitSignals = [
+  {
+    title: '重复频率够高',
+    body: '同类任务每周或每月都会出现，不是一次性闲聊，也不是完全开放式创作。',
+  },
+  {
+    title: '输入相对稳定',
+    body: '有固定模板、样例、字段、目录、规则说明或可复查的原始入口。',
+  },
+  {
+    title: '输出能验收',
+    body: '知道最终要文档、清单、页面、脚本、表格、提示词包还是操作 SOP。',
+  },
+  {
+    title: '人工确认点清楚',
+    body: '知道哪些事实、责任、判断和风险必须由人确认，不能交给模型自己决定。',
+  },
+];
+
+const serviceModules = [
+  {
+    code: 'DOC',
+    title: '文档与格式保真',
+    fit: 'Word、纪要、说明、简历、方案、模板化材料。',
+    output: '输入要求、格式保真 SOP、验收清单、必要时附可复跑脚本或模板。',
+  },
+  {
+    code: 'OPS',
+    title: '办公材料整理',
+    fit: '报销附件、项目资料、会议材料、文件命名、交付包整理。',
+    output: '目录结构、命名规则、缺口清单、人工核验点和复跑说明。',
+  },
+  {
+    code: 'CONTENT',
+    title: '内容生产流程',
+    fit: '公众号、小红书、长文、封面、文章同步、去 AI 味改写。',
+    output: '选题到成稿流程、风格规则、发布检查表和素材归档口径。',
+  },
+  {
+    code: 'KNOW',
+    title: '知识库与检索 SOP',
+    fit: '资料散、上下文难找、AI 回答找不到依据。',
+    output: '资料入口规则、检索问题、引用口径、准入/排除边界和维护节奏。',
+  },
+];
+
+const buildSteps = [
+  {
+    step: '01',
+    title: '样例收口',
+    output: '只收 1-2 个脱敏样例、当前做法和失败点。',
+    proof: '能看出输入、输出、错误来源和人工确认点。',
+  },
+  {
+    step: '02',
+    title: '流程拆解',
+    output: '拆出准备材料、执行步骤、模型处理、人类复核和异常处理。',
+    proof: '不再依赖口头解释，同类任务能按步骤复现。',
+  },
+  {
+    step: '03',
+    title: 'Skill / SOP 固化',
+    output: '形成可复用的输入要求、执行步骤、输出格式和验收清单。',
+    proof: '下一次同类任务不需要重新发明提示词。',
+  },
+  {
+    step: '04',
+    title: '脱敏样例试跑',
+    output: '用公开安全样例跑一轮，记录成功点、失败点和人工接管点。',
+    proof: '输出能被复查，失败能定位到具体步骤。',
+  },
+  {
+    step: '05',
+    title: '交付与复盘',
+    output: '交付文件、脚本、模板、说明或页面，并记录后续维护口径。',
+    proof: '知道能否扩展到第二个流程，还是应该暂停。',
+  },
+];
+
+const deliverables = [
+  {
+    title: 'Skill/SOP 主文件',
+    body: '写清任务目标、输入材料、执行步骤、输出格式、人工确认点和禁止事项。',
+  },
+  {
+    title: '样例与验收清单',
+    body: '包含脱敏输入、预期输出、常见失败、返工标准和复跑检查项。',
+  },
+  {
+    title: '模板或脚本资产',
+    body: '根据场景交付 Markdown、DOCX、表格、页面、脚本或可复制提示模板。',
+  },
+  {
+    title: '维护与升级建议',
+    body: '说明哪些部分可以继续扩展，哪些需要人工维护，哪些不值得自动化。',
+  },
+];
+
+const acceptanceRows = [
+  {
+    item: '输入',
+    pass: '同类任务能按固定材料清单启动。',
+    fail: '每次都要重新解释背景。',
+  },
+  {
+    item: '过程',
+    pass: '步骤、模型职责和人工接管点可复查。',
+    fail: '只留下一段聊天记录。',
+  },
+  {
+    item: '输出',
+    pass: '格式、字段、口径和交付物形态稳定。',
+    fail: '结果好坏只能凭感觉。',
+  },
+  {
+    item: '边界',
+    pass: '不可公开、不可上传、不可自动判断的内容写清楚。',
+    fail: '敏感资料和责任边界混在流程里。',
+  },
+  {
+    item: '复用',
+    pass: '下一次同类任务能按同一入口和步骤复跑。',
+    fail: '只能解决这一次，之后继续从零开始。',
+  },
+];
+
+const pauseSignals = [
+  '没有样例，只有一句“帮我做个万能提示词”。',
+  '输入、输出、验收口径每天变化，还要求一次做成稳定流程。',
+  '要求伪造事实、修改凭证、隐藏真实来源或绕过平台规则。',
+  '希望 AI 替代法律、财务、医疗、投资或组织内部责任人。',
+  '不接受人工复核，也不愿意写清哪些内容不能公开或上传。',
+];
+
+const briefItems = [
+  '我想做成 Skill/SOP 的任务是：',
+  '这个任务每周/月大约发生：',
+  '我能提供的脱敏样例是：',
+  '当前输入材料包括：模板 / 文档 / 表格 / 截图 / 规则说明 / 其他',
+  '目标输出是：文档 / 清单 / 页面 / 脚本 / 表格 / 提示词模板 / 其他',
+  '哪些点错了就必须人工接管：',
+  '必须禁止或不能公开的内容是：',
+  '预算意向：单流程小项目 / 阶段陪跑 / 暂不确定',
+  '期望启动时间：本周 / 本月 / 先预沟通',
+  '是否接受先诊断再项目：是 / 否 / 需要先了解',
+  '隐私边界：第一次只发脱敏材料，不直接发送原始敏感材料。',
+];
+
+const briefCopy = [
+  `微信号：${WECHAT}`,
+  '备注：Skill/SOP 小项目预审',
+  '来源：ailaoming.com/skill-sop',
+  '线索类型：Skill/SOP 小项目 / 预审',
+  ...briefItems,
+].join('\n');
+
+const skillFaqs = [
+  {
+    question: 'Skill/SOP 小项目和工作流诊断有什么区别？',
+    answer: '诊断主要买判断、路线图和优先级；Skill/SOP 小项目是在输入、输出和验收已经较稳定时，把一个流程固化成可复跑资产。',
+  },
+  {
+    question: '交付物会不会只是提示词？',
+    answer: '不会。提示词只是其中一部分。真正交付的是输入材料要求、执行步骤、输出格式、人工确认点、验收清单和维护口径。',
+  },
+  {
+    question: '没有现成样例可以做吗？',
+    answer: '通常不建议直接做。没有样例时先走 AI 自测、工作流诊断或资料卡，把任务压缩到一个可试跑的小闭环。',
+  },
+  {
+    question: '能不能从一个流程扩展到一套系统？',
+    answer: '可以，但必须先跑通一个真实小闭环。小项目稳定后，再判断是否扩展到知识库治理、自动化脚本或系统阶段陪跑。',
+  },
+];
+
+const skillStructuredData = {
+  '@context': 'https://schema.org',
+  '@type': 'Service',
+  '@id': 'https://ailaoming.com/skill-sop/#service',
+  name: 'Skill/SOP 小项目',
+  serviceType: 'AI Skill and SOP implementation',
+  provider: {
+    '@type': 'Person',
+    name: 'AI干货家老明',
+  },
+  areaServed: ['线上', '上海'],
+  url: 'https://ailaoming.com/skill-sop/',
+  inLanguage: 'zh-CN',
+  description: '把重复办公、内容、资料和知识库流程固化成可复跑的 AI Skill、SOP、模板、脚本或验收清单。',
+  hasOfferCatalog: {
+    '@type': 'OfferCatalog',
+    name: 'Skill/SOP 小项目模块',
+    itemListElement: serviceModules.map((item) => ({
+      '@type': 'Offer',
+      itemOffered: {
+        '@type': 'Service',
+        name: item.title,
+        description: item.output,
+      },
+    })),
+  },
+};
+---
+
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <BaseHead
+      title="Skill/SOP 小项目"
+      description="AI干货家老明的 Skill/SOP 小项目服务：把重复办公、内容、资料和知识库流程固化成可复跑的 AI Skill、SOP、模板、脚本和验收清单。"
+    />
+    <script type="application/ld+json" set:html={JSON.stringify(skillStructuredData)}></script>
+  </head>
+  <body>
+    <Header />
+    <main>
+      <section class="hero">
+        <div class="hero-copy">
+          <p class="eyebrow">Skill / SOP Project</p>
+          <h1>Skill/SOP 小项目：把重复任务做成可复跑资产</h1>
+          <p class="tagline">
+            适合已经有稳定样例、固定输入、明确输出和验收标准的任务。不是买一段提示词，而是把材料准备、执行步骤、人工确认、异常处理和验收清单固化下来，让下一次同类任务不用从零开始。
+          </p>
+          <div class="hero-actions">
+            <a class="btn primary" href="#skill-brief">复制小项目预审卡</a>
+            <a class="btn secondary" href="/workflow-diagnosis">先看工作流诊断</a>
+            <a class="btn secondary" href="/skills">看 Skill 样例</a>
+          </div>
+        </div>
+        <aside class="hero-panel" aria-label="小项目摘要">
+          <strong>交付目标</strong>
+          <p>一个可复跑 Skill/SOP + 脱敏样例试跑 + 验收清单 + 维护升级建议。</p>
+          <a href="/delivery">看完整交付流程</a>
+          <a href="/coffee-chat">上海当面拆一个流程</a>
+        </aside>
+      </section>
+
+      <section class="section" aria-label="适合启动信号">
+        <div class="section-head">
+          <p class="eyebrow">Fit Signals</p>
+          <h2>这四个信号齐了，才适合做小项目</h2>
+          <p>小项目不是“万能提示词”，而是对一个稳定流程做产品化固化。</p>
+        </div>
+        <div class="fit-grid">
+          {fitSignals.map((item) => (
+            <article>
+              <h3>{item.title}</h3>
+              <p>{item.body}</p>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      <section class="section module-section" aria-label="可做模块">
+        <div class="section-head">
+          <p class="eyebrow">Modules</p>
+          <h2>四类常见 Skill/SOP 模块</h2>
+          <p>先从一个最稳定、最高频、最容易验收的模块开始，不直接做大而全系统。</p>
+        </div>
+        <div class="module-grid">
+          {serviceModules.map((item) => (
+            <article>
+              <span>{item.code}</span>
+              <h3>{item.title}</h3>
+              <dl>
+                <div>
+                  <dt>适合</dt>
+                  <dd>{item.fit}</dd>
+                </div>
+                <div>
+                  <dt>输出</dt>
+                  <dd>{item.output}</dd>
+                </div>
+              </dl>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      <section class="section process-section" aria-label="小项目流程">
+        <div class="section-head">
+          <p class="eyebrow">Process</p>
+          <h2>5 步做成可复跑资产</h2>
+          <p>每一步都要留下能复查、能复用、能接管的材料。</p>
+        </div>
+        <div class="step-grid">
+          {buildSteps.map((item) => (
+            <article>
+              <span>{item.step}</span>
+              <h3>{item.title}</h3>
+              <p>{item.output}</p>
+              <strong>{item.proof}</strong>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      <section class="section deliverable-section" aria-label="交付物">
+        <div class="section-head">
+          <p class="eyebrow">Deliverables</p>
+          <h2>小项目交付物</h2>
+          <p>交付物要能复跑、能验收、能维护，而不是一次聊天结论。</p>
+        </div>
+        <div class="deliverable-grid">
+          {deliverables.map((item) => (
+            <article>
+              <h3>{item.title}</h3>
+              <p>{item.body}</p>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      <section class="section acceptance-section" aria-label="验收矩阵">
+        <div class="section-head">
+          <p class="eyebrow">Acceptance</p>
+          <h2>验收矩阵</h2>
+          <p>判断一个 Skill/SOP 是否真正可用，看这五个维度。</p>
+        </div>
+        <div class="acceptance-table">
+          <div class="acceptance-row acceptance-head">
+            <span>维度</span>
+            <span>通过标准</span>
+            <span>不通过表现</span>
+          </div>
+          {acceptanceRows.map((row) => (
+            <div class="acceptance-row">
+              <strong>{row.item}</strong>
+              <span>{row.pass}</span>
+              <span>{row.fail}</span>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <section class="section pause-section" aria-label="暂缓信号">
+        <div>
+          <p class="eyebrow">Pause Signals</p>
+          <h2>这些情况先暂停，不做小项目</h2>
+          <p>暂停是为了避免把模糊需求包装成稳定交付，最后两边都返工。</p>
+        </div>
+        <ul>
+          {pauseSignals.map((item) => <li>{item}</li>)}
+        </ul>
+      </section>
+
+      <section id="skill-brief" class="section brief-section" aria-label="小项目预审卡">
+        <div>
+          <p class="eyebrow">Project Brief</p>
+          <h2>复制 Skill/SOP 小项目预审卡</h2>
+          <p>
+            发微信 <code>{WECHAT}</code> 前，先把下面字段填到能判断的程度。复制内容会自动带上 来源：ailaoming.com/skill-sop 和 线索类型：Skill/SOP 小项目 / 预审。
+          </p>
+        </div>
+        <div class="brief-card">
+          <ol>
+            {briefItems.map((item) => <li>{item}</li>)}
+          </ol>
+          <button type="button" class="copy-skill-brief" data-copy={briefCopy}>复制小项目预审卡</button>
+          <p class="copy-skill-status" aria-live="polite"></p>
+        </div>
+      </section>
+
+      <TrustBoundary
+        compact={true}
+        eyebrow="小项目边界"
+        title="Skill/SOP 不替代人工责任，也不处理未授权材料"
+        intro="小项目只固化可复跑流程。涉及事实责任、专业判断、组织审批和原始敏感材料时，必须保留人工确认点；公开展示只使用脱敏结构和样例。"
+      />
+
+      <FAQSection title="Skill/SOP 小项目常见问题" items={skillFaqs} />
+
+      <ConversionCTA
+        title="先用一个稳定任务试跑"
+        note="如果你已经有一个高频重复任务，把脱敏样例、目标输出和验收标准发来，我先判断它适合直接做 Skill/SOP 小项目，还是应该先做工作流诊断。"
+        remark="Skill/SOP 小项目"
+        briefItems={[
+          '我想做成 Skill/SOP 的任务是：',
+          '我能提供的脱敏样例是：',
+          '我希望最终交付物是：',
+        ]}
+        primaryHref="/brief"
+        primaryLabel="复制需求卡"
+        secondaryHref="/delivery"
+        secondaryLabel="看交付流程"
+        briefHref="/workflow-diagnosis"
+        briefLabel="先看诊断服务"
+      />
+    </main>
+    <Footer />
+  </body>
+</html>
+
+<script>
+  document.querySelectorAll('.copy-skill-brief').forEach((button) => {
+    button.addEventListener('click', async () => {
+      const trigger = button instanceof HTMLElement ? button : null;
+      const text = trigger?.dataset.copy ?? '';
+      const panel = trigger?.closest('.brief-card');
+      const status = panel?.querySelector('.copy-skill-status');
+
+      try {
+        if (!navigator.clipboard || !text) throw new Error('Clipboard unavailable');
+        await navigator.clipboard.writeText(text);
+        if (status) status.textContent = '已复制，可直接粘贴到微信';
+      } catch {
+        const fallback = document.createElement('textarea');
+        fallback.value = text;
+        fallback.setAttribute('readonly', 'true');
+        fallback.style.position = 'fixed';
+        fallback.style.left = '-9999px';
+        document.body.appendChild(fallback);
+        fallback.select();
+        const copied = document.execCommand('copy');
+        fallback.remove();
+        if (status) status.textContent = copied ? '已复制，可直接粘贴到微信' : '复制失败，请手动复制上面的清单';
+      }
+    });
+  });
+</script>
+
+<style>
+  main {
+    width: 1080px;
+  }
+
+  .hero {
+    display: grid;
+    grid-template-columns: minmax(0, 1.32fr) minmax(260px, 0.68fr);
+    gap: 1.2rem;
+    align-items: stretch;
+    padding: 3.6rem 0 2.4rem;
+  }
+
+  .eyebrow {
+    margin: 0 0 0.65rem;
+    color: var(--accent);
+    font-size: 0.82rem;
+    font-weight: 800;
+  }
+
+  h1 {
+    margin: 0;
+    font-size: 2.65rem;
+    line-height: 1.14;
+  }
+
+  .tagline {
+    max-width: 780px;
+    margin: 1rem 0 0;
+    color: rgb(var(--gray));
+    font-size: 1.06rem;
+  }
+
+  .hero-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.8rem;
+    margin-top: 1.35rem;
+  }
+
+  .btn {
+    display: inline-flex;
+    min-height: 42px;
+    align-items: center;
+    justify-content: center;
+    padding: 0.62rem 0.9rem;
+    border-radius: 8px;
+    font-weight: 800;
+    text-decoration: none;
+  }
+
+  .btn.primary {
+    color: #fff;
+    background: var(--accent);
+  }
+
+  .btn.secondary {
+    color: rgb(var(--black));
+    background: #fff;
+    border: 1px solid rgba(var(--black), 0.12);
+  }
+
+  .hero-panel,
+  .fit-grid article,
+  .module-grid article,
+  .step-grid article,
+  .deliverable-grid article,
+  .brief-card {
+    background: #fff;
+    border: 1px solid rgba(var(--black), 0.08);
+    border-radius: 8px;
+    box-shadow: var(--box-shadow);
+  }
+
+  .hero-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    padding: 1.15rem;
+  }
+
+  .hero-panel strong {
+    color: rgb(var(--black));
+  }
+
+  .hero-panel p {
+    margin: 0;
+    color: rgb(var(--gray));
+    line-height: 1.7;
+  }
+
+  .hero-panel a {
+    width: fit-content;
+    color: var(--accent);
+    font-weight: 800;
+  }
+
+  .hero-panel a + a {
+    margin-top: -0.25rem;
+  }
+
+  .section {
+    margin: 3rem 0;
+  }
+
+  .section-head {
+    max-width: 760px;
+    margin-bottom: 1.2rem;
+  }
+
+  .section-head h2,
+  .pause-section h2,
+  .brief-section h2 {
+    margin: 0;
+    font-size: 1.72rem;
+  }
+
+  .section-head p:last-child,
+  .pause-section p,
+  .brief-section p {
+    margin: 0.65rem 0 0;
+    color: rgb(var(--gray));
+  }
+
+  .fit-grid,
+  .deliverable-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 0.9rem;
+  }
+
+  .fit-grid article,
+  .deliverable-grid article,
+  .module-grid article,
+  .step-grid article {
+    min-width: 0;
+    padding: 1rem;
+  }
+
+  .fit-grid h3,
+  .deliverable-grid h3,
+  .module-grid h3,
+  .step-grid h3 {
+    margin: 0 0 0.45rem;
+    color: rgb(var(--black));
+    font-size: 1rem;
+    line-height: 1.35;
+  }
+
+  .fit-grid p,
+  .deliverable-grid p,
+  .step-grid p,
+  .module-grid dd,
+  .acceptance-row span,
+  .pause-section li,
+  .brief-card li {
+    margin: 0;
+    color: rgb(var(--gray));
+    font-size: 0.92rem;
+    line-height: 1.65;
+  }
+
+  .module-section,
+  .process-section,
+  .deliverable-section,
+  .acceptance-section,
+  .pause-section,
+  .brief-section {
+    padding: 1rem;
+    background: #f7fbff;
+    border: 1px solid rgba(0, 102, 255, 0.1);
+    border-radius: 8px;
+  }
+
+  .module-grid,
+  .step-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 0.8rem;
+  }
+
+  .step-grid {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+  }
+
+  .module-grid span,
+  .step-grid span {
+    display: inline-flex;
+    min-width: 2.4rem;
+    min-height: 2rem;
+    align-items: center;
+    justify-content: center;
+    color: var(--accent);
+    background: rgba(0, 102, 255, 0.07);
+    border: 1px solid rgba(0, 102, 255, 0.16);
+    border-radius: 8px;
+    font-size: 0.78rem;
+    font-weight: 900;
+  }
+
+  .module-grid h3,
+  .step-grid h3 {
+    margin-top: 0.8rem;
+  }
+
+  .module-grid dl {
+    display: grid;
+    gap: 0.65rem;
+    margin: 0.75rem 0 0;
+  }
+
+  .module-grid dl div {
+    padding-top: 0.65rem;
+    border-top: 1px solid rgba(var(--black), 0.07);
+  }
+
+  .module-grid dt {
+    color: rgb(var(--black));
+    font-size: 0.78rem;
+    font-weight: 800;
+  }
+
+  .module-grid dd {
+    margin-top: 0.25rem;
+  }
+
+  .step-grid strong {
+    display: block;
+    margin-top: 0.75rem;
+    color: rgb(var(--black));
+    font-size: 0.88rem;
+    line-height: 1.55;
+  }
+
+  .acceptance-table {
+    display: grid;
+    gap: 0.55rem;
+  }
+
+  .acceptance-row {
+    display: grid;
+    grid-template-columns: 0.75fr 1.15fr 1.15fr;
+    gap: 0.55rem;
+    align-items: stretch;
+  }
+
+  .acceptance-row > * {
+    padding: 0.75rem;
+    background: #fff;
+    border: 1px solid rgba(var(--black), 0.08);
+    border-radius: 8px;
+  }
+
+  .acceptance-row strong,
+  .acceptance-head span {
+    color: rgb(var(--black));
+    font-weight: 800;
+  }
+
+  .acceptance-head span {
+    color: var(--accent);
+    background: rgba(0, 102, 255, 0.06);
+    border-color: rgba(0, 102, 255, 0.14);
+  }
+
+  .pause-section {
+    display: grid;
+    grid-template-columns: minmax(0, 0.8fr) minmax(320px, 1.2fr);
+    gap: 1rem;
+    align-items: start;
+  }
+
+  .pause-section ul {
+    display: grid;
+    gap: 0.55rem;
+    margin: 0;
+    padding-left: 1.1rem;
+  }
+
+  .brief-section {
+    display: grid;
+    grid-template-columns: minmax(0, 0.85fr) minmax(300px, 1.15fr);
+    gap: 1rem;
+    align-items: start;
+  }
+
+  .brief-card {
+    padding: 1rem;
+  }
+
+  .brief-card ol {
+    margin: 0;
+    padding-left: 1.15rem;
+  }
+
+  .brief-card li + li {
+    margin-top: 0.35rem;
+  }
+
+  .copy-skill-brief {
+    width: 100%;
+    min-height: 42px;
+    margin-top: 1rem;
+    padding: 0.6rem 0.8rem;
+    color: var(--accent);
+    font: inherit;
+    font-weight: 900;
+    background: #fff;
+    border: 1px solid rgba(0, 102, 255, 0.2);
+    border-radius: 8px;
+    cursor: pointer;
+  }
+
+  .copy-skill-status {
+    min-height: 1.2rem;
+    margin: 0.45rem 0 0 !important;
+    color: #157347 !important;
+    font-size: 0.84rem;
+    font-weight: 800;
+  }
+
+  @media (max-width: 1000px) {
+    .fit-grid,
+    .module-grid,
+    .deliverable-grid,
+    .step-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (max-width: 760px) {
+    main {
+      width: calc(100% - 1.5rem);
+    }
+
+    .hero,
+    .pause-section,
+    .brief-section {
+      grid-template-columns: 1fr;
+    }
+
+    h1 {
+      font-size: 2.1rem;
+    }
+
+    .fit-grid,
+    .module-grid,
+    .deliverable-grid,
+    .step-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .acceptance-row {
+      grid-template-columns: 1fr;
+    }
+
+    .hero-actions a {
+      width: 100%;
+    }
+  }
+</style>

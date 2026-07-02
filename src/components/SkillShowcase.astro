@@ -1,0 +1,1357 @@
+---
+import { WECHAT } from '../consts';
+
+type SkillItem = {
+  code: string;
+  title: string;
+  summary: string;
+  tags: string[];
+  scenario: string;
+  delivery: string;
+  acceptance: string;
+  boundary: string;
+  proofLevel: string;
+  proofLabel: string;
+  proofHref: string;
+};
+
+type ServiceBundle = {
+  title: string;
+  summary: string;
+  includes: string[];
+  bestFor: string;
+  proof: string;
+};
+
+type ScenarioRoute = {
+  signal: string;
+  title: string;
+  summary: string;
+  recommendation: string;
+  materials: string[];
+  href: string;
+  actionLabel: string;
+};
+
+type SelectionRow = {
+  symptom: string;
+  firstModule: string;
+  firstMaterials: string;
+  acceptance: string;
+  nextStep: string;
+};
+
+type LocalSkillAsset = {
+  lane: string;
+  title: string;
+  origin: string;
+  publicUse: string;
+  deliverable: string;
+  privacy: string;
+  status: string;
+};
+
+const skills: SkillItem[] = [
+  {
+    code: 'DOCX',
+    title: 'Word 格式保真',
+    summary: '在原模板上做内容更新、润色和结构调整，尽量保留字体、间距、表格、编号和版式。',
+    tags: ['模板延续', '可编辑文档', '版式校验'],
+    scenario: '合同、简历、方案、正式说明等已有 Word 模板的材料。',
+    delivery: '新版 DOCX、关键页渲染图、改动说明或验收清单。',
+    acceptance: '打开后版式稳定，编号和表格不乱，重点页面可与原模板逐项核对。',
+    boundary: '不替代法律、财务或人事审核；公开展示只使用脱敏样例。',
+    proofLevel: 'L2 公开文章',
+    proofLabel: 'AI Word Skill 方法样例',
+    proofHref: '/blog/recommend-ai-word-skill/',
+  },
+  {
+    code: 'MOM',
+    title: '会议纪要',
+    summary: '把议程、转写、参会角色和结论整理成正式、克制、可发送的纪要文本。',
+    tags: ['正式语气', '议题归并', '行动项'],
+    scenario: '内部例会、项目沟通、访谈整理、座谈交流后的纪要沉淀。',
+    delivery: '纪要正文、待确认事项、行动项清单、必要时输出 DOCX。',
+    acceptance: '议题完整，结论和责任动作清晰，不把口语噪音写进正式文本。',
+    boundary: '不臆造未讨论结论；敏感人名、组织名和录音内容默认脱敏处理。',
+    proofLevel: 'L1 方法框架',
+    proofLabel: '正式材料交付边界',
+    proofHref: '/skill-sop',
+  },
+  {
+    code: 'EXP',
+    title: '报销材料整理',
+    summary: '把凭证、事由、命名、目录和核验口径统一成可提交、可追溯的材料包。',
+    tags: ['凭证归档', '命名规范', '核验清单'],
+    scenario: '差旅、采购、活动、项目支出等需要按规则整理附件的场景。',
+    delivery: '脱敏附件目录、材料包结构、提交说明、缺口清单。',
+    acceptance: '凭证和事项能一一对应，文件名清楚，缺失材料被单独标出。',
+    boundary: '不伪造票据、不修改事实金额；公开案例不展示真实商户、人员和单据。',
+    proofLevel: 'L3 开源样例',
+    proofLabel: '报销 Skill 28 个版本',
+    proofHref: '/blog/reimburse-skill-28-versions-open-source/',
+  },
+  {
+    code: 'EDIT',
+    title: '去 AI 味写作',
+    summary: '把空泛、套路化、堆概念的草稿改成有事实、有节奏、可读性更强的表达。',
+    tags: ['人味改写', '长文润色', '表达校准'],
+    scenario: '公众号、小红书、个人简介、商业文案、长文草稿的二次加工。',
+    delivery: '改写稿、标题备选、删改说明、适配不同平台的版本。',
+    acceptance: '少套话，事实密度更高，语气自然，不出现明显 AI 模板腔。',
+    boundary: '不编造经历、数据和案例；不处理需要冒充真人背书的违规内容。',
+    proofLevel: 'L2 公开文章',
+    proofLabel: '去 AI 味写作 SOP',
+    proofHref: '/blog/de-ai-flavor-writing-skill-sop/',
+  },
+  {
+    code: 'SYNC',
+    title: '公众号同步',
+    summary: '把已授权文章从公众号整理到静态网站，覆盖正文、图片、本地化和发布前校验。',
+    tags: ['内容迁移', '图片本地化', '静态站'],
+    scenario: '公众号文章归档、个人站同步、内容库复用和搜索入口建设。',
+    delivery: 'Markdown 内容、图片资产、文章路径、构建前校验结果。',
+    acceptance: '正文完整，图片可本地加载，路径稳定，发布前没有外链和格式断点。',
+    boundary: '只处理有权使用的内容；不绕过平台权限，不暴露后台或私域数据。',
+    proofLevel: 'L4 可复跑流程',
+    proofLabel: '个人站获客系统改造',
+    proofHref: '/blog/ai-website-acquisition-system-2026/',
+  },
+  {
+    code: 'ARCH',
+    title: '资料归档',
+    summary: '把散落文件整理成可检索、可引用、可交接的目录、索引和命名体系。',
+    tags: ['目录治理', '索引页', '检索入口'],
+    scenario: '项目资料、文章素材、模板库、个人知识库和交付资产沉淀。',
+    delivery: '目录建议、索引文件、命名规则、资料缺口和优先级清单。',
+    acceptance: '能按主题、时间、项目或交付物找到资料，AI 也能引用明确路径。',
+    boundary: '未经确认不移动、删除、重命名原始资料；敏感路径默认不公开展示。',
+    proofLevel: 'L3 站点事实',
+    proofLabel: '长期记忆库项目看板',
+    proofHref: '/projects',
+  },
+  {
+    code: 'VIS',
+    title: '文章转漫画 / 封面',
+    summary: '把文章观点拆成分镜、画面提示和封面方向，用于内容传播和视觉资产生产。',
+    tags: ['分镜脚本', '封面方案', '视觉提示'],
+    scenario: '长文二次传播、公众号头图、小红书封面、系列内容视觉统一。',
+    delivery: '分镜表、封面文案、画面提示词、尺寸和导出建议。',
+    acceptance: '视觉主题贴合文章，标题可读，画面层级清楚，不喧宾夺主。',
+    boundary: '不还原真实私人影像；不生成侵犯肖像权、版权或平台规则的素材。',
+    proofLevel: 'L2 公开文章',
+    proofLabel: '文章转漫画 Skill',
+    proofHref: '/blog/article-to-comic-skill/',
+  },
+  {
+    code: 'DECK',
+    title: '前端幻灯片',
+    summary: '用 HTML/CSS 做可演示、可部署、可迭代的网页型幻灯片和演示页面。',
+    tags: ['Web Slides', '响应式', '可部署'],
+    scenario: '课程分享、内部汇报、产品演示、公开课和轻量路演材料。',
+    delivery: '静态页面、演示脚本、关键页面截图、必要的部署说明。',
+    acceptance: '桌面和移动端不重叠，核心信息一屏可读，构建后可正常访问。',
+    boundary: '不引入未授权素材；不承诺替代专业品牌视觉系统的完整交付。',
+    proofLevel: 'L2 公开文章',
+    proofLabel: 'Frontend Slides Skill',
+    proofHref: '/blog/recommend-frontend-slides-skill/',
+  },
+];
+
+const proofPoints = [
+  '输入、过程、输出、验收都写进 SOP',
+  '优先保留原始资料和模板结构',
+  '所有公开样例默认脱敏',
+  '把不可自动化的判断点单独标出',
+];
+
+const serviceBundles: ServiceBundle[] = [
+  {
+    title: '文档自动化包',
+    summary: '把 Word、纪要、报销、归档这类高频办公任务做成稳定流程。',
+    includes: ['Word 格式保真', '会议纪要', '报销材料整理', '资料归档'],
+    bestFor: '适合每周都在处理正式材料、附件、记录和交付文件的人。',
+    proof: '目标是少返工、少手工对齐、少漏附件。',
+  },
+  {
+    title: '内容生产包',
+    summary: '把选题、写作、去 AI 味、封面、文章同步整理成内容流水线。',
+    includes: ['去 AI 味写作', '公众号同步', '文章转漫画 / 封面', '前端幻灯片'],
+    bestFor: '适合公众号、小红书、课程资料、长文和个人品牌内容。',
+    proof: '目标是稳定输出，而不是每篇文章都从零开始。',
+  },
+  {
+    title: '知识库治理包',
+    summary: '把散落资料整理成 AI 能读取、人也能复查的索引和工作区。',
+    includes: ['资料归档', '目录治理', '索引页', 'AI 检索入口'],
+    bestFor: '适合文件很多、资料分散、历史项目难复用的个人或小团队。',
+    proof: '目标是让资料能被找到、引用、沉淀，而不是继续堆在硬盘里。',
+  },
+];
+
+const localSkillAssets: LocalSkillAsset[] = [
+  {
+    lane: '文档',
+    title: 'Word 格式保真',
+    origin: 'AI-Word-Skill',
+    publicUse: '适合已有 Word 模板的简历、合同、方案、纪要和正式材料。',
+    deliverable: '模板副本、改写后的 DOCX、关键页渲染验收和修改说明。',
+    privacy: '只展示脱敏方法，不展示原始 Word、私人简历或内部模板。',
+    status: '可服务化',
+  },
+  {
+    lane: '表格',
+    title: 'Excel 模型与数据表',
+    origin: 'AI-excel-sop',
+    publicUse: '适合把表格、预算、台账、模型和数据核对做成可编辑工作簿。',
+    deliverable: '可编辑 XLSX、公式区、来源区、检查区和格式对齐说明。',
+    privacy: '不公开原始财务表、银行流水、账户信息或内部测算底稿。',
+    status: '可服务化',
+  },
+  {
+    lane: '会议',
+    title: '正式会议纪要',
+    origin: 'meeting-minutes-sop',
+    publicUse: '适合把议程、转写和行动项压缩成正式、克制、可发送的纪要。',
+    deliverable: '纪要正文、待确认事项、行动项清单，必要时输出 DOCX。',
+    privacy: '公开只讲流程，不展示参会人、录音、原始转写或组织信息。',
+    status: '可服务化',
+  },
+  {
+    lane: '接待',
+    title: '来访日程 / 接待方案',
+    origin: 'reception-visit-schedule',
+    publicUse: '适合把来访时间、议程、参会角色和座谈安排整理成正式日程。',
+    deliverable: '行程表、座谈方案、参会名单结构和 Word 版式验收。',
+    privacy: '不公开具体来访单位、姓名、电话、会议室和内部接待安排。',
+    status: '可服务化',
+  },
+  {
+    lane: '报销',
+    title: '报销材料整理',
+    origin: 'reimburse',
+    publicUse: '适合把发票、付款记录、事由、目录和缺口清单整理成材料包。',
+    deliverable: '脱敏材料目录、命名规则、提交说明和缺失项检查表。',
+    privacy: '不展示公司抬头、税号、真名、商户、订单、金额和付款截图。',
+    status: '只公开方法论',
+  },
+  {
+    lane: '写作',
+    title: '去 AI 味写作',
+    origin: 'de-ai-writing-skill',
+    publicUse: '适合公众号、长文、个人介绍和商业文案从 AI 模板腔改到自然表达。',
+    deliverable: '改写稿、标题备选、删改说明和平台适配版本。',
+    privacy: '不编造经历、数据和背书；私人素材默认只做脱敏处理。',
+    status: '可服务化',
+  },
+  {
+    lane: '图表',
+    title: '学术图表与流程图',
+    origin: 'academic-figure-style',
+    publicUse: '适合论文、正式报告、技术方案里的流程图、结构图和版式图。',
+    deliverable: 'SVG/PDF 源文件、高分辨率 PNG 和排版验收截图。',
+    privacy: '不把内部图纸、未授权资料或业务秘密转成公开图片。',
+    status: '可服务化',
+  },
+  {
+    lane: 'PPT',
+    title: '学术 PPT / 讲稿',
+    origin: 'academic-ppt-skill',
+    publicUse: '适合答辩、讲座、课程、研究汇报和政策培训类严肃演示。',
+    deliverable: 'PPTX、讲稿、备注、图表和渲染检查图。',
+    privacy: '不公开原始课件、研究底稿、未授权论文和私有材料。',
+    status: '可服务化',
+  },
+  {
+    lane: '正式文档',
+    title: '正式 Word / 论文风',
+    origin: 'thesis-word-style',
+    publicUse: '适合把正式报告、论文式文档和技术说明做成克制、统一的 Word。',
+    deliverable: 'A4 文档、标题层级、表图编号、参考文献和页面渲染验收。',
+    privacy: '不替代专业审查，不公开原始研究资料和未授权附件。',
+    status: '可服务化',
+  },
+  {
+    lane: '内容',
+    title: '网文生产流水线',
+    origin: 'shuangwen-money-writer',
+    publicUse: '适合把 AI 写小说拆成设定、章节卡、爽点审计和连载账本。',
+    deliverable: '项目设定、章节大纲、章节正文、账本更新和复盘标准。',
+    privacy: '不抄袭现有 IP，不搬运平台付费内容，不公开私人创作后台。',
+    status: '公开项目化',
+  },
+  {
+    lane: '管理',
+    title: '周报与工作总结结构化',
+    origin: 'weekly-report workflow',
+    publicUse: '适合把一周事务压缩成任务、结果、备注和下周计划。',
+    deliverable: '表格化周报、事项归并、下一步计划和措辞压缩。',
+    privacy: '只展示通用结构，不展示公司、真名、内部系统、项目名称和周报原文。',
+    status: '仅脱敏展示',
+  },
+];
+
+const scenarioRoutes: ScenarioRoute[] = [
+  {
+    signal: '材料总是散',
+    title: '先做资料归档和知识库治理',
+    summary: '你不是缺一个更强模型，而是缺一个稳定的资料入口、命名规则和检索路径。',
+    recommendation: '知识库治理包',
+    materials: ['现有目录截图', '3 个典型文件', '你最常找不到的资料类型'],
+    href: '/services#knowledge-base',
+    actionLabel: '看知识库治理',
+  },
+  {
+    signal: '文档总返工',
+    title: '先做文档自动化包',
+    summary: '如果问题集中在 Word、纪要、报销、模板和附件，先把格式和验收口径固化。',
+    recommendation: '文档自动化包',
+    materials: ['原始模板', '期望成品', '最近一次返工原因'],
+    href: '/skill-sop',
+    actionLabel: '看文档自动化包',
+  },
+  {
+    signal: '内容产能不稳',
+    title: '先做内容生产包',
+    summary: '如果每次写文章、改文案、做封面都从零开始，先把选题、改写和分发拆成流水线。',
+    recommendation: '内容生产包',
+    materials: ['已发布样文', '目标平台', '你不想再重复做的步骤'],
+    href: '/projects',
+    actionLabel: '看内容生产入口',
+  },
+  {
+    signal: '不知道值不值得做',
+    title: '先做 AI 落地自测',
+    summary: '如果你还说不清输入、频率、风险和验收标准，先用自测把问题缩小。',
+    recommendation: '3 分钟自测',
+    materials: ['目标流程', '重复频率', '一份脱敏样例'],
+    href: '/diagnosis',
+    actionLabel: '先做自测',
+  },
+];
+
+const selectionRows: SelectionRow[] = [
+  {
+    symptom: '同类 Word 文档每次都要重新调格式',
+    firstModule: 'Word 格式保真',
+    firstMaterials: '原模板、目标稿、1 份历史成品',
+    acceptance: '字体、编号、表格、页眉页脚不乱',
+    nextStep: '做一个模板副本小闭环',
+  },
+  {
+    symptom: '会议录音、聊天记录很多，但沉淀不成结论',
+    firstModule: '会议纪要',
+    firstMaterials: '议程、转写文本、参会角色',
+    acceptance: '议题、结论、行动项可复查',
+    nextStep: '先输出一份正式纪要样稿',
+  },
+  {
+    symptom: '报销、附件、目录和事由总是反复核对',
+    firstModule: '报销材料整理',
+    firstMaterials: '脱敏凭证、规则说明、提交模板',
+    acceptance: '事项和凭证一一对应，缺口明确',
+    nextStep: '先做一套材料包结构',
+  },
+  {
+    symptom: '文章有想法，但 AI 写出来很套路',
+    firstModule: '去 AI 味写作',
+    firstMaterials: '原稿、参考文风、目标平台',
+    acceptance: '事实密度更高，语气自然，不编造',
+    nextStep: '先改 1 篇建立口味标尺',
+  },
+  {
+    symptom: '文章、图片、网站归档和分发链路断裂',
+    firstModule: '公众号同步',
+    firstMaterials: '文章链接、授权范围、目标站点',
+    acceptance: '正文完整，图片本地化，路径稳定',
+    nextStep: '先同步 3 篇验证流程',
+  },
+];
+
+const starterKitItems = [
+  '一个你反复做、反复返工的具体任务',
+  '1-2 份脱敏样例或原始模板',
+  '你希望最终交付成什么：文件、SOP、Skill、目录还是网页',
+  '这件事发生频率和现在最浪费时间的环节',
+];
+
+const skillBriefCopy = [
+  `微信：${WECHAT}`,
+  '备注：Skill 选型',
+  '我卡在的重复任务是：',
+  '我能提供的脱敏样例或模板是：',
+  '我希望先做：文档自动化 / 内容生产 / 知识库治理 / 先自测',
+  '我希望最终交付物是：',
+].join('\n');
+---
+
+<section class="skill-showcase" aria-labelledby="skill-showcase-title">
+  <div class="showcase-hero">
+    <div class="hero-copy">
+      <p class="eyebrow">Office Skills</p>
+      <h2 id="skill-showcase-title">把高频重复工作做成可复用 Skill</h2>
+      <p class="lead">
+        这里展示的是公开可说、可脱敏复用的办公 Skill 类别。每一类都按真实交付逻辑拆成适用场景、交付形态、验收标准和风险边界，目标是减少返工，而不是制造一份好看的提示词。
+      </p>
+    </div>
+    <div class="hero-panel" aria-label="Skill 交付原则">
+      <span class="panel-label">交付原则</span>
+      <ul>
+        {proofPoints.map((point) => <li>{point}</li>)}
+      </ul>
+    </div>
+  </div>
+
+  <div class="section-heading" aria-label="Skill 选型入口">
+    <p class="eyebrow">Scenario Router</p>
+    <h2>先判断你是哪类需求</h2>
+    <p>
+      Skills 页不是让你背概念。陌生访客只需要先判断自己的痛点属于哪一类，再决定发材料、做自测，还是直接进入服务包。
+    </p>
+  </div>
+  <div class="scenario-grid">
+    {scenarioRoutes.map((route) => (
+      <article class="scenario-card">
+        <span>{route.signal}</span>
+        <h3>{route.title}</h3>
+        <p>{route.summary}</p>
+        <div class="scenario-meta">
+          <strong>推荐路径</strong>
+          <p>{route.recommendation}</p>
+        </div>
+        <div class="scenario-meta">
+          <strong>首次发我这些材料</strong>
+          <ul>
+            {route.materials.map((item) => <li>{item}</li>)}
+          </ul>
+        </div>
+        <a href={route.href}>{route.actionLabel}</a>
+      </article>
+    ))}
+  </div>
+
+  <div class="bundle-section" aria-label="主推服务包">
+    <div class="section-heading">
+      <p class="eyebrow">Service Bundles</p>
+      <h2>优先推荐这三类服务包</h2>
+      <p>
+        如果你不是来研究 Skill 本身，而是想把具体问题解决掉，优先从这三类服务包里选。下面的单项 Skill 更像能力模块，会按你的场景组合使用。
+      </p>
+    </div>
+    <div class="bundle-grid">
+      {serviceBundles.map((bundle) => (
+        <article class="bundle-card">
+          <h3>{bundle.title}</h3>
+          <p>{bundle.summary}</p>
+          <div class="bundle-meta">
+            <strong>包含模块</strong>
+            <ul>
+              {bundle.includes.map((item) => <li>{item}</li>)}
+            </ul>
+          </div>
+          <div class="bundle-meta">
+            <strong>适合对象</strong>
+            <p>{bundle.bestFor}</p>
+          </div>
+          <div class="bundle-meta">
+            <strong>交付目标</strong>
+            <p>{bundle.proof}</p>
+          </div>
+        </article>
+      ))}
+    </div>
+  </div>
+
+  <div class="selection-section" aria-label="Skill 选型表">
+    <div class="section-heading">
+      <p class="eyebrow">Selection Table</p>
+      <h2>Skill 选型表</h2>
+      <p>
+        不确定自己要哪个 Skill 时，先看症状。真正的交付不是“给一个提示词”，而是把首批材料、验收口径和下一步动作定清楚。
+      </p>
+    </div>
+    <div class="selection-table">
+      <div class="selection-row selection-head">
+        <span>典型症状</span>
+        <span>优先模块</span>
+        <span>首批材料</span>
+        <span>验收口径</span>
+        <span>下一步动作</span>
+      </div>
+      {selectionRows.map((row) => (
+        <div class="selection-row">
+          <span>{row.symptom}</span>
+          <strong>{row.firstModule}</strong>
+          <span>{row.firstMaterials}</span>
+          <span>{row.acceptance}</span>
+          <span>{row.nextStep}</span>
+        </div>
+      ))}
+    </div>
+  </div>
+
+  <div class="local-assets-section" aria-label="本地 Skill 资产盘点">
+    <div class="section-heading">
+      <p class="eyebrow">Local Skill Assets</p>
+      <h2>本地 Skill 资产盘点</h2>
+      <p>
+        下面是本地长期沉淀出来的 Skill 资产公开展示版。它只展示可服务化方向、交付形态和隐私边界，不展示公司、真名、报销单据、周报原文、原始模板和内部资料。
+      </p>
+    </div>
+    <div class="local-skill-grid">
+      {localSkillAssets.map((asset) => (
+        <article class="local-skill-card">
+          <header>
+            <span>{asset.lane}</span>
+            <div>
+              <h3>{asset.title}</h3>
+              <p>{asset.origin}</p>
+            </div>
+          </header>
+          <dl>
+            <div>
+              <dt>公开用途</dt>
+              <dd>{asset.publicUse}</dd>
+            </div>
+            <div>
+              <dt>可交付物</dt>
+              <dd>{asset.deliverable}</dd>
+            </div>
+            <div>
+              <dt>脱敏边界</dt>
+              <dd>{asset.privacy}</dd>
+            </div>
+          </dl>
+          <strong>{asset.status}</strong>
+        </article>
+      ))}
+    </div>
+  </div>
+
+  <div class="starter-kit" aria-label="首次沟通材料包">
+    <div>
+      <p class="eyebrow">First Message</p>
+      <h2>首次沟通材料包</h2>
+      <p>
+        不用先写长需求。把下面四类信息凑齐，我就能判断这件事适合做一次诊断、一个 Skill/SOP 小项目，还是先退回资料整理。
+      </p>
+    </div>
+    <div class="starter-panel">
+      <strong>先发这 4 件事</strong>
+      <ol>
+        {starterKitItems.map((item) => <li>{item}</li>)}
+      </ol>
+      <button type="button" class="copy-skill-brief" data-copy={skillBriefCopy}>复制 Skill 咨询话术</button>
+      <p class="copy-skill-status" aria-live="polite"></p>
+    </div>
+  </div>
+
+  <div class="workflow-strip" aria-label="标准工作流">
+    <div>
+      <span>01</span>
+      <strong>界定输入</strong>
+      <p>确认资料、模板、口径和禁区。</p>
+    </div>
+    <div>
+      <span>02</span>
+      <strong>固化步骤</strong>
+      <p>把可重复动作写成流程。</p>
+    </div>
+    <div>
+      <span>03</span>
+      <strong>输出交付物</strong>
+      <p>生成文件、清单或页面资产。</p>
+    </div>
+    <div>
+      <span>04</span>
+      <strong>按项验收</strong>
+      <p>对格式、事实和边界做检查。</p>
+    </div>
+  </div>
+
+  <div class="section-heading compact">
+    <p class="eyebrow">Capability Library</p>
+    <h2>可组合的 Skill 能力库</h2>
+  </div>
+
+  <div class="skill-grid">
+    {skills.map((skill) => (
+      <article class="skill-card">
+        <header>
+          <span class="skill-code">{skill.code}</span>
+          <div>
+            <h3>{skill.title}</h3>
+            <p>{skill.summary}</p>
+          </div>
+        </header>
+
+        <div class="tag-row" aria-label={`${skill.title} 标签`}>
+          {skill.tags.map((tag) => <span>{tag}</span>)}
+        </div>
+
+        <dl class="detail-list">
+          <div>
+            <dt>适用场景</dt>
+            <dd>{skill.scenario}</dd>
+          </div>
+          <div>
+            <dt>交付形态</dt>
+            <dd>{skill.delivery}</dd>
+          </div>
+          <div>
+            <dt>验收标准</dt>
+            <dd>{skill.acceptance}</dd>
+          </div>
+          <div>
+            <dt>风险边界</dt>
+            <dd>{skill.boundary}</dd>
+          </div>
+          <div>
+            <dt>公开证据</dt>
+            <dd>
+              <span class="proof-level">{skill.proofLevel}</span>
+              <a class="skill-proof-link" href={skill.proofHref}>{skill.proofLabel}</a>
+            </dd>
+          </div>
+        </dl>
+      </article>
+    ))}
+  </div>
+</section>
+
+<script>
+  document.querySelectorAll('.copy-skill-brief').forEach((button) => {
+    button.addEventListener('click', async () => {
+      const trigger = button instanceof HTMLElement ? button : null;
+      const text = trigger?.dataset.copy ?? '';
+      const panel = trigger?.closest('.starter-panel');
+      const status = panel?.querySelector('.copy-skill-status');
+
+      try {
+        if (!navigator.clipboard || !text) throw new Error('Clipboard unavailable');
+        await navigator.clipboard.writeText(text);
+        if (status) status.textContent = '已复制，可直接粘贴到微信';
+      } catch {
+        if (status) status.textContent = '复制失败，请手动复制上面的格式';
+      }
+    });
+  });
+</script>
+
+<style>
+  .skill-showcase {
+    width: min(1080px, calc(100vw - 2rem));
+    margin: 3.5rem 0;
+    margin-left: calc(50% - min(540px, calc(50vw - 1rem)));
+    color: rgb(var(--gray-dark));
+  }
+
+  .showcase-hero {
+    display: grid;
+    grid-template-columns: minmax(0, 1.4fr) minmax(280px, 0.6fr);
+    gap: 1rem;
+    align-items: stretch;
+    padding: 2rem;
+    background:
+      linear-gradient(135deg, rgba(0, 102, 255, 0.08), rgba(17, 154, 128, 0.08) 48%, rgba(255, 255, 255, 0.92)),
+      #fff;
+    border: 1px solid rgba(var(--black), 0.08);
+    border-radius: 8px;
+  }
+
+  .eyebrow,
+  .panel-label {
+    display: block;
+    margin: 0 0 0.7rem;
+    color: var(--accent);
+    font-size: 0.82rem;
+    font-weight: 700;
+    letter-spacing: 0;
+  }
+
+  .showcase-hero h2 {
+    max-width: 720px;
+    margin: 0;
+    font-size: clamp(1.8rem, 3vw, 2.5rem);
+    line-height: 1.18;
+  }
+
+  .lead {
+    max-width: 760px;
+    margin: 1rem 0 0;
+    color: rgb(var(--gray));
+    font-size: 1rem;
+    line-height: 1.85;
+  }
+
+  .hero-panel {
+    padding: 1.1rem;
+    background: rgba(255, 255, 255, 0.78);
+    border: 1px solid rgba(var(--black), 0.08);
+    border-radius: 8px;
+  }
+
+  .hero-panel ul {
+    display: grid;
+    gap: 0.65rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .hero-panel li {
+    position: relative;
+    margin: 0;
+    padding-left: 1.05rem;
+    color: rgb(var(--gray-dark));
+    font-size: 0.92rem;
+    line-height: 1.65;
+  }
+
+  .hero-panel li::before {
+    position: absolute;
+    top: 0.72em;
+    left: 0;
+    width: 0.42rem;
+    height: 0.42rem;
+    background: #119a80;
+    border-radius: 999px;
+    content: '';
+  }
+
+  .workflow-strip {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    margin: 1rem 0;
+    border: 1px solid rgba(var(--black), 0.08);
+    border-radius: 8px;
+    background: #fff;
+    overflow: hidden;
+  }
+
+  .bundle-section {
+    margin: 1rem 0;
+  }
+
+  .section-heading {
+    margin: 1.6rem 0 1rem;
+  }
+
+  .section-heading h2 {
+    margin: 0;
+    font-size: 1.45rem;
+    line-height: 1.3;
+  }
+
+  .section-heading p:last-child {
+    max-width: 780px;
+    margin: 0.55rem 0 0;
+    color: rgb(var(--gray));
+    font-size: 0.95rem;
+    line-height: 1.75;
+  }
+
+  .section-heading.compact {
+    margin-top: 1.8rem;
+  }
+
+  .bundle-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1rem;
+  }
+
+  .scenario-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 0.85rem;
+    margin: 0 0 1.2rem;
+  }
+
+  .scenario-card {
+    display: grid;
+    gap: 0.7rem;
+    padding: 1rem;
+    background: #fff;
+    border: 1px solid rgba(var(--black), 0.08);
+    border-radius: 8px;
+    box-shadow: 0 14px 32px rgba(20, 20, 20, 0.045);
+  }
+
+  .scenario-card span {
+    color: var(--accent);
+    font-size: 0.78rem;
+    font-weight: 800;
+  }
+
+  .scenario-card h3 {
+    margin: 0;
+    font-size: 1.02rem;
+    line-height: 1.35;
+  }
+
+  .scenario-card p {
+    margin: 0;
+    color: rgb(var(--gray));
+    font-size: 0.88rem;
+    line-height: 1.62;
+  }
+
+  .scenario-meta {
+    padding-top: 0.65rem;
+    border-top: 1px solid rgba(var(--black), 0.07);
+  }
+
+  .scenario-meta strong {
+    display: block;
+    margin-bottom: 0.3rem;
+    color: rgb(var(--black));
+    font-size: 0.78rem;
+  }
+
+  .scenario-meta ul {
+    margin: 0;
+    padding-left: 1rem;
+  }
+
+  .scenario-meta li {
+    color: rgb(var(--gray));
+    font-size: 0.84rem;
+    line-height: 1.55;
+  }
+
+  .scenario-card a {
+    display: inline-flex;
+    min-height: 36px;
+    align-items: center;
+    justify-content: center;
+    margin-top: 0.2rem;
+    padding: 0.45rem 0.65rem;
+    color: var(--accent);
+    background: #fff;
+    border: 1px solid rgba(0, 102, 255, 0.2);
+    border-radius: 8px;
+    font-size: 0.86rem;
+    font-weight: 800;
+  }
+
+  .bundle-card {
+    padding: 1.1rem;
+    background: #fff;
+    border: 1px solid rgba(var(--black), 0.08);
+    border-radius: 8px;
+    box-shadow: 0 16px 34px rgba(20, 20, 20, 0.05);
+  }
+
+  .bundle-card h3 {
+    margin: 0;
+    font-size: 1.12rem;
+  }
+
+  .bundle-card > p {
+    margin: 0.55rem 0 1rem;
+    color: rgb(var(--gray));
+    font-size: 0.92rem;
+    line-height: 1.65;
+  }
+
+  .bundle-meta {
+    padding-top: 0.8rem;
+    border-top: 1px solid rgba(var(--black), 0.07);
+  }
+
+  .bundle-meta + .bundle-meta {
+    margin-top: 0.8rem;
+  }
+
+  .bundle-meta strong {
+    display: block;
+    margin-bottom: 0.35rem;
+    color: rgb(var(--black));
+    font-size: 0.8rem;
+  }
+
+  .bundle-meta p,
+  .bundle-meta li {
+    color: rgb(var(--gray));
+    font-size: 0.86rem;
+    line-height: 1.6;
+  }
+
+  .bundle-meta p {
+    margin: 0;
+  }
+
+  .bundle-meta ul {
+    margin: 0;
+    padding-left: 1.05rem;
+  }
+
+  .workflow-strip div {
+    padding: 1rem;
+    border-right: 1px solid rgba(var(--black), 0.08);
+  }
+
+  .workflow-strip div:last-child {
+    border-right: 0;
+  }
+
+  .workflow-strip span {
+    display: block;
+    margin-bottom: 0.35rem;
+    color: var(--accent);
+    font-size: 0.76rem;
+    font-weight: 700;
+  }
+
+  .workflow-strip strong {
+    display: block;
+    color: rgb(var(--black));
+    font-size: 0.98rem;
+  }
+
+  .workflow-strip p {
+    margin: 0.35rem 0 0;
+    color: rgb(var(--gray));
+    font-size: 0.86rem;
+    line-height: 1.55;
+  }
+
+  .selection-section {
+    margin: 1.4rem 0;
+  }
+
+  .local-assets-section {
+    margin: 1.6rem 0;
+  }
+
+  .local-skill-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.85rem;
+  }
+
+  .local-skill-card {
+    display: flex;
+    min-width: 0;
+    flex-direction: column;
+    gap: 0.85rem;
+    padding: 1rem;
+    background: #fff;
+    border: 1px solid rgba(var(--black), 0.08);
+    border-radius: 8px;
+    box-shadow: 0 14px 30px rgba(20, 20, 20, 0.045);
+  }
+
+  .local-skill-card header {
+    display: grid;
+    grid-template-columns: 3rem minmax(0, 1fr);
+    gap: 0.75rem;
+    align-items: start;
+  }
+
+  .local-skill-card header span {
+    display: inline-flex;
+    min-height: 2.5rem;
+    align-items: center;
+    justify-content: center;
+    padding: 0.2rem;
+    color: var(--accent);
+    background: #f3f7ff;
+    border: 1px solid rgba(0, 102, 255, 0.14);
+    border-radius: 8px;
+    font-size: 0.72rem;
+    font-weight: 900;
+  }
+
+  .local-skill-card h3 {
+    margin: 0;
+    font-size: 1rem;
+    line-height: 1.35;
+  }
+
+  .local-skill-card header p {
+    margin: 0.25rem 0 0;
+    color: rgb(var(--gray));
+    font-size: 0.78rem;
+    line-height: 1.45;
+  }
+
+  .local-skill-card dl {
+    display: grid;
+    gap: 0.65rem;
+    margin: 0;
+  }
+
+  .local-skill-card dl div {
+    padding-top: 0.65rem;
+    border-top: 1px solid rgba(var(--black), 0.07);
+  }
+
+  .local-skill-card dt {
+    margin-bottom: 0.25rem;
+    color: rgb(var(--black));
+    font-size: 0.76rem;
+    font-weight: 800;
+  }
+
+  .local-skill-card dd {
+    margin: 0;
+    color: rgb(var(--gray));
+    font-size: 0.84rem;
+    line-height: 1.58;
+  }
+
+  .local-skill-card > strong {
+    display: inline-flex;
+    width: fit-content;
+    min-height: 1.7rem;
+    align-items: center;
+    margin-top: auto;
+    padding: 0.18rem 0.55rem;
+    color: #157347;
+    background: rgba(21, 115, 71, 0.08);
+    border: 1px solid rgba(21, 115, 71, 0.16);
+    border-radius: 999px;
+    font-size: 0.74rem;
+  }
+
+  .selection-table {
+    display: grid;
+    border: 1px solid rgba(var(--black), 0.08);
+    border-radius: 8px;
+    background: #fff;
+    overflow: hidden;
+  }
+
+  .selection-row {
+    display: grid;
+    grid-template-columns: 1.25fr 0.78fr 1fr 1fr 0.92fr;
+    gap: 0;
+    border-top: 1px solid rgba(var(--black), 0.07);
+  }
+
+  .selection-row:first-child {
+    border-top: 0;
+  }
+
+  .selection-row > span,
+  .selection-row > strong {
+    min-width: 0;
+    padding: 0.85rem;
+    border-left: 1px solid rgba(var(--black), 0.07);
+    color: rgb(var(--gray));
+    font-size: 0.84rem;
+    line-height: 1.55;
+  }
+
+  .selection-row > span:first-child,
+  .selection-row > strong:first-child {
+    border-left: 0;
+  }
+
+  .selection-row > strong {
+    color: rgb(var(--black));
+    font-weight: 800;
+  }
+
+  .selection-head {
+    background: #f7fbff;
+  }
+
+  .selection-head span {
+    color: rgb(var(--black));
+    font-size: 0.78rem;
+    font-weight: 800;
+  }
+
+  .starter-kit {
+    display: grid;
+    grid-template-columns: minmax(0, 0.95fr) minmax(280px, 1.05fr);
+    gap: 1rem;
+    margin: 1.4rem 0;
+    padding: 1.2rem;
+    background: #f7fbff;
+    border: 1px solid rgba(0, 102, 255, 0.14);
+    border-radius: 8px;
+  }
+
+  .starter-kit h2 {
+    margin: 0;
+    font-size: 1.45rem;
+    line-height: 1.3;
+  }
+
+  .starter-kit p {
+    margin: 0.65rem 0 0;
+    color: rgb(var(--gray));
+    line-height: 1.7;
+  }
+
+  .starter-panel {
+    padding: 1rem;
+    background: #fff;
+    border: 1px solid rgba(var(--black), 0.08);
+    border-radius: 8px;
+  }
+
+  .starter-panel strong {
+    display: block;
+    color: rgb(var(--black));
+    font-size: 0.92rem;
+  }
+
+  .starter-panel ol {
+    margin: 0.75rem 0 0;
+    padding-left: 1.15rem;
+    color: rgb(var(--gray));
+    font-size: 0.9rem;
+    line-height: 1.65;
+  }
+
+  .starter-panel li + li {
+    margin-top: 0.35rem;
+  }
+
+  .copy-skill-brief {
+    width: 100%;
+    min-height: 40px;
+    margin-top: 0.9rem;
+    padding: 0.55rem 0.75rem;
+    color: var(--accent);
+    font: inherit;
+    font-weight: 800;
+    background: #fff;
+    border: 1px solid rgba(0, 102, 255, 0.2);
+    border-radius: 8px;
+    cursor: pointer;
+  }
+
+  .copy-skill-status {
+    min-height: 1.2rem;
+    margin-top: 0.45rem !important;
+    color: #157347 !important;
+    font-size: 0.84rem;
+    font-weight: 700;
+  }
+
+  .skill-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1rem;
+  }
+
+  .skill-card {
+    display: flex;
+    min-width: 0;
+    flex-direction: column;
+    gap: 1rem;
+    padding: 1.15rem;
+    background: #fff;
+    border: 1px solid rgba(var(--black), 0.08);
+    border-radius: 8px;
+    box-shadow: 0 16px 36px rgba(20, 20, 20, 0.06);
+  }
+
+  .skill-card header {
+    display: grid;
+    grid-template-columns: 3.2rem minmax(0, 1fr);
+    gap: 0.85rem;
+    align-items: start;
+  }
+
+  .skill-code {
+    display: inline-flex;
+    width: 3.2rem;
+    height: 3.2rem;
+    align-items: center;
+    justify-content: center;
+    background: #f3f7ff;
+    border: 1px solid rgba(0, 102, 255, 0.16);
+    border-radius: 8px;
+    color: var(--accent);
+    font-size: 0.72rem;
+    font-weight: 800;
+  }
+
+  .skill-card h3 {
+    margin: 0;
+    font-size: 1.08rem;
+    line-height: 1.35;
+  }
+
+  .skill-card header p {
+    margin: 0.38rem 0 0;
+    color: rgb(var(--gray));
+    font-size: 0.9rem;
+    line-height: 1.65;
+  }
+
+  .tag-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.45rem;
+  }
+
+  .tag-row span {
+    display: inline-flex;
+    align-items: center;
+    min-height: 1.65rem;
+    padding: 0.18rem 0.55rem;
+    background: #f7f8fa;
+    border: 1px solid rgba(var(--black), 0.07);
+    border-radius: 999px;
+    color: rgb(var(--gray-dark));
+    font-size: 0.76rem;
+    font-weight: 700;
+    line-height: 1.2;
+  }
+
+  .detail-list {
+    display: grid;
+    gap: 0.72rem;
+    margin: 0;
+  }
+
+  .detail-list div {
+    display: grid;
+    grid-template-columns: 4.8rem minmax(0, 1fr);
+    gap: 0.75rem;
+    align-items: start;
+    padding-top: 0.72rem;
+    border-top: 1px solid rgba(var(--black), 0.07);
+  }
+
+  .detail-list dt {
+    color: rgb(var(--black));
+    font-size: 0.78rem;
+    font-weight: 800;
+    line-height: 1.5;
+  }
+
+  .detail-list dd {
+    margin: 0;
+    color: rgb(var(--gray));
+    font-size: 0.86rem;
+    line-height: 1.65;
+  }
+
+  .proof-level {
+    display: inline-flex;
+    min-height: 1.5rem;
+    align-items: center;
+    margin-right: 0.45rem;
+    padding: 0.08rem 0.45rem;
+    background: #f7fbff;
+    border: 1px solid rgba(0, 102, 255, 0.14);
+    border-radius: 999px;
+    color: var(--accent);
+    font-size: 0.74rem;
+    font-weight: 800;
+    line-height: 1.2;
+    vertical-align: middle;
+  }
+
+  .skill-proof-link {
+    color: var(--accent);
+    font-weight: 800;
+    text-decoration: none;
+  }
+
+  @media (max-width: 900px) {
+    .showcase-hero,
+    .scenario-grid,
+    .bundle-grid,
+    .local-skill-grid,
+    .starter-kit,
+    .skill-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .selection-table {
+      border: 0;
+      background: transparent;
+      gap: 0.75rem;
+      overflow: visible;
+    }
+
+    .selection-row {
+      grid-template-columns: 1fr;
+      border: 1px solid rgba(var(--black), 0.08);
+      border-radius: 8px;
+      background: #fff;
+      overflow: hidden;
+    }
+
+    .selection-head {
+      display: none;
+    }
+
+    .selection-row > span,
+    .selection-row > strong {
+      border-left: 0;
+      border-top: 1px solid rgba(var(--black), 0.07);
+    }
+
+    .selection-row > span:first-child,
+    .selection-row > strong:first-child {
+      border-top: 0;
+    }
+
+    .workflow-strip {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .workflow-strip div:nth-child(2) {
+      border-right: 0;
+    }
+
+    .workflow-strip div:nth-child(-n + 2) {
+      border-bottom: 1px solid rgba(var(--black), 0.08);
+    }
+  }
+
+  @media (max-width: 620px) {
+    .skill-showcase {
+      width: 100%;
+      max-width: 100%;
+      margin-left: 0;
+    }
+
+    .showcase-hero {
+      padding: 1.2rem;
+    }
+
+    .workflow-strip {
+      grid-template-columns: 1fr;
+    }
+
+    .workflow-strip div,
+    .workflow-strip div:nth-child(2) {
+      border-right: 0;
+      border-bottom: 1px solid rgba(var(--black), 0.08);
+    }
+
+    .workflow-strip div:last-child {
+      border-bottom: 0;
+    }
+
+    .skill-card {
+      padding: 1rem;
+    }
+
+    .skill-card header,
+    .local-skill-card header,
+    .detail-list div {
+      grid-template-columns: 1fr;
+    }
+
+    .skill-code {
+      width: auto;
+      min-width: 3.2rem;
+      height: 2rem;
+      justify-self: start;
+      padding: 0 0.65rem;
+    }
+  }
+</style>

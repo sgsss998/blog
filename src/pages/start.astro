@@ -1,0 +1,534 @@
+---
+import BaseHead from '../components/BaseHead.astro';
+import ConversionCTA from '../components/ConversionCTA.astro';
+import FAQSection from '../components/FAQSection.astro';
+import Footer from '../components/Footer.astro';
+import Header from '../components/Header.astro';
+import TrustBoundary from '../components/TrustBoundary.astro';
+import { WECHAT } from '../consts';
+
+const routeCards = [
+  {
+    step: '01',
+    title: '先自学 / 资料卡',
+    signal: '刚开始系统用 AI，还没有稳定流程或真实样例。',
+    output: '先拿 AI 工具路线、Skill 首次需求模板或知识库整理自查表，把问题压缩到一个场景。',
+    href: '/products',
+    action: '领取资料卡',
+  },
+  {
+    step: '02',
+    title: '先做 AI 自测',
+    signal: '已经有重复工作，但还不确定资料、流程、价值和风险边界是否足够清楚。',
+    output: '用 3 分钟把资料基础、流程清晰度、交付价值和风险边界打分，再看下一步。',
+    href: '/diagnosis',
+    action: '开始自测',
+  },
+  {
+    step: '03',
+    title: '看诊断服务',
+    signal: '自测结果已经指向诊断，想知道诊断到底交付什么、需要什么材料。',
+    output: '看清诊断流程、路线图、工具分工、暂缓事项和预审卡。',
+    href: '/workflow-diagnosis',
+    action: '看诊断服务',
+  },
+  {
+    step: '04',
+    title: '复制需求卡',
+    signal: '已经能说清一个真实任务，想让我判断它适合诊断、Skill 小项目还是知识库治理。',
+    output: '把输入、输出、验收口径、预算意向和隐私边界压缩成一条可跟进微信消息。',
+    href: '/brief',
+    action: '复制需求卡',
+  },
+  {
+    step: '05',
+    title: '估算 AI ROI',
+    signal: '已经知道某个流程很耗时间，但还没判断是否值得做诊断或小项目。',
+    output: '先估算每月节省时间、返工成本和释放价值，再决定该自学、轻量聊还是进入诊断。',
+    href: '/roi-calculator',
+    action: '估算值不值',
+  },
+  {
+    step: '06',
+    title: '看 AI 获客站诊断',
+    signal: '已经有文章、项目、资料包或线下活动想法，但内容和服务入口没有形成合格线索路径。',
+    output: '看清内容、样例、自测、需求卡、Coffee Chat、工作坊和服务页之间该怎么串。',
+    href: '/ai-acquisition',
+    action: '看获客诊断',
+  },
+  {
+    step: '07',
+    title: '看合作方式',
+    signal: '想先知道这件事应该轻量聊、单次诊断、小项目，还是阶段陪跑。',
+    output: '先看预算口径、启动条件、首次材料、本次交付、升级条件和暂缓信号。',
+    href: '/pricing',
+    action: '看预算口径',
+  },
+  {
+    step: '08',
+    title: '上海 Coffee Chat',
+    signal: '人在上海，问题有现实上下文，适合当面把工具、资料、内容或业务落地拆清楚。',
+    output: '先复制报名话术，只约交通方便的公开场所，不提交表单，不公开私人聊天。',
+    href: '/coffee-chat',
+    action: '预约线下聊',
+  },
+  {
+    step: '09',
+    title: '上海 AI 小型工作坊',
+    signal: '同一主题有 3-8 人，想围绕知识库、AI 工作流、Skill/SOP 或内容商业化做一次小班拆解。',
+    output: '先复制工作坊预审卡，确认主题、人数、材料边界、预算意向和希望现场产出。',
+    href: '/workshop',
+    action: '看工作坊预审',
+  },
+  {
+    step: '10',
+    title: '看服务方案',
+    signal: '资料、样例、验收口径和风险边界都比较明确，准备进入可交付服务判断。',
+    output: '对照 AI 工作流诊断、知识库治理、Skill/SOP 小项目和系统陪跑的交付边界。',
+    href: '/services',
+    action: '看服务页',
+  },
+  {
+    step: '11',
+    title: '看 Skill/SOP 小项目',
+    signal: '输入、输出和验收口径已经相对稳定，想把重复任务做成可复跑资产。',
+    output: '看清可做模块、5 步固化流程、验收矩阵、暂缓信号和小项目预审卡。',
+    href: '/skill-sop',
+    action: '看小项目',
+  },
+  {
+    step: '12',
+    title: '看交付流程',
+    signal: '已经准备沟通或报价，想先知道启动后怎样试跑、验收、交付和复盘。',
+    output: '对照需求卡、诊断、脱敏样例试跑、SOP 固化、本地验证和复盘迭代。',
+    href: '/delivery',
+    action: '看交付流程',
+  },
+];
+
+const routeRules = [
+  {
+    title: '先低成本判断',
+    body: '能自学就先自学，能用需求卡说清就先发需求卡，只有当输入、输出和验收稳定时才进入小项目。',
+  },
+  {
+    title: '先脱敏样例',
+    body: '第一次沟通只需要目录、截图遮挡版、公开链接或口头描述，不需要直接发送原始敏感材料。',
+  },
+  {
+    title: '先验收口径',
+    body: '如果说不清怎样算做好，项目会先停在诊断或暂缓，不会直接承诺交付结果。',
+  },
+  {
+    title: '先匹配预算',
+    body: '公开页面不写死价格，真实报价只在需求、样例和验收边界清楚后确认。',
+  },
+];
+
+const startCopy = [
+  `微信号：${WECHAT}`,
+  '备注：AI 首步分流',
+  '来源：ailaoming.com/start',
+  '线索类型：AI 首步分流',
+  '我现在最接近的状态是：先自学 / 有重复流程 / 有内容但不转化 / 想看可信度 / 上海当面拆 / 同题 3-8 人工作坊 / 想判断预算 / 暂不确定',
+  '我手上已经有的材料：',
+  '我希望下一步：资料卡 / AI 自测 / ROI 估算 / AI 获客站诊断 / 工作流诊断 / Skill-SOP 小项目 / 需求卡 / 合作方式判断 / 交付流程 / Coffee Chat / 小型工作坊 / 服务方案',
+  '预算意向：自学 / 轻量判断 / 单次诊断 / 小项目 / 阶段陪跑 / 暂不确定',
+  '期望启动时间：本周 / 本月 / 先预沟通',
+  '是否接受先诊断再项目：是 / 否 / 需要先了解',
+  '隐私边界：我会先提供脱敏描述，不直接发送原始敏感材料。',
+].join('\n');
+
+const startFaqs = [
+  {
+    question: '我完全不知道该买什么服务，应该从哪里开始？',
+    answer: '先走这个首步分流页。能自学就先拿资料卡；有具体流程就做 AI 自测或复制需求卡；人在上海且问题需要现实上下文，再考虑 Coffee Chat；同一主题有 3-8 人，再看工作坊预审。',
+  },
+  {
+    question: '这个页面会收集我的信息吗？',
+    answer: '不会。本站不提交表单，不上传、不存储你的输入。复制按钮只在浏览器里生成微信沟通模板，真正沟通时也建议先发脱敏描述。',
+  },
+  {
+    question: '什么时候适合直接看服务页？',
+    answer: '当你已经能说明资料来源、流程频率、目标输出、验收口径、预算意向和隐私边界时，可以直接看服务方案；否则先回到自测、需求卡或合作方式页。',
+  },
+];
+
+const startStructuredData = {
+  '@context': 'https://schema.org',
+  '@type': 'WebPage',
+  '@id': 'https://ailaoming.com/start/#start-here',
+  name: 'AI 首步分流',
+  url: 'https://ailaoming.com/start/',
+  inLanguage: 'zh-CN',
+  description: '帮助访客在资料卡、AI 自测、ROI 估算、AI 获客站诊断、需求卡、合作方式、交付流程、上海 Coffee Chat、上海 AI 小型工作坊和服务方案之间选择第一步。',
+  about: ['AI 首步分流', 'AI ROI 估算', 'AI 获客站诊断', 'AI 工作流诊断', 'Skill/SOP 小项目', 'AI 项目交付流程', '上海 AI Coffee Chat', '上海 AI 小型工作坊'],
+  potentialAction: routeCards.map((card) => ({
+    '@type': 'ReadAction',
+    name: card.action,
+    target: `https://ailaoming.com${card.href}/`.replace(/\/\/$/, '/'),
+  })),
+};
+---
+
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <BaseHead
+      title="AI 首步分流"
+      description="第一次来 ailaoming.com，先用这个入口判断该自学、做 AI 自测、复制需求卡、看合作方式、看交付流程，还是预约上海 Coffee Chat。"
+    />
+    <script type="application/ld+json" set:html={JSON.stringify(startStructuredData)}></script>
+  </head>
+  <body>
+    <Header />
+    <main>
+      <section class="hero">
+        <div class="hero-copy">
+          <p class="eyebrow">Start Here</p>
+          <h1>AI 首步分流：第一次来，先点这里</h1>
+          <p class="tagline">
+            不用一上来就买服务。先判断你现在更适合自学、做 AI 自测、估算 ROI、看 AI 获客站诊断、复制需求卡、看合作方式、看交付流程、约上海 Coffee Chat，还是发起上海 AI 小型工作坊。路径选对，后面的沟通成本会低很多。
+          </p>
+          <div class="hero-actions">
+            <a class="btn primary" href="#route-cards">选择第一步</a>
+            <a class="btn secondary" href="/cases">先看公开样例</a>
+          </div>
+        </div>
+        <aside class="copy-panel" aria-label="首步判断卡">
+          <p class="panel-label">3 分钟判断</p>
+          <h2>复制首步判断卡</h2>
+          <p>
+            不提交表单，不上传、不存储。复制后发微信 <code>{WECHAT}</code>，我先判断该走哪条路径。
+          </p>
+          <pre class="copy-template">{startCopy}</pre>
+          <button type="button" class="copy-start-brief" data-copy={startCopy}>复制首步判断卡</button>
+          <p class="copy-status" aria-live="polite"></p>
+        </aside>
+      </section>
+
+      <section class="section" id="route-cards" aria-label="首步分流路径">
+        <div class="section-head">
+          <p class="eyebrow">Decision Routes</p>
+          <h2>按你现在的状态选择第一步</h2>
+          <p>如果不确定，优先选更轻的一步；先把问题说清楚，再决定是否进入诊断、小项目或阶段陪跑。</p>
+        </div>
+        <div class="route-grid">
+          {routeCards.map((card) => (
+            <a class="route-card" href={card.href}>
+              <span>{card.step}</span>
+              <h3>{card.title}</h3>
+              <p>{card.signal}</p>
+              <strong>{card.output}</strong>
+              <em>{card.action}</em>
+            </a>
+          ))}
+        </div>
+      </section>
+
+      <section class="section rule-section" aria-label="分流规则">
+        <div class="section-head">
+          <p class="eyebrow">Rules</p>
+          <h2>首步分流的底层规则</h2>
+        </div>
+        <div class="rule-grid">
+          {routeRules.map((rule) => (
+            <article>
+              <h3>{rule.title}</h3>
+              <p>{rule.body}</p>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      <TrustBoundary />
+
+      <FAQSection title="首步分流常见问题" items={startFaqs} />
+
+      <ConversionCTA
+        title="把你的第一步压缩成一条可跟进消息"
+        note="如果你还是不知道该点哪一页，直接复制首步判断卡发我。我会先判断应该自学、做 AI 自测、估算 ROI、看获客站诊断、填需求卡、看合作方式、看交付流程，还是安排上海 Coffee Chat 或小型工作坊。"
+        remark="AI 首步分流"
+        briefItems={[
+          '我现在最接近的状态是：',
+          '我希望下一步：资料卡 / AI 自测 / ROI 估算 / 获客站诊断 / 需求卡 / 合作方式判断 / 交付流程 / Coffee Chat / 小型工作坊 / 服务诊断',
+          '我手上已经有的材料：',
+        ]}
+        primaryHref="/diagnosis"
+        primaryLabel="先做 AI 自测"
+        secondaryHref="/pricing"
+        secondaryLabel="看合作方式"
+        briefHref="/brief"
+        briefLabel="复制需求卡"
+      />
+    </main>
+    <Footer />
+  </body>
+</html>
+
+<script>
+  document.querySelectorAll('.copy-start-brief').forEach((button) => {
+    button.addEventListener('click', async () => {
+      const trigger = button instanceof HTMLElement ? button : null;
+      const text = trigger?.dataset.copy ?? '';
+      const panel = trigger?.closest('.copy-panel');
+      const status = panel?.querySelector('.copy-status');
+
+      try {
+        if (!navigator.clipboard || !text) throw new Error('Clipboard unavailable');
+        await navigator.clipboard.writeText(text);
+        if (status) status.textContent = '已复制，可直接粘贴到微信';
+      } catch {
+        if (status) status.textContent = '复制失败，请手动复制上面的格式';
+      }
+    });
+  });
+</script>
+
+<style>
+  main {
+    width: 1080px;
+  }
+
+  .hero {
+    display: grid;
+    grid-template-columns: minmax(0, 1.35fr) minmax(300px, 0.8fr);
+    gap: 1.4rem;
+    align-items: stretch;
+    padding: 3.8rem 0 2.6rem;
+  }
+
+  .eyebrow,
+  .panel-label {
+    margin: 0 0 0.75rem;
+    color: var(--accent);
+    font-size: 0.84rem;
+    font-weight: 800;
+  }
+
+  .hero h1 {
+    margin: 0;
+    font-size: 2.7rem;
+    line-height: 1.15;
+  }
+
+  .tagline {
+    max-width: 760px;
+    margin: 1rem 0 0;
+    color: rgb(var(--gray));
+    font-size: 1.08rem;
+  }
+
+  .hero-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.85rem;
+    margin-top: 1.5rem;
+  }
+
+  .btn,
+  .route-card em,
+  .copy-start-brief {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 42px;
+    padding: 0.62rem 0.9rem;
+    border-radius: 8px;
+    font: inherit;
+    font-weight: 800;
+  }
+
+  .btn.primary,
+  .copy-start-brief {
+    color: #fff;
+    background: var(--accent);
+    border: 1px solid var(--accent);
+  }
+
+  .btn.secondary {
+    color: rgb(var(--black));
+    background: #fff;
+    border: 1px solid rgba(var(--black), 0.12);
+  }
+
+  .copy-panel,
+  .route-card,
+  .rule-grid article {
+    background: #fff;
+    border: 1px solid rgba(var(--black), 0.08);
+    border-radius: 8px;
+    box-shadow: var(--box-shadow);
+  }
+
+  .copy-panel {
+    padding: 1.25rem;
+  }
+
+  .copy-panel h2 {
+    margin: 0;
+    font-size: 1.35rem;
+  }
+
+  .copy-panel p {
+    color: rgb(var(--gray));
+  }
+
+  .copy-panel code {
+    color: rgb(var(--black));
+    font-weight: 800;
+  }
+
+  .copy-template {
+    max-height: 230px;
+    margin: 0.85rem 0;
+    padding: 0.8rem;
+    overflow: auto;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+    color: rgb(var(--black));
+    background: rgba(var(--gray-light), 0.54);
+    border: 1px solid rgba(var(--black), 0.08);
+    border-radius: 8px;
+    font: inherit;
+    font-size: 0.86rem;
+    line-height: 1.65;
+  }
+
+  .copy-start-brief {
+    width: 100%;
+    margin-top: 0;
+    cursor: pointer;
+  }
+
+  .copy-status {
+    min-height: 1.2rem;
+    margin: 0.55rem 0 0;
+    color: #157347 !important;
+    font-size: 0.86rem;
+    font-weight: 800;
+  }
+
+  .section {
+    margin: 3rem 0;
+  }
+
+  .section-head {
+    max-width: 760px;
+    margin-bottom: 1.25rem;
+  }
+
+  .section-head h2 {
+    margin: 0;
+    font-size: 1.75rem;
+  }
+
+  .section-head p:last-child {
+    margin: 0.65rem 0 0;
+    color: rgb(var(--gray));
+  }
+
+  .route-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.95rem;
+  }
+
+  .route-card {
+    display: flex;
+    min-height: 280px;
+    flex-direction: column;
+    padding: 1rem;
+    color: rgb(var(--black));
+    text-decoration: none;
+  }
+
+  .route-card:hover {
+    border-color: rgba(0, 102, 255, 0.28);
+  }
+
+  .route-card span {
+    display: inline-flex;
+    width: 2.2rem;
+    height: 2.2rem;
+    align-items: center;
+    justify-content: center;
+    color: var(--accent);
+    background: rgba(0, 102, 255, 0.08);
+    border: 1px solid rgba(0, 102, 255, 0.16);
+    border-radius: 8px;
+    font-size: 0.78rem;
+    font-weight: 900;
+  }
+
+  .route-card h3 {
+    margin: 0.9rem 0 0;
+    font-size: 1.1rem;
+  }
+
+  .route-card p {
+    margin: 0.6rem 0 0;
+    color: rgb(var(--gray));
+    font-size: 0.94rem;
+  }
+
+  .route-card strong {
+    display: block;
+    margin: 0.75rem 0 1rem;
+    color: rgb(var(--black));
+    font-size: 0.93rem;
+    line-height: 1.65;
+  }
+
+  .route-card em {
+    margin-top: auto;
+    color: var(--accent);
+    background: rgba(0, 102, 255, 0.07);
+    font-style: normal;
+  }
+
+  .rule-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 0.85rem;
+  }
+
+  .rule-grid article {
+    padding: 1rem;
+  }
+
+  .rule-grid h3 {
+    margin: 0;
+    font-size: 1rem;
+  }
+
+  .rule-grid p {
+    margin: 0.6rem 0 0;
+    color: rgb(var(--gray));
+    font-size: 0.94rem;
+  }
+
+  @media (max-width: 900px) {
+    main {
+      width: calc(100% - 2rem);
+    }
+
+    .hero,
+    .route-grid,
+    .rule-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .hero {
+      padding-top: 2.4rem;
+    }
+
+    .hero h1 {
+      font-size: 2.15rem;
+    }
+
+    .route-card {
+      min-height: 0;
+    }
+  }
+</style>

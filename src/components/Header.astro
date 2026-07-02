@@ -7,12 +7,22 @@ import HeaderLink from './HeaderLink.astro';
   <nav>
     <h2><a href="/">{SITE_TITLE}</a></h2>
     <div class="internal-links">
-      <HeaderLink href="/">首页</HeaderLink>
-      <HeaderLink href="/products">产品库</HeaderLink>
-      <HeaderLink href="/skills">Skills</HeaderLink>
-      <HeaderLink href="/services">服务</HeaderLink>
-      <HeaderLink href="/blog">文章</HeaderLink>
-      <HeaderLink href="/about">关于</HeaderLink>
+      <HeaderLink href="/start" class="nav-primary">开始</HeaderLink>
+      <HeaderLink href="/diagnosis" class="nav-primary">AI 自测</HeaderLink>
+      <HeaderLink href="/brief" class="nav-primary">需求卡</HeaderLink>
+      <HeaderLink href="/roi-calculator" class="nav-primary">ROI</HeaderLink>
+      <HeaderLink href="/services" class="nav-primary">服务</HeaderLink>
+      <HeaderLink href="/ai-acquisition" class="nav-primary">获客</HeaderLink>
+      <HeaderLink href="/pricing" class="nav-primary">合作</HeaderLink>
+      <HeaderLink href="/delivery" class="nav-primary">交付</HeaderLink>
+      <HeaderLink href="/cases" class="nav-primary">样例</HeaderLink>
+      <HeaderLink href="/blog" class="nav-primary">文章</HeaderLink>
+      <HeaderLink href="/projects" class="nav-secondary">项目</HeaderLink>
+      <HeaderLink href="/products" class="nav-secondary">资料卡</HeaderLink>
+      <HeaderLink href="/coffee-chat" class="nav-secondary">Coffee Chat</HeaderLink>
+      <HeaderLink href="/workshop" class="nav-secondary">工作坊</HeaderLink>
+      <HeaderLink href="/shanghai-ai" class="nav-secondary">上海</HeaderLink>
+      <HeaderLink href="/trust" class="nav-secondary">信任</HeaderLink>
     </div>
     <div class="social-links">
       <a href="https://github.com/sgsss998" target="_blank" title="GitHub">
@@ -95,19 +105,44 @@ import HeaderLink from './HeaderLink.astro';
     align-items: center;
     flex-wrap: wrap;
   }
-  nav a {
-    padding: 1em 0.8em;
+  .internal-links a {
+    padding: 0.8em 0.7em;
     color: rgb(var(--black));
     text-decoration: none;
     font-size: 0.95em;
     transition: color 0.2s ease;
   }
-  nav a:hover {
+  .internal-links a:hover {
     color: var(--accent);
   }
-  nav a.active {
+  .internal-links a.active {
     border-bottom: 2px solid var(--accent);
     color: var(--accent);
+  }
+  .internal-links a.nav-primary {
+    font-weight: 700;
+  }
+  .internal-links a.nav-secondary {
+    color: rgba(var(--black), 0.68);
+    font-size: 0.9em;
+  }
+  .internal-links a.nav-primary[href="/start"],
+  .internal-links a.nav-primary[href="/diagnosis"],
+  .internal-links a.nav-primary[href="/brief"],
+  .internal-links a.nav-primary[href="/roi-calculator"] {
+    margin-left: 0.15rem;
+    padding: 0.45rem 0.7rem;
+    border: 1px solid rgba(0, 102, 255, 0.18);
+    border-radius: 8px;
+    background: rgba(0, 102, 255, 0.06);
+    color: var(--accent);
+  }
+  .internal-links a.nav-primary[href="/start"].active,
+  .internal-links a.nav-primary[href="/diagnosis"].active,
+  .internal-links a.nav-primary[href="/brief"].active,
+  .internal-links a.nav-primary[href="/roi-calculator"].active {
+    background: var(--accent);
+    color: #fff;
   }
   .social-links, .social-links a {
     display: flex;
@@ -182,15 +217,62 @@ import HeaderLink from './HeaderLink.astro';
     border-radius: 8px;
   }
   @media (max-width: 720px) {
+    header {
+      padding: 0 0.75rem;
+    }
     nav {
-      justify-content: center;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      row-gap: 0.1rem;
+      padding-top: 0.35rem;
+      max-width: 100%;
+    }
+    h2 {
+      grid-column: 1;
+      grid-row: 1;
+      font-size: 0.94rem;
+    }
+    .internal-links {
+      grid-column: 1 / -1;
+      grid-row: 2;
+      width: 100%;
+      max-width: 100%;
+      min-width: 0;
+      flex-wrap: nowrap;
+      overflow-x: auto;
+      padding: 0.05rem 0 0.35rem;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+    }
+    .internal-links::-webkit-scrollbar {
+      display: none;
     }
     .social-links a:first-child {
       display: none;
     }
-    nav a {
-      padding: 1em 0.5em;
-      font-size: 0.9em;
+    .social-links {
+      grid-column: 2;
+      grid-row: 1;
+      justify-self: end;
+      gap: 0.25rem;
+    }
+    .internal-links a {
+      flex: 0 0 auto;
+      padding: 0.36rem 0.5rem;
+      font-size: 0.84em;
+      white-space: nowrap;
+    }
+    .internal-links a.nav-primary[href="/start"],
+    .internal-links a.nav-primary[href="/diagnosis"],
+    .internal-links a.nav-primary[href="/brief"] {
+      padding: 0.34rem 0.55rem;
+    }
+    .wechat-btn {
+      padding: 0.28rem;
+    }
+    .wechat-btn svg {
+      width: 21px;
+      height: 21px;
     }
   }
 </style>

@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="383" viewBox="0 0 900 383" role="img" aria-labelledby="title desc">
+  <title id="title">上海 AI Coffee Chat 复盘模板封面</title>
+  <desc id="desc">一张展示线下交流、复盘模板和 AI 服务路径的简洁封面图。</desc>
+  <rect width="900" height="383" fill="#f7fbff"/>
+  <rect x="42" y="44" width="816" height="295" rx="8" fill="#ffffff" stroke="#d7e6ff" stroke-width="2"/>
+  <rect x="72" y="74" width="228" height="235" rx="8" fill="#f3f8ff" stroke="#c8ddff"/>
+  <rect x="330" y="74" width="228" height="235" rx="8" fill="#fbfff8" stroke="#d7e9cf"/>
+  <rect x="588" y="74" width="228" height="235" rx="8" fill="#fffaf2" stroke="#eedbb6"/>
+  <text x="90" y="116" fill="#0066ff" font-family="Arial, 'PingFang SC', sans-serif" font-size="22" font-weight="700">01 线下交流</text>
+  <text x="348" y="116" fill="#119a80" font-family="Arial, 'PingFang SC', sans-serif" font-size="22" font-weight="700">02 会后复盘</text>
+  <text x="606" y="116" fill="#9a6a11" font-family="Arial, 'PingFang SC', sans-serif" font-size="22" font-weight="700">03 下一步路径</text>
+  <line x1="96" y1="152" x2="276" y2="152" stroke="#7aa7ff" stroke-width="5" stroke-linecap="round"/>
+  <line x1="96" y1="178" x2="238" y2="178" stroke="#a7c5ff" stroke-width="5" stroke-linecap="round"/>
+  <line x1="96" y1="204" x2="260" y2="204" stroke="#a7c5ff" stroke-width="5" stroke-linecap="round"/>
+  <line x1="354" y1="152" x2="534" y2="152" stroke="#65b8a5" stroke-width="5" stroke-linecap="round"/>
+  <line x1="354" y1="178" x2="498" y2="178" stroke="#9dd6ca" stroke-width="5" stroke-linecap="round"/>
+  <line x1="354" y1="204" x2="518" y2="204" stroke="#9dd6ca" stroke-width="5" stroke-linecap="round"/>
+  <line x1="612" y1="152" x2="792" y2="152" stroke="#c29645" stroke-width="5" stroke-linecap="round"/>
+  <line x1="612" y1="178" x2="754" y2="178" stroke="#dfc589" stroke-width="5" stroke-linecap="round"/>
+  <line x1="612" y1="204" x2="778" y2="204" stroke="#dfc589" stroke-width="5" stroke-linecap="round"/>
+  <path d="M300 191h30" stroke="#0066ff" stroke-width="3" stroke-linecap="round"/>
+  <path d="M320 181l10 10-10 10" fill="none" stroke="#0066ff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M558 191h30" stroke="#119a80" stroke-width="3" stroke-linecap="round"/>
+  <path d="M578 181l10 10-10 10" fill="none" stroke="#119a80" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="90" y="266" fill="#1f2937" font-family="Arial, 'PingFang SC', sans-serif" font-size="18">问题、工具栈、资料边界</text>
+  <text x="348" y="266" fill="#1f2937" font-family="Arial, 'PingFang SC', sans-serif" font-size="18">共性问题、公开结论</text>
+  <text x="606" y="266" fill="#1f2937" font-family="Arial, 'PingFang SC', sans-serif" font-size="18">自测、诊断、Skill 小项目</text>
+  <text x="72" y="352" fill="#0066ff" font-family="Arial, 'PingFang SC', sans-serif" font-size="28" font-weight="700">Shanghai AI Coffee Chat Recap Template</text>
+</svg>

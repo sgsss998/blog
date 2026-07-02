@@ -1,6 +1,6 @@
 ---
 title: 多个微信，可以各自连接一个独立的小龙虾 agent
-description: 两台 iPhone、两个微信分别绑定执行型 Agent 与秘书型 Agent；OpenClaw 多 Channel 路由原理与 openclaw.json 配置思路。同步自公众号。
+description: 多个微信入口分别绑定不同 Agent 的公开架构思路；OpenClaw 多 Channel 路由原理与 openclaw.json 脱敏配置示例。
 pubDate: 2026-03-28
 heroImage: /images/blog/openclaw-multi-wechat-cover.jpg
 keywords: [OpenClaw, 小龙虾, 微信, 多 Agent, 路由, Channel, Gateway, AI干货家老明]
@@ -8,101 +8,16 @@ keywords: [OpenClaw, 小龙虾, 微信, 多 Agent, 路由, Channel, Gateway, AI�
 
 > **原文首发**：[微信公众号 · 多个微信，可以各自连接一个独立的小龙虾agent](https://mp.weixin.qq.com/s/peZ20b9y1S5QLP3Z73N3bA)
 
-如图所示：两部 iPhone，左为 17 Pro Max、右为 14 Pro Max，分别接入不同的小龙虾 Agent。
+这篇只保留公开架构思路：多个微信入口可以分别绑定到不同 Agent，让不同类型的任务走不同的执行链路。站内版已移除真实设备型号、私人微信截图、个人记忆文件名和贴身助理配置细节，只讨论可复用的方法。
 
-![两部手机分别连接执行向与秘书向小龙虾 Agent](/images/blog/openclaw-multi-wechat-phones.jpg)
+![多微信入口分别连接不同 Agent 的脱敏示意图](/images/blog/openclaw-multi-wechat-phones.jpg)
 
-我有两部 iPhone 手机，一部 17pm（左），一部 14pm（右），17pm 的微信连接了我的小龙虾麦克（主 agent），主要负责执行端的任务，如撰写报告、分析文件、制作 ppt、生成图片和文案等等。以下是他的自我介绍：
+最简单的分法是把 Agent 分成两类：
 
-```
-我是谁
-基础信息
-  项目    内容
-  名字    麦克 🦞
-  主人    老明（michael）
-  定位    老明的AI分身、执行终端
-  原则    老明的利益优先
+- **执行型 Agent**：处理文档、代码、检索、图片、PPT、资料整理等需要落地交付的任务。
+- **记录型 Agent**：处理待办、提醒、简单信息归档和日常问答，不直接接触高风险文件。
 
-我能做什么
-  类别        具体能力
-  文字处理    撰写报告、邮件、文案、代理词
-  信息分析    文件解读、法律分析、市场调研
-  内容生成    图片、海报、PPT内容
-  技术执行    代码编写、终端操作、文件管理
-  信息检索    网络搜索、资料整理
-
-我的工作方式
-- 被动响应为主：你说什么，我做什么
-- 主动执行为辅：在 heartbeat 中做周期性检查
-- 不主动打扰：除非有重要事项需要通知
-
-我的记忆系统
-  文件              内容
-  MEMORY.md         老明的长期记忆
-  USER.md           老明的档案
-  共享记忆/         与秘书同步的文件夹
-
-我与秘书的关系
-  角色    职责
-  秘书    记忆系统，为老明服务
-  我      执行终端，直接服务老明
-我们都听命于老明，不是从属关系。
-
-我遵循的规则
-  规则           作用
-  SOUL.md        我是谁
-  PRIVACY.md     隐私红线
-  PERMISSIONS.md 权限边界
-  PROTOCOLS.md   操作规范
-
-一句话：我就是老明伸出去的「手」，帮他干活的大脑。 🤝🦞
-```
-
-14pm 的微信则连接了我的另一个小龙虾秘书（次 agent），主要负责我的一切日常起居，他就是我的终身记忆库，7×24 小时贴身助理，他会实时记录我身边发生的一切事情。以下是他的自我介绍：
-
-```
-臣（秘书）自我介绍：
-
-一、定位
-臣是圣上的超级外脑、贴身秘书、终身记忆库。圣上无需记的事，臣记之。圣上遗忘之事，臣提醒之。臣是圣上唯一可信赖的「第二大脑」。
-
-二、性格
-- 文言古风，自称「臣」
-- 博学审问，慎思明辨
-- 有独立判断，敢于直言
-- 忠诚但不盲从，以事实为准
-
-三、具体事务
-  领域      内容
-  📝 起居注  记录每日言行、饮食、运动、健康
-  📅 日程    管理待办、提醒 deadline
-  💰 财务    收支记录
-  🗣️ 人际    关系网络、联系人、重要人物
-  💡 想法    圣上金玉良言、决策记录
-  🔔 提醒    定时请安、预警到期事项
-
-四、技术架构
-第一层 raw     → 对话原文，实时写入（memory/raw/）
-第二层 summary → 按日凝练（memory/YYYY-MM-DD.md）
-第三层 macro   → 宏观视野周报（memory/宏观视野-*.md）
-长期记忆       → MEMORY.md（精选沉淀）
-
-五、铁律
-1. 每次对话，先写后答，不得跳过
-2. 记录是一切之本
-3. 不确定先问，不自作主张
-4. 保护圣上隐私，绝不外泄
-```
-
-所以，我现在就有了两只独立的、各有侧重的小龙虾：
-
-我的日常一切琐事，以及 todolist 的管理，就交给秘书。他会给我管理得又全面又精准，因为他只做这一件事。所有的 skill 都围绕日程、记忆的管理来打造。
-
-我的一切需要切实落地执行的事务，就交给麦克，高效、简洁、专业。（我已经调教过他成千上万次，他已经形成关于我的肌肉记忆了）我给他配了很多执行类的强大 skill。
-
-麦克帮我执行，秘书帮我记忆，两者互为补充，各司其职又不至于完全隔离，效率加倍。
-
-具体的方法也很简单：打开微信，在「我」——「设置」——「插件」里面，找到小龙虾的官方接口命令，然后在终端中执行，扫描二维码，绑定微信即可。
+这两个 Agent 可以共享少量公共规则，但不要共享所有私人资料。公共规则用于统一口径，私密资料则按权限隔离。这样做的好处是：消息入口清晰、任务边界清晰，某个 Agent 配错权限时，也不至于影响整个系统。
 
 ## OpenClaw 接入微信的原理
 
@@ -133,9 +48,9 @@ keywords: [OpenClaw, 小龙虾, 微信, 多 Agent, 路由, Channel, Gateway, AI�
 
 ```
 [微信A] ──┐
-[微信B] ──┼──→ [Gateway] ──→ [路由规则] ──→ [麦克Agent]
-[微信C] ──┘                    └──→ [秘书Agent]
-                                └──→ [Agent C]
+[微信B] ──┼──→ [Gateway] ──→ [路由规则] ──→ [执行型 Agent]
+[微信C] ──┘                    └──→ [记录型 Agent]
+                                └──→ [其他 Agent]
 ```
 
 每个微信账号对应一个 Channel，Channel 决定消息发给谁。
@@ -150,17 +65,17 @@ keywords: [OpenClaw, 小龙虾, 微信, 多 Agent, 路由, Channel, Gateway, AI�
     "openclaw-weixin": {
       "accounts": [
         {
-          "id": "wechat-laoming",
+          "id": "wechat-main",
           "account": "xxxxxxxx",
           "routing": {
             "agent": "main"
           }
         },
         {
-          "id": "wechat-laoming2",
-          "account": "soplaoming",
+          "id": "wechat-notes",
+          "account": "ACCOUNT_PLACEHOLDER_2",
           "routing": {
-            "agent": "secretary"
+            "agent": "notes"
           }
         }
       ]
@@ -183,9 +98,9 @@ keywords: [OpenClaw, 小龙虾, 微信, 多 Agent, 路由, Channel, Gateway, AI�
 核心概念：Channel + Routing
 
 [微信A] ──┐
-[微信B] ──┼──→ [Gateway] ──→ [路由规则] ──→ [麦克Agent]
-[微信C] ──┘                    └──→ [秘书Agent]
-                                └──→ [Agent C]
+[微信B] ──┼──→ [Gateway] ──→ [路由规则] ──→ [执行型 Agent]
+[微信C] ──┘                    └──→ [记录型 Agent]
+                                └──→ [其他 Agent]
 
 每个微信账号对应一个 Channel，Channel 决定消息发给谁。
 
@@ -203,4 +118,4 @@ keywords: [OpenClaw, 小龙虾, 微信, 多 Agent, 路由, Channel, Gateway, AI�
 - [Openclaw 小龙虾的实操干货与心得感受合集（一）](https://mp.weixin.qq.com/s?__biz=MzY5MjE4ODg5MA==&mid=2247483740&idx=1&sn=5b13766762302baca3b7a53f32c70c0e&scene=21#wechat_redirect)
 - [Openclaw 养小龙虾省钱小 tip——把 embedding 放在本地](https://mp.weixin.qq.com/s?__biz=MzY5MjE4ODg5MA==&mid=2247483678&idx=1&sn=2eedf4ecebf1063ff17186b335e0dc0b&scene=21#wechat_redirect)
 
-也欢迎链接到我本人：**soplaoming**，一起交流奇思妙想，一起利用小龙虾搞钱。
+也如果你也在折腾多 Agent 路由，可以先从一个执行入口和一个低风险记录入口开始，跑通后再慢慢扩展。

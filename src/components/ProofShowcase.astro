@@ -1,0 +1,424 @@
+---
+import fs from 'node:fs';
+import path from 'node:path';
+
+type ProofItem = {
+  label: string;
+  title: string;
+  scenario: string;
+  input: string;
+  beforeAfter: string;
+  publicArtifact: string;
+  deliverable: string;
+  acceptance: string;
+  limitation: string;
+  result: string;
+  fit: string;
+  evidence: string;
+  nextStep: string;
+  verifiedAt: string;
+  href: string;
+  image: string;
+  imageAlt: string;
+};
+
+const root = process.cwd();
+const blogPostCount = fs.readdirSync(path.join(root, 'src/content/blog')).filter((file) => file.endsWith('.md')).length;
+const blogImageCount = fs.readdirSync(path.join(root, 'public/images/blog')).filter((file) => {
+  const filePath = path.join(root, 'public/images/blog', file);
+  return fs.statSync(filePath).isFile();
+}).length;
+const redactedManifest = JSON.parse(fs.readFileSync(path.join(root, 'scripts/redacted_image_manifest.json'), 'utf8'));
+const redactedImageCount = Array.isArray(redactedManifest.items) ? redactedManifest.items.length : 0;
+
+const proofItems: ProofItem[] = [
+  {
+    label: '文档自动化',
+    title: 'Word 格式保真流程',
+    scenario: 'AI 改 Word 容易破坏模板、编号、表格和正式材料版式。',
+    input: '脱敏 Word 样例、原模板结构、目标修改位置和验收口径。',
+    beforeAfter: '从手工反复调版式，转成先复制模板、局部修改、再逐页渲染核对。',
+    publicArtifact: '公开文章展示方法，不展示原始文档和私人内容。',
+    deliverable: '模板副本编辑规则、局部 run 修改方法、渲染核对流程和验收清单。',
+    acceptance: '版式不散、编号不乱、表格不塌，改完能导出图片逐页复核。',
+    limitation: '不承诺替代专业审阅，也不把敏感 Word 原件放进公开案例。',
+    result: '目标是少重排、少返工，把一次性修改变成可复用流程。',
+    fit: '适合经常处理简历、正式报告、纪要、合同初稿和模板化文档的人。',
+    evidence: '公开文章：Word 文档格式保真 SOP',
+    nextStep: '带一个脱敏 Word 样例做诊断',
+    verifiedAt: '2026-07-02',
+    href: '/blog/ai-word-edit-sop-elegant/',
+    image: '/images/blog/ai-word-edit-sop-elegant-wechat-01.png',
+    imageAlt: 'Word 文档格式保真流程示意截图',
+  },
+  {
+    label: '办公 Skill',
+    title: '报销材料整理 Skill',
+    scenario: '凭证、事由、命名、附件目录和提交口径容易断裂，人工整理重复且易漏。',
+    input: '脱敏附件清单、提交规则、命名要求和人工核验节点。',
+    beforeAfter: '从每次重新解释规则，转成输入清单、核验口径和可复跑 Skill。',
+    publicArtifact: '公开脱敏版本说明 Skill 结构，不展示公司、真名、单据和流水。',
+    deliverable: '输入清单、目录结构、核验口径、边界说明和可复跑的 Skill 文件。',
+    acceptance: '同类材料再次出现时，能按同一套步骤整理、检查和交接。',
+    limitation: '只做流程整理和核验提醒，不替代最终报销审批或财务判断。',
+    result: '已迭代到公开脱敏版本，重点是让同类流程下次不用重新口头交代。',
+    fit: '适合有固定材料整理、附件核对、台账归档和提交口径要求的人。',
+    evidence: '公开文章：报销 Skill 的 28 个版本',
+    nextStep: '把一个重复办公流程改成 Skill',
+    verifiedAt: '2026-07-02',
+    href: '/blog/reimburse-skill-28-versions-open-source/',
+    image: '/images/blog/reimburse-skill-28-versions-open-source-wechat-01.jpg',
+    imageAlt: '报销材料整理 Skill 公开文章封面',
+  },
+  {
+    label: '知识库',
+    title: 'RAG 与长期记忆库',
+    scenario: '资料散在本地、聊天记录和笔记里，AI 不能稳定找到上下文，也无法解释引用来源。',
+    input: '目录样例、资料类型、检索问题、公开边界和不可入库范围。',
+    beforeAfter: '从资料只能靠人工翻找，转成目录入口、检索策略和引用口径。',
+    publicArtifact: '公开文章展示 RAG 方法和架构，不公开个人资料库原始内容。',
+    deliverable: '目录治理规则、索引入口、检索策略、引用口径和人机确认边界。',
+    acceptance: '能追溯原始路径，回答能说明依据，风险内容不会被随意公开调用。',
+    limitation: '先做资料治理和检索边界，不把所有文件一股脑交给模型。',
+    result: '把资料从“堆着”推进到“可被调用”，先保证找得到、说得清、能追溯。',
+    fit: '适合资料量已经很大，但搜索、复用、归档和 AI 调用都不稳定的人。',
+    evidence: '公开文章：RAG 记忆系统搭建方法',
+    nextStep: '先做资料入口和索引诊断',
+    verifiedAt: '2026-07-02',
+    href: '/blog/rag-database-method-open-source/',
+    image: '/images/blog/rag-database-method-open-source.jpg',
+    imageAlt: 'RAG 记忆系统搭建方法封面',
+  },
+  {
+    label: '内容系统',
+    title: '公众号到网站同步',
+    scenario: '公众号内容沉在平台里，图片、正文、路径和站点 SEO 不能复用。',
+    input: '公开文章、图片资产、主题边界、删除清单和发布前检查要求。',
+    beforeAfter: '从平台内容沉没，转成可检索、可验证、能承接咨询的站点资产。',
+    publicArtifact: '站内博客、站点地图、RSS、内容健康检查和审批包。',
+    deliverable: '文章导入规则、本地图片治理、AI-only 主题边界和发布前验证脚本。',
+    acceptance: '构建前核对文章数、图片引用、主题边界、敏感词和站点地图。',
+    limitation: '非 AI 主题、非业务向图片和生活记录内容不进入本轮 AI 获客站候选发布。',
+    result: `当前站点保留 ${blogPostCount} 篇 AI 垂直文章和 ${blogImageCount} 张本地图片资产，构建前做断链检查。`,
+    fit: '适合有一批历史内容，想转成可检索、可沉淀、可获客网站资产的人。',
+    evidence: '入口：AI 技术文章库',
+    nextStep: '把内容库整理成获客入口',
+    verifiedAt: '2026-07-02',
+    href: '/blog/',
+    image: '/images/blog/openclaw-wechat-integration-done-wechat-01.jpg',
+    imageAlt: '公众号文章同步到网站的公开内容截图',
+  },
+  {
+    label: '本地系统',
+    title: 'Mac mini 本地 AI 工作台',
+    scenario: '转写、资料处理和本地模型调用如果全靠云端，成本、速度和隐私边界都不稳定。',
+    input: '本地硬件、常用资料、模型调用方式、转写样例和维护目标。',
+    beforeAfter: '从零散调用云端工具，转成本地硬件、模型和脚本分工的长期工作台。',
+    publicArtifact: '公开文章展示本地转写、成本测算和系统实践，不公开私人音频内容。',
+    deliverable: '本地硬件分工、模型调用方式、转写流程、自动化脚本和长期维护清单。',
+    acceptance: '一个高频任务能在本地链路跑通，成本、速度和人工接管点说得清。',
+    limitation: '本地系统优先处理低风险流程，高风险资料仍要先做权限和边界判断。',
+    result: '把本地硬件、模型、自动化脚本和知识库组合成长期可用的个人 AI 基础设施。',
+    fit: '适合想把 AI 从网页聊天升级成本地长期工作台的人。',
+    evidence: '公开文章：本地转写与 AI 系统实践',
+    nextStep: '评估本地 AI 工作台是否值得搭',
+    verifiedAt: '2026-07-02',
+    href: '/blog/mac-mini-local-audio-transcription-save-1056/',
+    image: '/images/blog/mac-mini-local-audio-transcription-save-1056-wechat-01.jpg',
+    imageAlt: 'Mac mini 本地 AI 工作台实践截图',
+  },
+  {
+    label: '长程执行',
+    title: 'Codex 长程任务协作',
+    scenario: '复杂网站、文档和知识库维护不是一次问答能解决，需要连续执行、验证和复盘。',
+    input: '目标边界、现有仓库、长期任务线、审批规则和可验证产物。',
+    beforeAfter: '从一次性问答，转成长程目标、分步改造、脚本验证和审批包。',
+    publicArtifact: '公开文章和当前站点维护流程展示长程执行方式。',
+    deliverable: '目标拆解、任务计划、实现记录、验证脚本、本地预览和审批清单。',
+    acceptance: '每轮改动能说明做了什么、怎么验证、哪些内容还不能公开发布。',
+    limitation: '内容发布仍按审批边界走，本地装饰和排版可先做，公开 push 不越权。',
+    result: '把长程任务拆成可跟踪的工作流，适合做持续维护而不是一次性问答。',
+    fit: '适合需要长期维护网站、内容库、知识库或复杂资料系统的人。',
+    evidence: '公开文章：我如何使用 Codex Pro',
+    nextStep: '用 Codex 维护一个真实项目',
+    verifiedAt: '2026-07-02',
+    href: '/blog/codex-pro-200-dollar-how-i-use-it/',
+    image: '/images/blog/codex-pro-200-dollar-how-i-use-it-wechat-01.png',
+    imageAlt: 'Codex 长程任务协作公开文章截图',
+  },
+];
+
+const proofStats = [
+  {
+    value: '6',
+    label: '公开证据链',
+    note: '每张卡都能跳到公开文章或站内入口。',
+  },
+  {
+    value: String(blogPostCount),
+    label: 'AI 垂直文章',
+    note: '非 AI 主题内容已从本轮候选发布中移除。',
+  },
+  {
+    value: String(redactedImageCount),
+    label: '脱敏替换图片',
+    note: '风险截图和不适合公开的视觉素材已替换。',
+  },
+];
+---
+
+<section class="proof-showcase" aria-labelledby="proof-showcase-title">
+  <div class="proof-head">
+    <p class="eyebrow">Proof</p>
+    <h2 id="proof-showcase-title">用脱敏交付案例证明，而不是只讲概念</h2>
+    <p>
+      这些不涉及第三方项目，也不展示私密材料；它们是可以公开查看的脱敏成果、文章和站点事实，用来说明我如何把 AI 从工具体验推进到流程交付。
+    </p>
+  </div>
+
+  <div class="proof-stats" aria-label="公开证据统计">
+    {proofStats.map((stat) => (
+      <article>
+        <strong>{stat.value}</strong>
+        <span>{stat.label}</span>
+        <p>{stat.note}</p>
+      </article>
+    ))}
+  </div>
+
+  <div class="proof-grid">
+    {proofItems.map((item) => (
+      <article>
+        <a class="proof-image" href={item.href} aria-label={item.evidence}>
+          <img src={item.image} alt={item.imageAlt} loading="lazy" />
+        </a>
+        <div class="proof-body">
+          <p class="label">{item.label}</p>
+          <h3>{item.title}</h3>
+          <p class="verified">最近校验：{item.verifiedAt}</p>
+        </div>
+        <dl>
+          <div>
+            <dt>场景</dt>
+            <dd>{item.scenario}</dd>
+          </div>
+          <div>
+            <dt>脱敏输入</dt>
+            <dd>{item.input}</dd>
+          </div>
+          <div>
+            <dt>前后对照</dt>
+            <dd>{item.beforeAfter}</dd>
+          </div>
+          <div>
+            <dt>公开产物</dt>
+            <dd>{item.publicArtifact}</dd>
+          </div>
+          <div>
+            <dt>交付物</dt>
+            <dd>{item.deliverable}</dd>
+          </div>
+          <div>
+            <dt>验收指标</dt>
+            <dd>{item.acceptance}</dd>
+          </div>
+          <div>
+            <dt>边界说明</dt>
+            <dd>{item.limitation}</dd>
+          </div>
+          <div>
+            <dt>沉淀结果</dt>
+            <dd>{item.result}</dd>
+          </div>
+          <div>
+            <dt>适合谁</dt>
+            <dd>{item.fit}</dd>
+          </div>
+        </dl>
+        <div class="proof-actions">
+          <a class="evidence-link" href={item.href}>{item.evidence}</a>
+          <a class="next-link" href="/diagnosis">{item.nextStep}</a>
+        </div>
+      </article>
+    ))}
+  </div>
+</section>
+
+<style>
+  .proof-showcase {
+    margin: 3.4rem 0;
+  }
+
+  .proof-head {
+    max-width: 760px;
+    margin-bottom: 1.3rem;
+  }
+
+  .proof-stats {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.8rem;
+    margin: 0 0 1rem;
+  }
+
+  .proof-stats article {
+    padding: 0.9rem;
+    background: #f7fbff;
+    border: 1px solid rgba(0, 102, 255, 0.14);
+    border-radius: 8px;
+  }
+
+  .proof-stats strong {
+    display: block;
+    color: rgb(var(--black));
+    font-size: 1.6rem;
+    line-height: 1;
+  }
+
+  .proof-stats span {
+    display: block;
+    margin-top: 0.3rem;
+    color: rgb(var(--black));
+    font-size: 0.86rem;
+    font-weight: 800;
+  }
+
+  .proof-stats p {
+    margin: 0.45rem 0 0;
+    color: rgb(var(--gray));
+    font-size: 0.84rem;
+    line-height: 1.55;
+  }
+
+  .eyebrow,
+  .label {
+    margin: 0 0 0.55rem;
+    color: var(--accent);
+    font-size: 0.82rem;
+    font-weight: 800;
+    letter-spacing: 0;
+  }
+
+  .proof-head h2 {
+    margin: 0;
+    color: rgb(var(--black));
+    font-size: 1.9rem;
+    line-height: 1.25;
+  }
+
+  .proof-head p:last-child {
+    margin: 0.75rem 0 0;
+    color: rgb(var(--gray));
+    line-height: 1.8;
+  }
+
+  .proof-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1rem;
+  }
+
+  .proof-grid article {
+    display: flex;
+    min-width: 0;
+    flex-direction: column;
+    background: #fff;
+    border: 1px solid rgba(var(--black), 0.08);
+    border-radius: 8px;
+    box-shadow: 0 16px 34px rgba(20, 20, 20, 0.05);
+    overflow: hidden;
+  }
+
+  .proof-image {
+    display: block;
+    padding: 0;
+  }
+
+  .proof-image img {
+    display: block;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    object-fit: cover;
+    background: rgba(var(--gray-light), 0.5);
+  }
+
+  .proof-body {
+    padding: 1rem 1rem 0;
+  }
+
+  .proof-grid h3 {
+    margin: 0;
+    color: rgb(var(--black));
+    font-size: 1.08rem;
+    line-height: 1.35;
+  }
+
+  .verified {
+    margin: 0.45rem 0 0.8rem;
+    color: rgb(var(--gray));
+    font-size: 0.78rem;
+    font-weight: 700;
+  }
+
+  .proof-grid dl {
+    display: grid;
+    gap: 0.75rem;
+    margin: 0;
+    padding: 0 1rem;
+  }
+
+  .proof-grid dl div {
+    padding-top: 0.75rem;
+    border-top: 1px solid rgba(var(--black), 0.07);
+  }
+
+  .proof-grid dt {
+    color: rgb(var(--black));
+    font-size: 0.78rem;
+    font-weight: 800;
+  }
+
+  .proof-grid dd {
+    margin: 0.25rem 0 0;
+    color: rgb(var(--gray));
+    font-size: 0.88rem;
+    line-height: 1.65;
+  }
+
+  .proof-actions {
+    display: grid;
+    gap: 0.55rem;
+    margin-top: auto;
+    padding: 1rem;
+  }
+
+  .evidence-link,
+  .next-link {
+    display: inline-flex;
+    color: var(--accent);
+    font-size: 0.88rem;
+    font-weight: 800;
+  }
+
+  .next-link {
+    color: rgb(var(--black));
+  }
+
+  @media (max-width: 900px) {
+    .proof-stats,
+    .proof-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (max-width: 620px) {
+    .proof-stats,
+    .proof-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .proof-head h2 {
+      font-size: 1.55rem;
+    }
+  }
+</style>

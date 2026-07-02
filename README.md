@@ -1,62 +1,79 @@
-# Astro Starter Kit: Blog
+# ailaoming.com
 
-```sh
-npm create astro@latest -- --template blog
+Astro-based personal site for AI干货家老明.
+
+The site is maintained as an AI-focused commercial lead-generation site, with public pages for AI services, a local AI implementation self-check, lightweight lead magnets, reusable Skills, project progress, Shanghai AI Coffee Chat, and AI technical articles.
+
+## Positioning
+
+- AI workflow diagnosis
+- AI implementation self-check
+- Lightweight lead magnets and productized entry points
+- Personal knowledge-base organization
+- Office Skills / SOP customization
+- AI system implementation support
+- Shanghai AI Coffee Chat
+- AI technical articles
+
+The public site should stay AI-focused. Life, skincare, selfie, dating, and unrelated personal posts are excluded by default unless a separate section is explicitly approved later.
+
+## Commands
+
+```bash
+npm run dev
+npm run build
+npm run health:content
+npm run validate:site
+npm run release:candidates
+npm run release:approval
+npm run ops:audit
+npm run validate:wechat
 ```
 
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
+Use Node.js `>=22.12.0`.
 
-Features:
+If the local default `node` is older, Astro will refuse to build. In the Codex desktop environment, use the bundled Node runtime:
 
-- ✅ Minimal styling (make it your own!)
-- ✅ 100/100 Lighthouse performance
-- ✅ SEO-friendly with canonical URLs and Open Graph data
-- ✅ Sitemap support
-- ✅ RSS Feed support
-- ✅ Markdown & MDX support
-
-## 🚀 Project Structure
-
-Inside of your Astro project, you'll see the following folders and files:
-
-```text
-├── public/
-├── src/
-│   ├── components/
-│   ├── content/
-│   ├── layouts/
-│   └── pages/
-├── astro.config.mjs
-├── README.md
-├── package.json
-└── tsconfig.json
+```bash
+PATH=/Users/danningyang/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin:$PATH npm run build
 ```
 
-Astro looks for `.astro` or `.md` files in the `src/pages/` directory. Each page is exposed as a route based on its file name.
+## Release Checks
 
-There's nothing special about `src/components/`, but that's where we like to put any Astro/React/Vue/Svelte/Preact components.
+Before any public push:
 
-The `src/content/` directory contains "collections" of related Markdown and MDX documents. Use `getCollection()` to retrieve posts from `src/content/blog/`, and type-check your frontmatter using an optional schema. See [Astro's Content Collections docs](https://docs.astro.build/en/guides/content-collections/) to learn more.
+1. Run `npm run build`.
+2. Run `npm run health:content`.
+3. Run `npm run validate:site`.
+4. Run `npm run release:candidates`.
+5. Run `npm run release:approval` to generate a local approval summary under `/private/tmp`.
+6. Run `npm run ops:audit` to generate a local operations summary under `/private/tmp`.
+7. If WeChat articles changed, run `npm run validate:wechat` or validate the changed slugs.
+8. If article images were redacted, confirm `scripts/redacted_image_manifest.json` is updated and `npm run validate:site` passes.
+9. Review `git status --short --branch`, `git remote -v`, and `git branch -vv`.
+10. Exclude local Astro cache changes unless intentionally needed:
+   - `.astro/data-store.json`
+   - `.astro/settings.json`
+11. Ask for explicit approval before pushing public content changes.
 
-Any static assets, like images, can be placed in the `public/` directory.
+## Key Files
 
-## 🧞 Commands
+- `SITE_MAINTENANCE.md` - site maintenance and approval SOP.
+- `SOP-微信公众号同步至ailaoming.md` - WeChat article sync SOP.
+- `scripts/check_content_health.mjs` - monthly content health audit.
+- `scripts/validate_site_release.mjs` - release validation script.
+- `scripts/check_release_candidates.mjs` - read-only release candidate inventory.
+- `scripts/generate_publish_approval.mjs` - local Markdown approval summary generator.
+- `scripts/generate_ops_audit.mjs` - local operations audit summary for content cadence, CTA coverage, Coffee Chat path, and release readiness.
+- `scripts/redacted_image_manifest.json` - hash lock for public-safe replacement images.
+- `scripts/validate_wechat_sync.py` - WeChat article validation script.
+- `src/content/blog/` - AI article Markdown files.
+- `public/images/blog/` - local article images.
+- `src/pages/` - public pages.
+- `src/components/` - shared site components.
 
-All commands are run from the root of the project, from a terminal:
+## Privacy Boundary
 
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `npm install`             | Installs dependencies                            |
-| `npm run dev`             | Starts local dev server at `localhost:4321`      |
-| `npm run build`           | Build your production site to `./dist/`          |
-| `npm run preview`         | Preview your build locally, before deploying     |
-| `npm run astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `npm run astro -- --help` | Get help using the Astro CLI                     |
+Do not publish real customer materials, internal company materials, private chats, credentials, detailed holdings, or non-approved personal identity information.
 
-## 👀 Want to learn more?
-
-Check out [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
-
-## Credit
-
-This theme is based off of the lovely [Bear Blog](https://github.com/HermanMartinus/bearblog/).
+If a historical screenshot is worth keeping for article structure but contains privacy or brand risk, replace it with a same-dimension public-safe placeholder and register it in `scripts/redacted_image_manifest.json`. The release validator will fail if a registered image is replaced without a fresh review.

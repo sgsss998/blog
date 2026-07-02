@@ -1,0 +1,1495 @@
+---
+import Layout from '../layouts/BlogPost.astro';
+import { WECHAT } from '../consts';
+import ConversionCTA from '../components/ConversionCTA.astro';
+import FAQSection from '../components/FAQSection.astro';
+import TrustBoundary from '../components/TrustBoundary.astro';
+
+const coffeeChatFaqs = [
+  {
+    question: 'Coffee Chat 是付费咨询还是普通见面？',
+    answer: '它更像筛选后的线下深聊入口。轻量交流可以从 Coffee Chat 开始；如果问题已经进入资料治理、Skill 定制或系统落地，再单独确认后续交付范围。',
+  },
+  {
+    question: '一定要在上海线下吗？',
+    answer: '不一定。能线上说清楚的问题优先线上解决；线下更适合需要当面拆流程、看资料结构、讨论长期方向的人。',
+  },
+  {
+    question: '多人局会不会泄露个人问题？',
+    answer: '不会公开私人细节。多人局只聊能被分享的共性问题；涉及个人资料、商业计划或私密流程的内容，默认走一对一或线上预沟通。',
+  },
+  {
+    question: '适合完全零基础的人吗？',
+    answer: '可以来，但最好带着一个现实问题，比如写作、资料整理、求职、办公自动化或知识库管理。完全没有场景，只想听概念，效果会差很多。',
+  },
+  {
+    question: '聊完会有什么结果？',
+    answer: '理想结果是一张下一步清单：先用什么工具、整理什么资料、跑哪个小流程、哪些事情暂时不要做。不是只聊热闹，也不是强行推项目。',
+  },
+];
+
+const sessionPool = [
+  {
+    id: 'personal-ai-workbench',
+    label: '主题 A',
+    title: '个人 AI 工作台拆解',
+    fit: '适合已经在用 Codex、Cursor、Claude Code 或 Gemini CLI，但任务仍然靠临时提示词推进的人。',
+    output: '输出一张工具分工图：哪些事用对话模型，哪些事用代码 Agent，哪些事继续人工确认。',
+  },
+  {
+    id: 'knowledge-rag-diagnosis',
+    label: '主题 B',
+    title: '知识库与 RAG 诊断',
+    fit: '适合资料散在 Obsidian、本地文件、微信记录和网盘里，AI 经常找不到上下文的人。',
+    output: '输出一份资料入口清单：先整理哪些目录，哪些资料不该进库，哪些问题适合检索。',
+  },
+  {
+    id: 'content-commercial-loop',
+    label: '主题 C',
+    title: '内容商业化小闭环',
+    fit: '适合已经在写公众号、小红书、长文或资料包，但不知道如何转成稳定入口的人。',
+    output: '输出一条内容转化路径：文章、资料领取、AI 自测、Coffee Chat、服务承接如何串起来。',
+  },
+  {
+    id: 'office-skill-design',
+    label: '主题 D',
+    title: '办公自动化 Skill 设计',
+    fit: '适合有 Word、纪要、报销、归档、报告初稿等重复任务，想做成 SOP 或 Skill 的人。',
+    output: '输出一份 Skill 草图：输入材料、执行步骤、验收口径和人工接管点。',
+  },
+];
+
+const readinessLevels = [
+  {
+    label: 'L1',
+    title: '方向还散',
+    signal: '只能描述“想学 AI”“想提升效率”，还没有具体流程或样例。',
+    route: '先看文章 / 线上预沟通',
+    next: '先把问题收窄到一个场景，再判断是否值得线下聊。',
+  },
+  {
+    label: 'L2',
+    title: '有一个真实流程',
+    signal: '能说清楚现在怎么做、卡在哪里、重复频率多高，并能给脱敏样例。',
+    route: '一对一深聊 / AI 自测',
+    next: '现场拆流程、工具和资料边界，聊完收束成下一步清单。',
+  },
+  {
+    label: 'L3',
+    title: '有共性主题',
+    signal: '问题适合多人讨论，比如知识库、内容商业化、办公自动化或 Agent 工具栈。',
+    route: '小型闭门局',
+    next: '只聊共性方法，私人材料不在多人场展开。',
+  },
+];
+
+const eventPromises = [
+  {
+    title: '不硬凑人数',
+    body: '同一主题的人足够集中时再开小局；主题不匹配时，宁愿一对一或线上预沟通。',
+  },
+  {
+    title: '不现场收私密材料',
+    body: '多人局不要求展示原始资料；涉及隐私、商业计划或个人系统细节，先确认边界再看脱敏样例。',
+  },
+  {
+    title: '不只聊概念',
+    body: '每场至少收束一个行动结果：资料清单、工具分工、流程草图、Skill 草图或后续诊断方向。',
+  },
+];
+
+const sampleSessions = [
+  {
+    label: '样板 01',
+    title: '个人 AI 工作台拆解局',
+    format: '1 对 1 / 3-4 人',
+    prework: '每人带一个正在反复处理的任务，说明现在用哪些 AI 工具、哪一步最卡。',
+    run: '现场画工具分工：对话模型、代码 Agent、本地知识库、人工确认分别负责什么。',
+    output: '会后拿到一张工具分工图和第一条可执行工作流。',
+    servicePath: '如果任务频率足够高，进入 AI 工作流诊断或系统陪跑。',
+  },
+  {
+    label: '样板 02',
+    title: '知识库与 RAG 预诊断局',
+    format: '1 对 1 / 小型闭门局',
+    prework: '准备一张脱敏目录截图或资料类型清单，不带原始私密材料。',
+    run: '按资料入口、命名规则、检索问题、权限边界和引用口径拆问题。',
+    output: '会后收束成资料入口清单、不可公开范围和第一批整理优先级。',
+    servicePath: '如果资料规模足够大，进入知识库治理或 RAG 接入诊断。',
+  },
+  {
+    label: '样板 03',
+    title: '内容商业化闭环局',
+    format: '3-6 人',
+    prework: '每人带一个长期主题、一篇公开内容和一个想承接的服务方向。',
+    run: '拆文章、资料包、AI 自测、Coffee Chat、服务页之间的转化路径。',
+    output: '会后得到一条内容转化路径和下次要补的证据资产。',
+    servicePath: '如果内容资产足够多，进入内容系统整理或 AI 获客站改造。',
+  },
+];
+
+const nextSessionPipeline = [
+  {
+    label: '候补 01',
+    title: '个人 AI 工作台拆解',
+    status: '滚动招募',
+    trigger: '同一周出现 2-3 个工具栈、Agent 分工或长程任务问题，就优先开一对一或 3-4 人小局。',
+    prework: '发来当前工具栈、一个反复处理的任务、希望 AI 接手哪一段。',
+    output: '现场产出工具分工图、第一条可试跑流程和暂缓事项。',
+    publicAfter: '可公开沉淀为工具分工 FAQ 或项目看板更新，不公开个人工具账号和任务原文。',
+    href: '#topic-personal-ai-workbench',
+  },
+  {
+    label: '候补 02',
+    title: '知识库与 RAG 诊断',
+    status: '优先排期',
+    trigger: '同一主题出现资料入口、RAG、长期记忆或引用不稳定问题时成局。',
+    prework: '准备脱敏目录截图、资料类型清单、一个失败检索问题和不可公开范围。',
+    output: '现场产出资料入口清单、排除规则、第一批整理优先级和后续诊断判断。',
+    publicAfter: '可公开沉淀为知识库治理清单，不展示真实目录、本地路径和私有资料。',
+    href: '#topic-knowledge-rag-diagnosis',
+  },
+  {
+    label: '候补 03',
+    title: '内容商业化小闭环',
+    status: '等候同主题',
+    trigger: '出现 2 个以上文章、资料包、AI 自测、Coffee Chat 转化链路相关问题时成局。',
+    prework: '准备一篇公开内容、一个想承接的服务方向和当前转化入口。',
+    output: '现场产出文章到资料卡、样例库、Coffee Chat、服务页的转化路径。',
+    publicAfter: '可公开沉淀为内容转化方法，不公开平台后台、私域聊天和未确认合作信息。',
+    href: '#topic-content-commercial-loop',
+  },
+  {
+    label: '候补 04',
+    title: '办公自动化 Skill 设计',
+    status: '小项目预筛',
+    trigger: '出现 Word、纪要、归档、报表或材料整理等高频重复任务时成局。',
+    prework: '准备一个脱敏样例、目标输出格式、当前返工原因和人工确认点。',
+    output: '现场产出 Skill 草图、输入要求、验收口径和是否进入小项目的判断。',
+    publicAfter: '可公开沉淀为脱敏 Skill 样例，不展示原始材料、附件、人员信息和组织细节。',
+    href: '#topic-office-skill-design',
+  },
+];
+
+const evidenceStats = [
+  {
+    label: '私域线索',
+    value: '1',
+    note: '已出现 AI 短剧方向的 Coffee Chat 预约线索。',
+  },
+  {
+    label: '公开复盘',
+    value: '0',
+    note: '还没有可公开发布的真实场次复盘。',
+  },
+  {
+    label: '公开原则',
+    value: '脱敏',
+    note: '只公开主题、共性问题和下一步，不公开联系人和原始聊天。',
+  },
+];
+
+const evidenceLedger = [
+  {
+    month: '2026-05',
+    topic: 'AI 短剧与内容商业化',
+    format: '一对一 / 小范围候选',
+    status: '私域预约线索，未形成公开复盘',
+    publicFacts: '只确认出现过 AI 短剧相关 Coffee Chat 预约意向；不公开联系人、原始聊天、具体地点和未确认结果。',
+    next: '如果后续真实完成交流，再按“主题、共性问题、可公开结论、下一步动作”补一条脱敏复盘。',
+  },
+];
+
+const recapTemplate = [
+  {
+    title: '主题与参与边界',
+    body: '记录本场主题、人数、是否一对一、哪些内容可以公开复盘，哪些只保留在私下沟通。',
+  },
+  {
+    title: '共性问题',
+    body: '只写能公开分享的方法问题，比如工具分工、资料入口、流程卡点和验收口径。',
+  },
+  {
+    title: '可公开结论',
+    body: '沉淀成文章、项目看板或 FAQ 的只保留方法、结构和下一步，不写个人身份和原始材料。',
+  },
+  {
+    title: '下一步动作',
+    body: '区分聊完即可、线上预沟通、AI 工作流诊断、Skill/SOP 小项目和系统陪跑。',
+  },
+  {
+    title: '下次组局依据',
+    body: '统计哪些主题反复出现，决定下一场是个人 AI 工作台、知识库、内容商业化还是办公自动化。',
+  },
+];
+
+const operationRules = [
+  {
+    title: '组局触发',
+    body: '同一主题连续出现 2-3 个具体问题，就可以考虑小型闭门局；主题分散时先做一对一或线上预沟通。',
+  },
+  {
+    title: '会前筛选',
+    body: '优先安排能说清流程、资料边界和想要输出的人；只想听概念的人先看文章或做自测。',
+  },
+  {
+    title: '会中收束',
+    body: '每场至少产出一个工具分工、资料清单、流程草图、Skill 草图或下一步诊断方向。',
+  },
+  {
+    title: '会后沉淀',
+    body: '公开复盘只写方法和结构；涉及个人身份、私密资料、商业计划和未授权内容的部分不进入网站。',
+  },
+];
+
+const prepItems = [
+  '一个最想解决的真实流程',
+  '1-2 个可脱敏描述的样例',
+  '现在正在用的 AI 工具和卡点',
+  '希望聊完之后能执行的下一步',
+];
+
+const signupRoutes = [
+  {
+    label: '路线 01',
+    title: '一对一深聊',
+    fit: '适合有具体资料、商业计划、个人系统或不方便公开讨论的问题。',
+    send: ['方便的上海区域', '一个脱敏样例', '希望当场拆开的流程'],
+    result: '聊完收束成下一步清单，必要时再判断是否进入诊断或 Skill 小项目。',
+    href: '/diagnosis',
+    action: '先做自测',
+  },
+  {
+    label: '路线 02',
+    title: '小型闭门局 / 工作坊预审',
+    fit: '适合同主题 3-8 人，比如知识库、AI 工具栈、内容商业化或办公自动化。',
+    send: ['想参加的主题', '自己的工具栈', '愿意公开讨论的问题边界'],
+    result: '只聊共性问题，不要求展示私人材料；主题和人数成熟时进入上海 AI 小型工作坊预审。',
+    href: '/workshop',
+    action: '看工作坊预审',
+  },
+  {
+    label: '路线 03',
+    title: '线上预沟通',
+    fit: '适合还不确定是否值得线下见面，或者问题能通过微信先缩小范围的人。',
+    send: ['当前卡点', '重复频率', '想要的输出形式'],
+    result: '先判断该看文章、做自测、线上诊断，还是排进下一场 Coffee Chat。',
+    href: '/blog',
+    action: '先看文章库',
+  },
+];
+
+const signupBrief = [
+  '我在上海，方便的区域是：',
+  '我想参加的主题是：A / B / C / D / 其他',
+  '我现在卡住的具体流程是：',
+  '我希望输出：方向清单 / 工具分工 / Skill 草图 / 服务诊断',
+  '预算意向：Coffee Chat / 轻量诊断 / Skill 小项目 / 暂不确定',
+  '期望启动时间：本周 / 本月 / 先预沟通',
+  '是否接受先诊断再项目：是 / 否 / 需要先了解',
+];
+
+const signupCopy = [
+  `微信号：${WECHAT}`,
+  '报名备注：Coffee Chat 报名',
+  '来源：ailaoming.com/coffee-chat',
+  '线索类型：上海 AI Coffee Chat',
+  ...signupBrief,
+  '隐私边界：我会先用脱敏方式描述问题，不发送原始私密材料。',
+].join('\n');
+
+const buildTopicSignupCopy = (session) => [
+  `微信号：${WECHAT}`,
+  `报名备注：Coffee Chat 主题报名 - ${session.title}`,
+  `来源：ailaoming.com/coffee-chat#topic-${session.id}`,
+  '线索类型：上海 AI Coffee Chat / 主题报名',
+  `我想报名的主题是：${session.label} / ${session.title}`,
+  '我在上海，方便的区域是：',
+  '我现在卡住的具体流程是：',
+  '我已经尝试过的 AI 工具或方法是：',
+  '我能提供的脱敏样例是：',
+  '我希望聊完得到：工具分工 / 资料清单 / Skill 草图 / 服务诊断 / 其他',
+  '预算意向：Coffee Chat / 轻量诊断 / Skill 小项目 / 暂不确定',
+  '期望启动时间：本周 / 本月 / 先预沟通',
+  '是否接受先诊断再项目：是 / 否 / 需要先了解',
+  '隐私边界：我会先用脱敏方式描述问题，不发送原始私密材料。',
+].join('\n');
+
+const heroOutcomes = [
+  '判断你的问题适合自学、线上预沟通、一对一，还是小型闭门局',
+  '把一个真实流程拆成工具分工、资料边界、下一步动作',
+  '确认是否值得进入 AI 自测、工作流诊断、Skill/SOP 小项目',
+];
+
+const coffeeChatStructuredData = {
+  '@context': 'https://schema.org',
+  '@type': 'EventSeries',
+  '@id': 'https://ailaoming.com/coffee-chat/#event-series',
+  name: '上海 AI Coffee Chat',
+  description: '面向上海本地 AI 工具使用者、知识工作者、创业者和职场转型者的小规模问题导向交流，围绕 AI 工作流、个人知识库、办公 Skill、内容商业化和 Agent 系统落地。',
+  url: 'https://ailaoming.com/coffee-chat/',
+  inLanguage: 'zh-CN',
+  eventAttendanceMode: 'https://schema.org/OfflineEventAttendanceMode',
+  eventStatus: 'https://schema.org/EventScheduled',
+  location: {
+    '@type': 'Place',
+    name: '上海交通便利咖啡馆',
+    address: {
+      '@type': 'PostalAddress',
+      addressLocality: '上海',
+      addressCountry: 'CN',
+    },
+  },
+  organizer: {
+    '@type': 'Person',
+    name: '老明',
+    url: 'https://ailaoming.com/',
+  },
+  audience: {
+    '@type': 'Audience',
+    audienceType: 'AI 工具使用者、知识工作者、创业者、职场转型者',
+  },
+  about: ['AI 工作流', '个人知识库', 'RAG', '办公 Skill', '内容商业化', 'AI Agent'],
+  offers: {
+    '@type': 'Offer',
+    url: 'https://ailaoming.com/coffee-chat/',
+    availability: 'https://schema.org/InStock',
+  },
+};
+---
+
+<Layout
+  title="上海 AI Coffee Chat"
+  description="AI干货家老明在上海组织的小规模 AI Coffee Chat，面向 AI 工具使用者、知识工作者、创业者和职场转型者。"
+  pubDate={new Date('2026-07-01')}
+  heroImage={undefined}
+  showMeta={false}
+  showEngagement={false}
+>
+  <script type="application/ld+json" set:html={JSON.stringify(coffeeChatStructuredData)}></script>
+
+  <section class="coffee-hero" aria-label="首屏报名入口">
+    <div class="coffee-hero-copy">
+      <p class="hero-kicker">上海线下 AI Coffee Chat</p>
+      <h2>带一个真实问题来，当场拆成下一步</h2>
+      <p>
+        这是一个面向上海本地的线下交流入口。形式不追求大场面，而是小规模、高密度、问题导向：围绕 AI 工具、个人工作流、知识库、内容变现或职业转型聊透一个具体问题。
+      </p>
+      <div class="hero-actions">
+        <a href="/diagnosis">先做自测再约线下</a>
+        <a href="/shanghai-ai">看上海本地服务</a>
+        <a href="#signup-brief">直接复制报名话术</a>
+      </div>
+      <p class="hero-note">
+        适合谁 / 你会得到什么 / 如何报名，都先在这一屏说清楚。能线上解决的就线上；值得当面拆的，再约 Coffee Chat。
+      </p>
+    </div>
+
+    <div class="coffee-hero-card">
+      <p class="card-kicker">报名信息四件套 + 商业筛选</p>
+      <ol>
+        {signupBrief.map((item) => <li>{item}</li>)}
+      </ol>
+      <button type="button" class="copy-signup" data-copy={signupCopy}>复制 Coffee Chat 报名话术</button>
+      <p class="signup-copy-note">复制内容会自动带来源、线索类型、预算意向、启动时间和隐私边界，方便判断是否适合线下。</p>
+      <p class="copy-signup-status" aria-live="polite"></p>
+    </div>
+  </section>
+
+  <section class="hero-outcome-panel" aria-label="你会得到什么">
+    <div>
+      <strong>适合谁</strong>
+      <p>在上海，已经有 AI 工具、内容、知识库、办公流程或商业化卡点，愿意带一个具体问题来聊的人。</p>
+    </div>
+    <div>
+      <strong>你会得到什么</strong>
+      <ul>
+        {heroOutcomes.map((item) => <li>{item}</li>)}
+      </ul>
+    </div>
+    <div>
+      <strong>如何报名</strong>
+      <p>加微信 <code>{WECHAT}</code>，备注「Coffee Chat 报名」，直接发送四件套，不需要提交表单。</p>
+    </div>
+  </section>
+
+  <section class="event-panel" aria-label="活动信息">
+    <div>
+      <span>频率</span>
+      <strong>滚动招募</strong>
+      <p>按主题和时间组局，不固定每周。</p>
+    </div>
+    <div>
+      <span>人数</span>
+      <strong>1 对 1 / 3-6 人</strong>
+      <p>优先保证交流密度，不做大群闲聊。</p>
+    </div>
+    <div>
+      <span>时长</span>
+      <strong>90-120 分钟</strong>
+      <p>每次只围绕少数具体问题展开。</p>
+    </div>
+    <div>
+      <span>地点</span>
+      <strong>上海</strong>
+      <p>优先浦东或市区交通方便的咖啡馆。</p>
+    </div>
+  </section>
+
+  <section class="evidence-ledger-panel" aria-label="Coffee Chat 公开复盘台账">
+    <div class="topic-head">
+      <p>公开复盘台账</p>
+      <h2>有线索就如实记录，没有复盘就不伪装成战报</h2>
+    </div>
+    <div class="evidence-stats">
+      {evidenceStats.map((item) => (
+        <div>
+          <span>{item.label}</span>
+          <strong>{item.value}</strong>
+          <p>{item.note}</p>
+        </div>
+      ))}
+    </div>
+    <div class="evidence-ledger-grid">
+      {evidenceLedger.map((item) => (
+        <article>
+          <span>{item.month}</span>
+          <h3>{item.topic}</h3>
+          <dl>
+            <div>
+              <dt>形式</dt>
+              <dd>{item.format}</dd>
+            </div>
+            <div>
+              <dt>状态</dt>
+              <dd>{item.status}</dd>
+            </div>
+            <div>
+              <dt>可公开事实</dt>
+              <dd>{item.publicFacts}</dd>
+            </div>
+            <div>
+              <dt>下一步</dt>
+              <dd>{item.next}</dd>
+            </div>
+          </dl>
+        </article>
+      ))}
+    </div>
+    <p class="ledger-note">
+      这块台账的目的不是装饰可信度，而是约束自己：不把预约线索包装成活动战报，不把私人聊天包装成案例背书。
+    </p>
+  </section>
+
+  <h2>适合谁来</h2>
+  <ul>
+    <li>已经在用 AI 工具，但没有形成稳定工作流的人。</li>
+    <li>想搭建个人知识库、RAG、Obsidian/Codex/Cursor 工作台的人。</li>
+    <li>想用 AI 做内容、自媒体、资料包、咨询服务或轻量产品的人。</li>
+    <li>在上海，愿意线下认真交流，而不是只想听概念和风口的人。</li>
+  </ul>
+
+  <h2>不适合谁</h2>
+  <ul>
+    <li>只想听“AI 会不会取代人类”这类大而泛的问题。</li>
+    <li>没有任何具体场景、资料、工具栈或项目卡点。</li>
+    <li>希望现场解决违法违规、批量骚扰、伪造材料或绕过平台规则的需求。</li>
+    <li>只想加群收资料，不准备交流自己的真实问题。</li>
+  </ul>
+
+  <h2>可以聊什么</h2>
+  <ul>
+    <li><strong>AI 工具栈</strong>：Codex、Claude Code、Cursor、Gemini CLI、OpenClaw、Kimi、ChatGPT 等如何分工。</li>
+    <li><strong>个人 AI 系统</strong>：资料整理、记忆库、RAG、权限风控、工作流自动化。</li>
+    <li><strong>内容和商业化</strong>：公众号、小红书、资料包、Skill、咨询服务、线下局。</li>
+    <li><strong>现实问题诊断</strong>：把你的一个具体流程拆开，看 AI 能接手哪一段。</li>
+  </ul>
+
+  <section class="topic-band" aria-label="近期可聊主题">
+    <div class="topic-head">
+      <p>近期可聊主题</p>
+      <h2>先用一个明确主题把局组起来</h2>
+    </div>
+    <div class="topic-grid">
+      <article>
+        <span>01</span>
+        <h3>个人 AI 工作台</h3>
+        <p>Codex、Cursor、Claude Code、Gemini CLI 怎么分工，哪些任务适合放进长期工作流。</p>
+      </article>
+      <article>
+        <span>02</span>
+        <h3>知识库与 RAG</h3>
+        <p>Obsidian、本地文件、微信资料和历史项目如何整理成 AI 能检索、能引用的资料入口。</p>
+      </article>
+      <article>
+        <span>03</span>
+        <h3>AI 内容商业化</h3>
+        <p>把公众号、小红书、资料包、Skill 和线下交流串成一个可持续获客系统。</p>
+      </article>
+      <article>
+        <span>04</span>
+        <h3>办公自动化小闭环</h3>
+        <p>会议纪要、Word 文档、资料归档、报告初稿和重复流程如何先做一个可验收小项目。</p>
+      </article>
+    </div>
+  </section>
+
+  <section class="session-pool" aria-label="候补主题池">
+    <div class="topic-head">
+      <p>候补主题池</p>
+      <h2>按问题组局，而不是按人数硬凑</h2>
+    </div>
+    <div class="session-grid">
+      {sessionPool.map((session) => (
+        <article id={`topic-${session.id}`} class="topic-signup-card">
+          <span>{session.label}</span>
+          <h3>{session.title}</h3>
+          <dl>
+            <div>
+              <dt>适合</dt>
+              <dd>{session.fit}</dd>
+            </div>
+            <div>
+              <dt>输出</dt>
+              <dd>{session.output}</dd>
+            </div>
+          </dl>
+          <pre class="topic-copy-template">{buildTopicSignupCopy(session)}</pre>
+          <button type="button" class="copy-topic-signup" data-copy={buildTopicSignupCopy(session)}>复制主题报名卡</button>
+          <p class="topic-copy-note">复制内容会自动带主题来源、线索类型、预算意向、启动时间和隐私边界。</p>
+          <p class="copy-topic-status" aria-live="polite"></p>
+        </article>
+      ))}
+    </div>
+  </section>
+
+  <section class="schedule-panel" aria-label="下一场候补排期">
+    <div class="topic-head">
+      <p>下一场候补排期</p>
+      <h2>先看主题是否成熟，再决定线下还是线上</h2>
+      <p>这里不是固定日历，也不公开具体地点。它只记录哪些主题正在等同类问题、成局条件是什么、会前要准备什么、会后能沉淀成什么。</p>
+    </div>
+    <div class="schedule-grid">
+      {nextSessionPipeline.map((session) => (
+        <article>
+          <div class="schedule-head">
+            <span>{session.label}</span>
+            <strong>{session.status}</strong>
+          </div>
+          <h3>{session.title}</h3>
+          <dl>
+            <div>
+              <dt>成局条件</dt>
+              <dd>{session.trigger}</dd>
+            </div>
+            <div>
+              <dt>会前材料</dt>
+              <dd>{session.prework}</dd>
+            </div>
+            <div>
+              <dt>现场输出</dt>
+              <dd>{session.output}</dd>
+            </div>
+            <div>
+              <dt>公开沉淀</dt>
+              <dd>{session.publicAfter}</dd>
+            </div>
+          </dl>
+          <a href={session.href}>复制对应主题报名卡</a>
+        </article>
+      ))}
+    </div>
+  </section>
+
+  <section class="readiness-panel" aria-label="组局成熟度">
+    <div class="topic-head">
+      <p>组局成熟度</p>
+      <h2>先判断你适合哪种场</h2>
+    </div>
+    <div class="readiness-grid">
+      {readinessLevels.map((level) => (
+        <article>
+          <span>{level.label}</span>
+          <h3>{level.title}</h3>
+          <dl>
+            <div>
+              <dt>典型信号</dt>
+              <dd>{level.signal}</dd>
+            </div>
+            <div>
+              <dt>建议入口</dt>
+              <dd>{level.route}</dd>
+            </div>
+            <div>
+              <dt>下一步</dt>
+              <dd>{level.next}</dd>
+            </div>
+          </dl>
+        </article>
+      ))}
+    </div>
+  </section>
+
+  <h2>适合带来的 5 类问题</h2>
+  <ol>
+    <li><strong>一个反复返工的流程</strong>：比如写作、整理、归档、会议、报告或资料同步。</li>
+    <li><strong>一组脱敏样例</strong>：可以展示结构和难点，不需要带原始私密材料。</li>
+    <li><strong>一个工具卡点</strong>：已经试过某个 AI 工具，但输出不稳定、上下文不准或不好复用。</li>
+    <li><strong>一个内容变现想法</strong>：想判断它适合写文章、做资料包、做社群还是转成服务。</li>
+    <li><strong>一个个人系统问题</strong>：资料太散、知识库太乱、任务太多，希望 AI 帮你长期维护。</li>
+  </ol>
+
+  <h2>活动形式</h2>
+  <ul>
+    <li><strong>一对一</strong>：适合问题具体、资料私密、需要拆流程的人。</li>
+    <li><strong>小型闭门局 / 工作坊预审</strong>：适合主题相近的 3-8 人，比如个人知识库、内容自动化、AI 职业转型。</li>
+    <li><strong>线上预沟通</strong>：先用微信确认主题，避免线下见面才发现问题太泛。</li>
+    <li><strong>复盘沉淀</strong>：能公开的经验后续会整理成脱敏文章或项目看板，不公开个人隐私和商业细节。</li>
+  </ul>
+
+  <section class="signup-route-panel" aria-label="报名路线图">
+    <div class="topic-head">
+      <p>报名路线图</p>
+      <h2>先选适合你的交流形式</h2>
+    </div>
+    <div class="signup-route-grid">
+      {signupRoutes.map((route) => (
+        <article>
+          <span>{route.label}</span>
+          <h3>{route.title}</h3>
+          <p>{route.fit}</p>
+          <div class="route-meta">
+            <strong>首次发我这些信息</strong>
+            <ul>
+              {route.send.map((item) => <li>{item}</li>)}
+            </ul>
+          </div>
+          <div class="route-meta">
+            <strong>预期结果</strong>
+            <p>{route.result}</p>
+          </div>
+          <a href={route.href}>{route.action}</a>
+        </article>
+      ))}
+    </div>
+  </section>
+
+  <h2>典型议程</h2>
+  <ol>
+    <li><strong>10 分钟</strong>：每个人讲清楚自己的 AI 使用现状和卡点。</li>
+    <li><strong>40-60 分钟</strong>：围绕 1-2 个真实问题拆流程、工具和资料边界。</li>
+    <li><strong>20 分钟</strong>：把下一步行动收束成任务清单，而不是停留在聊天。</li>
+    <li><strong>10 分钟</strong>：判断是否需要后续咨询、Skill 定制或项目陪跑。</li>
+  </ol>
+
+  <section class="prep-panel" aria-label="到场前准备">
+    <h2>到场前准备</h2>
+    <p>
+      Coffee Chat 的质量取决于问题是否具体。来之前不需要准备正式材料，但最好把下面四件事想清楚。
+    </p>
+    <div class="prep-grid">
+      {prepItems.map((item, index) => (
+        <div>
+          <span>{String(index + 1).padStart(2, '0')}</span>
+          <strong>{item}</strong>
+        </div>
+      ))}
+    </div>
+  </section>
+
+  <section class="path-panel" aria-label="线下后如何转服务">
+    <h2>线下后如何转服务</h2>
+    <div class="path-grid">
+      <article>
+        <strong>聊完就够</strong>
+        <p>如果只是方向问题，当场收束成下一步清单，不强行推进项目。</p>
+      </article>
+      <article>
+        <strong>轻量诊断</strong>
+        <p>如果流程值得拆，但资料边界还不清，先做一次 AI 工作流诊断。</p>
+      </article>
+      <article>
+        <strong>Skill/SOP 小项目</strong>
+        <p>如果输入、输出和验收标准都明确，就用脱敏样例跑一个可复用流程。</p>
+      </article>
+      <article>
+        <strong>系统陪跑</strong>
+        <p>如果涉及知识库、RAG、本地系统和多工具协作，再按阶段拆成长期项目。</p>
+      </article>
+    </div>
+  </section>
+
+  <section class="promise-panel" aria-label="活动承诺">
+    <div class="topic-head">
+      <p>活动承诺</p>
+      <h2>把线下交流做成高密度问题处理</h2>
+    </div>
+    <div class="promise-grid">
+      {eventPromises.map((promise) => (
+        <article>
+          <h3>{promise.title}</h3>
+          <p>{promise.body}</p>
+        </article>
+      ))}
+    </div>
+  </section>
+
+  <section class="sample-session-panel" aria-label="活动样板">
+    <div class="topic-head">
+      <p>活动样板</p>
+      <h2>先把几类高频场景做成可复用场次</h2>
+    </div>
+    <div class="sample-session-grid">
+      {sampleSessions.map((session) => (
+        <article>
+          <span>{session.label}</span>
+          <h3>{session.title}</h3>
+          <dl>
+            <div>
+              <dt>形式</dt>
+              <dd>{session.format}</dd>
+            </div>
+            <div>
+              <dt>会前准备</dt>
+              <dd>{session.prework}</dd>
+            </div>
+            <div>
+              <dt>现场处理</dt>
+              <dd>{session.run}</dd>
+            </div>
+            <div>
+              <dt>会后输出</dt>
+              <dd>{session.output}</dd>
+            </div>
+            <div>
+              <dt>转服务判断</dt>
+              <dd>{session.servicePath}</dd>
+            </div>
+          </dl>
+        </article>
+      ))}
+    </div>
+  </section>
+
+  <section class="recap-panel" aria-label="会后复盘模板">
+    <div class="topic-head">
+      <p>会后复盘模板</p>
+      <h2>能公开的沉淀成内容，不能公开的留在边界内</h2>
+    </div>
+    <div class="recap-grid">
+      {recapTemplate.map((item) => (
+        <article>
+          <h3>{item.title}</h3>
+          <p>{item.body}</p>
+        </article>
+      ))}
+    </div>
+    <a class="recap-link" href="/blog/shanghai-ai-coffee-chat-recap-template/">看完整 Coffee Chat 复盘模板文章</a>
+  </section>
+
+  <section class="operation-panel" aria-label="运营节奏">
+    <div class="topic-head">
+      <p>运营节奏</p>
+      <h2>把 Coffee Chat 当成长期获客实验来运营</h2>
+    </div>
+    <div class="operation-grid">
+      {operationRules.map((rule) => (
+        <article>
+          <h3>{rule.title}</h3>
+          <p>{rule.body}</p>
+        </article>
+      ))}
+    </div>
+  </section>
+
+  <h2>报名方式</h2>
+  <p>
+    加微信：<code>{WECHAT}</code>，备注「Coffee Chat」。请直接发下面这四件事，并补充预算意向与启动时间：
+  </p>
+  <section class="brief-panel" aria-label="报名信息四件套与商业筛选" id="signup-brief">
+    <h2>报名信息四件套 + 商业筛选</h2>
+    <ol>
+      {signupBrief.map((item) => <li>{item}</li>)}
+    </ol>
+    <button type="button" class="copy-signup" data-copy={signupCopy}>复制 Coffee Chat 报名话术</button>
+    <p class="signup-copy-note">复制内容会自动带来源、线索类型、预算意向、启动时间和隐私边界，方便判断是否适合线下。</p>
+    <p class="copy-signup-status" aria-live="polite"></p>
+  </section>
+
+  <h2>筛选规则</h2>
+  <p>
+    优先安排问题具体、愿意分享真实场景、能把交流结果落实到行动的人。暂时不适合线下聊的主题，我会直接建议先看文章、先线上沟通，或先把资料整理清楚。
+  </p>
+
+  <TrustBoundary
+    compact={true}
+    eyebrow="信任边界"
+    title="Coffee Chat 也按交付边界来聊"
+    intro="线下交流可以更直接，但不会降低隐私和责任边界。适合公开讨论的内容放在多人局；涉及私密资料、商业计划或个人系统细节，默认一对一或线上预沟通。"
+    items={[
+      {
+        title: '多人局只聊共性问题',
+        body: '多人场景不展开私人细节，也不要求任何人展示原始材料；能公开讨论的，只保留方法和经验。',
+      },
+      {
+        title: '一对一再看具体资料',
+        body: '如果问题需要看目录结构、样例或流程细节，先确认哪些内容能展示、哪些只能口头描述。',
+      },
+      {
+        title: '聊完要有下一步',
+        body: '每次交流都尽量收束成任务清单和验收口径：先整理什么资料、先试哪个工具、先跑哪个小流程。',
+      },
+      {
+        title: '不强行转项目',
+        body: '方向问题聊完即可；只有当输入、输出和验收标准都明确时，才建议进入诊断、Skill 或系统陪跑。',
+      },
+    ]}
+  />
+
+  <h2>边界</h2>
+  <p>
+    Coffee Chat 不是泛泛社交，也不是大型讲座。它更适合带着问题来的人：一个流程、一个项目、一个职业困惑、一个内容变现想法。能具体，就能聊得更值。
+  </p>
+
+  <FAQSection title="Coffee Chat 常见问题" items={coffeeChatFaqs} />
+
+  <ConversionCTA
+    title="上海线下聊一个真实 AI 问题"
+    eyebrow="报名入口"
+    note="如果你在上海，带着一个具体流程、工具卡点或商业化想法来，优先安排一对一或 3-6 人小型局。"
+    remark="Coffee Chat"
+    briefTitle="直接发我这四件事"
+    briefItems={[
+      '我在上海，方便的区域是：',
+      '我想参加的主题是：A / B / C / D / 其他',
+      '我现在卡住的具体流程是：',
+      '我希望输出：方向清单 / 工具分工 / Skill 草图 / 服务诊断',
+    ]}
+    primaryHref="/diagnosis"
+    primaryLabel="先做 AI 自测"
+    secondaryHref="/workshop"
+    secondaryLabel="看工作坊预审"
+  />
+
+  <script>
+    document.querySelectorAll('.copy-signup').forEach((button) => {
+      button.addEventListener('click', async () => {
+        const trigger = button instanceof HTMLElement ? button : null;
+        const text = trigger?.dataset.copy ?? '';
+        const panel = trigger?.closest('.brief-panel, .coffee-hero-card');
+        const status = panel?.querySelector('.copy-signup-status');
+
+        try {
+          if (!navigator.clipboard || !text) throw new Error('Clipboard unavailable');
+          await navigator.clipboard.writeText(text);
+          if (status) status.textContent = '已复制，可直接粘贴到微信';
+        } catch {
+          if (status) status.textContent = '复制失败，请手动复制四件套';
+        }
+      });
+    });
+
+    document.querySelectorAll('.copy-topic-signup').forEach((button) => {
+      button.addEventListener('click', async () => {
+        const trigger = button instanceof HTMLElement ? button : null;
+        const text = trigger?.dataset.copy ?? '';
+        const panel = trigger?.closest('.topic-signup-card');
+        const status = panel?.querySelector('.copy-topic-status');
+
+        try {
+          if (!navigator.clipboard || !text) throw new Error('Clipboard unavailable');
+          await navigator.clipboard.writeText(text);
+          if (status) status.textContent = '已复制，可直接粘贴到微信';
+        } catch {
+          if (status) status.textContent = '复制失败，请手动复制主题报名卡';
+        }
+      });
+    });
+  </script>
+
+  <style>
+    .coffee-hero {
+      display: grid;
+      grid-template-columns: minmax(0, 1.25fr) minmax(280px, 0.75fr);
+      gap: 1rem;
+      align-items: stretch;
+      margin: 0 0 1.4rem;
+      padding: 1.25rem;
+      background: #f7fbff;
+      border: 1px solid rgba(0, 102, 255, 0.13);
+      border-radius: 8px;
+    }
+
+    .coffee-hero-copy,
+    .coffee-hero-card {
+      min-width: 0;
+    }
+
+    .hero-kicker,
+    .card-kicker {
+      margin: 0 0 0.55rem;
+      color: var(--accent);
+      font-size: 0.82rem;
+      font-weight: 800;
+    }
+
+    .coffee-hero h2 {
+      margin: 0;
+      font-size: 1.9rem;
+      line-height: 1.18;
+    }
+
+    .coffee-hero-copy p {
+      color: rgb(var(--gray));
+    }
+
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.65rem;
+      margin: 1rem 0 0;
+    }
+
+    .hero-actions a,
+    .coffee-hero-card button {
+      display: inline-flex;
+      min-height: 42px;
+      align-items: center;
+      justify-content: center;
+      padding: 0.58rem 0.85rem;
+      border: 1px solid rgba(0, 102, 255, 0.18);
+      border-radius: 8px;
+      font-size: 0.9rem;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .hero-actions a:first-child,
+    .coffee-hero-card button {
+      color: #fff;
+      background: var(--accent);
+    }
+
+    .hero-actions a:last-child {
+      color: var(--accent);
+      background: #fff;
+    }
+
+    .hero-note {
+      margin-bottom: 0;
+      font-size: 0.92rem;
+    }
+
+    .coffee-hero-card {
+      padding: 1rem;
+      background: #fff;
+      border: 1px solid rgba(var(--black), 0.08);
+      border-radius: 8px;
+      box-shadow: 0 14px 32px rgba(20, 20, 20, 0.05);
+    }
+
+    .coffee-hero-card ol {
+      margin: 0.65rem 0 0.9rem;
+      padding-left: 1.25rem;
+      color: rgb(var(--gray));
+      font-size: 0.9rem;
+      line-height: 1.65;
+    }
+
+    .coffee-hero-card button {
+      width: 100%;
+      border: 0;
+    }
+
+    .hero-outcome-panel {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 0.8rem;
+      margin: 1.4rem 0 1.8rem;
+    }
+
+    .hero-outcome-panel div {
+      padding: 1rem;
+      background: #fff;
+      border: 1px solid rgba(var(--black), 0.08);
+      border-radius: 8px;
+      box-shadow: 0 14px 32px rgba(20, 20, 20, 0.05);
+    }
+
+    .hero-outcome-panel strong {
+      display: block;
+      color: rgb(var(--black));
+      font-size: 0.95rem;
+    }
+
+    .hero-outcome-panel p,
+    .hero-outcome-panel ul {
+      margin: 0.5rem 0 0;
+      color: rgb(var(--gray));
+      font-size: 0.9rem;
+      line-height: 1.65;
+    }
+
+    .hero-outcome-panel ul {
+      padding-left: 1.15rem;
+    }
+
+    .event-panel {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 0.8rem;
+      margin: 1.4rem 0 2rem;
+    }
+
+    .event-panel div {
+      padding: 1rem;
+      background: #fff;
+      border: 1px solid rgba(var(--black), 0.08);
+      border-radius: 8px;
+      box-shadow: 0 14px 32px rgba(20, 20, 20, 0.05);
+    }
+
+    .event-panel span {
+      display: block;
+      margin-bottom: 0.35rem;
+      color: var(--accent);
+      font-size: 0.78rem;
+      font-weight: 800;
+    }
+
+    .event-panel strong {
+      display: block;
+      color: rgb(var(--black));
+      font-size: 1rem;
+    }
+
+    .event-panel p {
+      margin: 0.4rem 0 0;
+      color: rgb(var(--gray));
+      font-size: 0.86rem;
+      line-height: 1.55;
+    }
+
+	    .topic-band,
+	    .session-pool,
+	    .schedule-panel,
+	    .readiness-panel,
+	    .evidence-ledger-panel,
+	    .promise-panel,
+	    .sample-session-panel,
+	    .recap-panel,
+	    .operation-panel,
+	    .prep-panel,
+	    .brief-panel,
+	    .path-panel,
+	    .signup-route-panel {
+	      margin: 1.8rem 0;
+	      padding: 1rem;
+	      border: 1px solid rgba(var(--black), 0.08);
+	      border-radius: 8px;
+	      background: #f7fbff;
+	    }
+
+    .topic-head p {
+      margin: 0 0 0.4rem;
+      color: var(--accent);
+      font-size: 0.82rem;
+      font-weight: 800;
+    }
+
+    .topic-head h2,
+    .path-panel h2,
+    .prep-panel h2,
+    .brief-panel h2 {
+      margin-top: 0;
+      font-size: 1.35rem;
+    }
+
+	    .topic-grid,
+	    .session-grid,
+	    .schedule-grid,
+	    .readiness-grid,
+	    .evidence-stats,
+	    .evidence-ledger-grid,
+	    .promise-grid,
+	    .sample-session-grid,
+	    .recap-grid,
+	    .operation-grid,
+	    .prep-grid,
+	    .path-grid,
+	    .signup-route-grid {
+	      display: grid;
+	      grid-template-columns: repeat(2, minmax(0, 1fr));
+	      gap: 0.8rem;
+	    }
+
+	    .topic-grid article,
+	    .session-grid article,
+	    .schedule-grid article,
+	    .readiness-grid article,
+	    .evidence-stats div,
+	    .evidence-ledger-grid article,
+	    .promise-grid article,
+	    .sample-session-grid article,
+	    .recap-grid article,
+	    .operation-grid article,
+	    .path-grid article,
+	    .signup-route-grid article {
+	      padding: 0.95rem;
+	      background: #fff;
+	      border: 1px solid rgba(var(--black), 0.08);
+	      border-radius: 8px;
+	    }
+
+    .recap-link {
+      display: inline-flex;
+      min-height: 38px;
+      align-items: center;
+      justify-content: center;
+      margin-top: 0.85rem;
+      padding: 0.5rem 0.75rem;
+      color: var(--accent);
+      background: #fff;
+      border: 1px solid rgba(0, 102, 255, 0.2);
+      border-radius: 8px;
+      font-size: 0.9rem;
+      font-weight: 800;
+      text-decoration: none;
+    }
+
+	    .topic-grid span,
+	    .session-grid span,
+	    .schedule-grid span,
+	    .readiness-grid span,
+	    .evidence-stats span,
+	    .evidence-ledger-grid span,
+	    .sample-session-grid span,
+	    .prep-grid span,
+	    .signup-route-grid span {
+	      display: block;
+	      margin-bottom: 0.35rem;
+	      color: var(--accent);
+	      font-size: 0.78rem;
+	      font-weight: 800;
+	    }
+
+	    .topic-grid h3,
+	    .session-grid h3,
+	    .schedule-grid h3,
+	    .readiness-grid h3,
+	    .evidence-ledger-grid h3,
+	    .promise-grid h3,
+	    .sample-session-grid h3,
+	    .recap-grid h3,
+	    .operation-grid h3,
+	    .signup-route-grid h3 {
+	      margin: 0 0 0.35rem;
+	      font-size: 1.05rem;
+	    }
+
+	    .topic-grid p,
+	    .session-grid dd,
+	    .schedule-grid dd,
+	    .readiness-grid dd,
+	    .evidence-stats p,
+	    .evidence-ledger-grid dd,
+	    .promise-grid p,
+	    .sample-session-grid dd,
+	    .recap-grid p,
+	    .operation-grid p,
+	    .prep-panel p,
+	    .path-grid p,
+	    .signup-route-grid p {
+	      margin: 0;
+	      color: rgb(var(--gray));
+	      font-size: 0.9rem;
+	      line-height: 1.65;
+	    }
+
+	    .session-grid dl {
+	      display: grid;
+	      gap: 0.7rem;
+	      margin: 0.8rem 0 0;
+	    }
+
+	    .schedule-grid {
+	      grid-template-columns: repeat(2, minmax(0, 1fr));
+	    }
+
+	    .schedule-head {
+	      display: flex;
+	      align-items: flex-start;
+	      justify-content: space-between;
+	      gap: 0.75rem;
+	    }
+
+	    .schedule-head strong {
+	      flex: 0 0 auto;
+	      max-width: 48%;
+	      padding: 0.25rem 0.5rem;
+	      color: var(--accent);
+	      font-size: 0.76rem;
+	      line-height: 1.35;
+	      text-align: center;
+	      background: rgba(0, 102, 255, 0.07);
+	      border: 1px solid rgba(0, 102, 255, 0.14);
+	      border-radius: 999px;
+	    }
+
+	    .schedule-grid dl {
+	      display: grid;
+	      gap: 0.65rem;
+	      margin: 0.8rem 0 0;
+	    }
+
+	    .schedule-grid dl div {
+	      padding-top: 0.65rem;
+	      border-top: 1px solid rgba(var(--black), 0.07);
+	    }
+
+	    .schedule-grid dt {
+	      color: rgb(var(--black));
+	      font-size: 0.78rem;
+	      font-weight: 800;
+	    }
+
+	    .schedule-grid a {
+	      display: inline-flex;
+	      width: fit-content;
+	      min-height: 38px;
+	      align-items: center;
+	      justify-content: center;
+	      margin-top: 0.85rem;
+	      padding: 0.5rem 0.75rem;
+	      color: var(--accent);
+	      background: #fff;
+	      border: 1px solid rgba(0, 102, 255, 0.2);
+	      border-radius: 8px;
+	      font-size: 0.86rem;
+	      font-weight: 800;
+	    }
+
+	    .topic-copy-template {
+	      max-height: 210px;
+	      margin: 0.85rem 0 0;
+	      padding: 0.75rem;
+	      overflow: auto;
+	      white-space: pre-wrap;
+	      overflow-wrap: anywhere;
+	      color: rgb(var(--black));
+	      background: rgba(var(--gray-light), 0.52);
+	      border: 1px solid rgba(var(--black), 0.08);
+	      border-radius: 8px;
+	      font: inherit;
+	      font-size: 0.84rem;
+	      line-height: 1.62;
+	    }
+
+	    .topic-copy-note {
+	      margin: 0.55rem 0 0;
+	      color: rgb(var(--gray));
+	      font-size: 0.82rem;
+	      line-height: 1.55;
+	    }
+
+	    .readiness-grid dl {
+	      display: grid;
+	      gap: 0.65rem;
+	      margin: 0.8rem 0 0;
+	    }
+
+	    .evidence-ledger-grid dl {
+	      display: grid;
+	      gap: 0.65rem;
+	      margin: 0.8rem 0 0;
+	    }
+
+	    .sample-session-grid dl {
+	      display: grid;
+	      gap: 0.65rem;
+	      margin: 0.8rem 0 0;
+	    }
+
+	    .session-grid dl div,
+	    .schedule-grid dl div,
+	    .readiness-grid dl div,
+	    .evidence-ledger-grid dl div,
+	    .sample-session-grid dl div {
+	      padding-top: 0.7rem;
+	      border-top: 1px solid rgba(var(--black), 0.07);
+	    }
+
+	    .session-grid dt,
+	    .schedule-grid dt,
+	    .readiness-grid dt,
+	    .evidence-ledger-grid dt,
+	    .sample-session-grid dt {
+	      color: rgb(var(--black));
+	      font-size: 0.78rem;
+	      font-weight: 800;
+	    }
+
+    .evidence-stats {
+      margin-bottom: 0.8rem;
+    }
+
+    .evidence-stats strong {
+      display: block;
+      color: rgb(var(--black));
+      font-size: 1.25rem;
+      line-height: 1.2;
+    }
+
+    .ledger-note {
+      margin: 0.85rem 0 0;
+      color: rgb(var(--gray));
+      font-size: 0.9rem;
+      line-height: 1.7;
+    }
+
+    .prep-grid div {
+      padding: 0.85rem;
+      background: #fff;
+      border: 1px solid rgba(var(--black), 0.08);
+      border-radius: 8px;
+    }
+
+    .prep-grid strong {
+      display: block;
+      color: rgb(var(--black));
+      font-size: 0.95rem;
+      line-height: 1.45;
+    }
+
+    .brief-panel {
+      background: rgba(var(--gray-light), 0.45);
+    }
+
+    .brief-panel ol {
+      margin-bottom: 0.9rem;
+    }
+
+    .path-grid strong {
+      display: block;
+      margin-bottom: 0.35rem;
+      color: rgb(var(--black));
+    }
+
+    .route-meta {
+      margin-top: 0.75rem;
+      padding-top: 0.75rem;
+      border-top: 1px solid rgba(var(--black), 0.07);
+    }
+
+    .route-meta strong {
+      display: block;
+      margin-bottom: 0.35rem;
+      color: rgb(var(--black));
+      font-size: 0.82rem;
+    }
+
+    .route-meta ul {
+      margin: 0;
+      padding-left: 1.05rem;
+    }
+
+    .route-meta li {
+      color: rgb(var(--gray));
+      font-size: 0.88rem;
+      line-height: 1.6;
+    }
+
+    .signup-route-grid a,
+    .copy-signup,
+    .copy-topic-signup {
+      display: inline-flex;
+      min-height: 38px;
+      align-items: center;
+      justify-content: center;
+      margin-top: 0.85rem;
+      padding: 0.5rem 0.75rem;
+      color: var(--accent);
+      background: #fff;
+      border: 1px solid rgba(0, 102, 255, 0.2);
+      border-radius: 8px;
+      font: inherit;
+      font-size: 0.9rem;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .copy-signup,
+    .copy-topic-signup {
+      width: 100%;
+    }
+
+    .copy-signup-status,
+    .copy-topic-status {
+      min-height: 1.2rem;
+      margin: 0.45rem 0 0 !important;
+      color: #157347 !important;
+      font-size: 0.84rem;
+      font-weight: 700;
+    }
+
+    .signup-copy-note {
+      margin: 0.55rem 0 0;
+      color: rgb(var(--gray));
+      font-size: 0.84rem;
+      line-height: 1.55;
+    }
+
+	    @media (max-width: 820px) {
+      .coffee-hero,
+      .hero-outcome-panel {
+        grid-template-columns: 1fr;
+      }
+
+      .event-panel,
+      .topic-grid,
+      .session-grid,
+      .schedule-grid,
+      .readiness-grid,
+      .evidence-stats,
+      .evidence-ledger-grid,
+      .promise-grid,
+	      .sample-session-grid,
+	      .recap-grid,
+	      .operation-grid,
+	      .prep-grid,
+	      .path-grid,
+	      .signup-route-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+	    @media (max-width: 520px) {
+	      .event-panel,
+	      .topic-grid,
+	      .session-grid,
+	      .schedule-grid,
+	      .readiness-grid,
+	      .evidence-stats,
+	      .evidence-ledger-grid,
+	      .promise-grid,
+	      .sample-session-grid,
+	      .recap-grid,
+	      .operation-grid,
+	      .prep-grid,
+	      .path-grid,
+	      .signup-route-grid {
+        grid-template-columns: 1fr;
+      }
+
+	    .schedule-head {
+	      align-items: stretch;
+	      flex-direction: column;
+	    }
+
+	    .schedule-head strong {
+	      width: max-content;
+	      max-width: 100%;
+	    }
+    }
+  </style>
+</Layout>

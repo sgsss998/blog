@@ -43,8 +43,4 @@ git clone https://github.com/zarazhangrui/frontend-slides.git ~/.claude/skills/f
 ![](/images/blog/recommend-frontend-slides-skill-wechat-02.png)![](/images/blog/recommend-frontend-slides-skill-wechat-03.png)  
 
 
-第二个是护肤类教程
-
-![](/images/blog/recommend-frontend-slides-skill-wechat-04.png)
-
 我觉得非常棒！推荐给大家，是免费的 skill，需要在 claude code 里面使用。

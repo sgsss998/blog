@@ -1,0 +1,818 @@
+---
+import BaseHead from '../components/BaseHead.astro';
+import ConversionCTA from '../components/ConversionCTA.astro';
+import Footer from '../components/Footer.astro';
+import Header from '../components/Header.astro';
+import TrustBoundary from '../components/TrustBoundary.astro';
+import { WECHAT } from '../consts';
+
+const checklistGroups = [
+  {
+    slug: 'data',
+    title: '资料基础',
+    advice: '资料足够清楚时，后续才适合做诊断、Skill 或知识库整理。',
+    items: [
+      '我有可以脱敏展示的真实样例',
+      '资料来源相对固定，不是每次都临时找',
+      '我能说清楚哪些资料不能公开、不能上传、不能被模型记住',
+    ],
+  },
+  {
+    slug: 'process',
+    title: '流程清晰度',
+    advice: '流程越稳定，越容易把 AI 输出变成可验收的交付。',
+    items: [
+      '这个任务每周或每月都会重复出现',
+      '输入和输出大致稳定，不是完全开放式闲聊',
+      '我能接受先从一个小流程跑通，而不是一开始做万能系统',
+    ],
+  },
+  {
+    slug: 'value',
+    title: '交付价值',
+    advice: '价值越明确，越适合从交流进入服务或小项目。',
+    items: [
+      '这个流程现在会造成明显返工、拖延或人工整理成本',
+      '如果流程稳定下来，会直接影响交付效率、内容产出或业务转化',
+      '我愿意用 1-2 个样例来验收 AI 输出，而不是只凭感觉判断',
+    ],
+  },
+  {
+    slug: 'risk',
+    title: '风险边界',
+    advice: '边界越清楚，越能把 AI 用在该用的位置，不把风险推给模型。',
+    items: [
+      '这个需求不涉及伪造材料、绕过规则或批量骚扰',
+      '我能保留最终人工确认，不要求 AI 替我承担专业责任',
+      '我愿意把“AI 做什么、人确认什么”写清楚',
+    ],
+  },
+];
+
+const pathCards = [
+  {
+    score: '0-4',
+    title: '先方向梳理',
+    route: 'Coffee Chat / 线上预沟通',
+    copy: '问题还散，先把目标、资料边界和真实流程讲清楚，不急着做系统。',
+  },
+  {
+    score: '5-8',
+    title: '先做工作流诊断',
+    route: 'AI 工作流诊断',
+    copy: '已经有真实流程，但需要先确认资料源、工具分工、人机边界和验收口径。',
+  },
+  {
+    score: '9-12',
+    title: '进入小项目',
+    route: 'Skill/SOP 小项目',
+    copy: '输入、输出和价值都相对稳定，可以用脱敏样例跑通并沉淀成可复用流程。',
+  },
+  {
+    score: '边界优先',
+    title: '先做资料治理',
+    route: '知识库治理 / 权限边界',
+    copy: '如果资料分散、敏感或权限不清，不管总分多高，都应该先整理资料入口和不可公开范围。',
+  },
+];
+
+const prepAssets = [
+  {
+    title: '还不知道该带什么材料',
+    route: '先复制 AI 工具 7 天实践路线',
+    copy: '适合刚开始用 AI，但还没有稳定工具分工的人。先用一个高频任务跑 7 天，再回来自测。',
+    href: '/products',
+  },
+  {
+    title: '有重复任务但说不清需求',
+    route: '先复制 Skill 首次需求模板',
+    copy: '适合 Word、纪要、写作、资料归档这类反复返工的任务，先把输入、输出和验收口径写清楚。',
+    href: '/products',
+  },
+  {
+    title: '资料很多但边界不清',
+    route: '先复制知识库整理自查清单',
+    copy: '适合资料散在本地、Obsidian、微信和网盘里的人，先整理资料入口和不可公开范围。',
+    href: '/products',
+  },
+  {
+    title: '想把内容转成服务入口',
+    route: '先复制内容商业化闭环画布',
+    copy: '适合已经有文章、项目或经验，但还没接到样例库、Coffee Chat 和服务页的人。',
+    href: '/products',
+  },
+];
+
+const diagnosisStructuredData = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  '@id': 'https://ailaoming.com/diagnosis/#ai-fit-check',
+  name: 'AI 落地自测',
+  url: 'https://ailaoming.com/diagnosis/',
+  applicationCategory: 'BusinessApplication',
+  operatingSystem: 'Any',
+  inLanguage: 'zh-CN',
+  description: '用 3 分钟判断一个真实工作流是否适合做 AI 诊断、Skill/SOP 定制、个人知识库整理或上海 Coffee Chat。',
+  offers: {
+    '@type': 'Offer',
+    price: '0',
+    priceCurrency: 'CNY',
+  },
+  featureList: [
+    '资料基础检查',
+    '流程清晰度检查',
+    '交付价值检查',
+    '风险边界检查',
+    '本地浏览器计分',
+    '复制咨询摘要',
+  ],
+};
+---
+
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <BaseHead
+      title="AI 落地自测"
+      description="用 3 分钟判断你的工作流是否适合做 AI 诊断、Skill/SOP 定制、个人知识库整理或上海 Coffee Chat。"
+    />
+    <script type="application/ld+json" set:html={JSON.stringify(diagnosisStructuredData)}></script>
+  </head>
+  <body>
+    <Header />
+    <main>
+      <section class="hero">
+        <div>
+          <p class="eyebrow">AI 落地自测</p>
+          <h1>3 分钟判断你的流程值不值得做成 AI 系统</h1>
+          <p class="tagline">
+            不是所有事情都适合上 AI。先用这个自测把资料基础、流程清晰度、交付价值和风险边界看一遍，再决定是先聊 Coffee Chat、做一次诊断，还是进入 Skill/SOP 小项目。
+          </p>
+          <div class="hero-actions">
+            <a class="btn primary" href="#checklist">开始自测</a>
+            <a class="btn secondary" href="/workflow-diagnosis">看诊断服务</a>
+            <a class="btn secondary" href="/services">查看服务</a>
+          </div>
+        </div>
+        <aside class="privacy-note" aria-label="隐私说明">
+          <strong>本地计算</strong>
+          <p>勾选结果只在你的浏览器里计算，不提交、不存储、不上传。真正沟通时也建议先用脱敏样例说明问题。</p>
+        </aside>
+      </section>
+
+      <section class="prep-assets-panel" aria-label="自测前准备">
+        <div class="section-head">
+          <p class="eyebrow">自测前准备</p>
+          <h2>资料不够清楚时，先拿一张资料卡</h2>
+          <p>自测不是考试。你可以先用资料卡把问题压缩成可沟通的格式，再回来勾选，结果会更接近真实路径。</p>
+        </div>
+        <div class="prep-assets-grid">
+          {prepAssets.map((asset) => (
+            <article>
+              <h3>{asset.title}</h3>
+              <p>{asset.copy}</p>
+              <a href={asset.href}>{asset.route}</a>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      <section id="checklist" class="diagnosis-panel" aria-labelledby="checklist-title">
+        <div class="panel-head">
+          <div>
+            <p class="eyebrow">Checklist</p>
+            <h2 id="checklist-title">勾选符合你现状的项</h2>
+          </div>
+          <div class="score-box" aria-live="polite">
+            <span id="score">0</span>
+            <small>/ 12</small>
+          </div>
+        </div>
+
+        <div class="checklist-grid">
+          {checklistGroups.map((group, groupIndex) => (
+            <fieldset>
+              <legend>{group.title}</legend>
+              {group.items.map((item, itemIndex) => {
+                const id = `check-${groupIndex}-${itemIndex}`;
+                return (
+                  <label for={id}>
+                    <input id={id} type="checkbox" class="diagnosis-check" data-dimension={group.slug} />
+                    <span>{item}</span>
+                  </label>
+                );
+              })}
+            </fieldset>
+          ))}
+        </div>
+
+        <div class="result-card" aria-live="polite">
+          <p class="result-kicker">当前建议</p>
+          <h2 id="result-title">先选几项，看适合哪条路径</h2>
+          <p id="result-copy">
+            结果会根据你的勾选实时变化。分数越高，越适合从咨询走向可交付的 Skill、SOP 或系统落地。
+          </p>
+          <div class="result-actions">
+            <a id="result-primary-action" class="recommended" href="#checklist">先完成自测</a>
+            <button type="button" id="copy-result">复制咨询摘要</button>
+            <a href="/products">资料卡</a>
+            <a href="/roi-calculator">ROI 估算</a>
+            <a href="/coffee-chat">Coffee Chat</a>
+            <a href="/workshop">小型工作坊</a>
+            <a href="/services">服务方案</a>
+          </div>
+          <p id="copy-status" class="copy-status" role="status"></p>
+        </div>
+      </section>
+
+      <section class="dimension-panel" aria-label="四维度成熟度">
+        <div class="section-head">
+          <p class="eyebrow">四维度成熟度</p>
+          <h2>不要只看总分，也要看哪一块短板明显</h2>
+          <p>同样是 8 分，如果风险边界全空，仍然不适合直接进项目；如果资料基础弱，先做知识库和资料入口会更稳。</p>
+        </div>
+        <div class="dimension-grid">
+          {checklistGroups.map((group) => (
+            <article class="dimension-card" data-dimension-card={group.slug}>
+              <div>
+                <span>{group.title}</span>
+                <strong><b data-dimension-score={group.slug}>0</b>/3</strong>
+              </div>
+              <p>{group.advice}</p>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      <section class="path-matrix" aria-label="自测路径矩阵">
+        <div class="section-head">
+          <p class="eyebrow">路径矩阵</p>
+          <h2>根据成熟度选择下一步</h2>
+        </div>
+        <div class="path-card-grid">
+          {pathCards.map((card) => (
+            <article>
+              <span>{card.score}</span>
+              <h3>{card.title}</h3>
+              <p>{card.copy}</p>
+              <strong>{card.route}</strong>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      <section class="how-to-use">
+        <div>
+          <p class="eyebrow">如何使用结果</p>
+          <h2>把自测结果变成一次有效沟通</h2>
+        </div>
+        <ol>
+          <li><strong>先看分数</strong>：低分先 Coffee Chat，中等分做一次诊断，高分可以进入 Skill/SOP 小项目。</li>
+          <li><strong>准备样例</strong>：只需要 1-2 个脱敏样例，不要一开始丢一堆原始资料。</li>
+          <li><strong>发给我</strong>：加微信 <code>{WECHAT}</code>，备注「AI 自测」，把复制摘要和你的一个具体流程发来。</li>
+        </ol>
+      </section>
+
+      <TrustBoundary
+        compact={true}
+        eyebrow="信任边界"
+        title="自测只判断适配度，不收集你的资料"
+        intro="这个页面不提交表单，也不保存勾选结果。真正进入沟通时，仍然先用脱敏样例描述问题，再判断是否值得做诊断或小项目。"
+      />
+
+      <ConversionCTA
+        title="带着自测结果来聊"
+        note="如果你已经知道自己卡在哪个流程，把自测结果和一个脱敏样例发来，我会先判断这件事适合 Coffee Chat、小型工作坊、轻量诊断，还是直接做成 Skill/SOP。"
+        remark="AI 自测"
+        briefItems={[
+          '我的 AI 落地自测分数是：__/12',
+          '我最想解决的一个流程是：',
+          '我希望先 Coffee Chat / 小型工作坊 / 轻量诊断 / Skill 小项目：',
+        ]}
+        primaryHref="/workflow-diagnosis"
+        primaryLabel="看诊断服务"
+        secondaryHref="/projects"
+        secondaryLabel="看项目进度"
+      />
+    </main>
+    <Footer />
+
+    <script>
+      const checks = Array.from(document.querySelectorAll('.diagnosis-check'));
+      const scoreEl = document.getElementById('score');
+      const titleEl = document.getElementById('result-title');
+      const copyEl = document.getElementById('result-copy');
+      const primaryAction = document.getElementById('result-primary-action');
+      const copyButton = document.getElementById('copy-result');
+      const copyStatus = document.getElementById('copy-status');
+      const dimensionScoreEls = Array.from(document.querySelectorAll('[data-dimension-score]'));
+
+      const resultLevels = [
+        {
+          min: 0,
+          title: '先选几项，看适合哪条路径',
+          copy: '结果会根据你的勾选实时变化。分数越高，越适合从咨询走向可交付的 Skill、SOP 或系统落地。',
+          path: '尚未完成自测',
+          actionLabel: '先完成自测',
+          actionHref: '#checklist',
+          intent: '继续完成自测，再判断下一步。',
+        },
+        {
+          min: 1,
+          title: '先从 Coffee Chat 或方向梳理开始',
+          copy: '现在更适合先把问题讲清楚，不急着做系统。重点是找出真实高频流程、资料边界和可验收的小任务。',
+          path: 'Coffee Chat / 方向梳理',
+          actionLabel: '按这个结果约 Coffee Chat',
+          actionHref: '/coffee-chat',
+          intent: '先做 Coffee Chat 或方向梳理，不急着启动项目。',
+        },
+        {
+          min: 5,
+          title: '适合做一次 AI 工作流诊断',
+          copy: '你已经有可拆解的真实流程，但还需要先确认资料源、工具选择、人机边界和优先级。一次诊断能减少无效试错。',
+          path: 'AI 工作流诊断',
+          actionLabel: '看诊断服务',
+          actionHref: '/workflow-diagnosis',
+          intent: '先做 AI 工作流诊断，把工具分工和验收口径拆清楚。',
+        },
+        {
+          min: 9,
+          title: '可以进入 Skill/SOP 小项目',
+          copy: '这个流程已经具备稳定输入、重复场景和明确价值，适合用脱敏样例跑通，再沉淀成可复用的 Skill、SOP 或自动化链路。',
+          path: 'Skill/SOP 小项目',
+          actionLabel: '看 Skill/SOP 小项目',
+          actionHref: '/skill-sop',
+          intent: '可以准备脱敏样例，进入 Skill/SOP 小项目评估。',
+        },
+      ];
+
+      const boundaryFirstResult = {
+        title: '先补资料和风险边界',
+        copy: '总分已经不低，但资料基础或风险边界偏弱。先把资料入口、不可公开范围和人工确认责任说清楚，再决定是否做诊断或小项目。',
+        path: '资料卡 / 知识库治理',
+        actionLabel: '先复制资料卡',
+        actionHref: '/products',
+        intent: '先补资料入口、不可公开范围和人工确认责任，再进入诊断或小项目。',
+      };
+
+      function currentDimensionCounts() {
+        return checks.reduce((counts, check) => {
+          if (!check.checked) return counts;
+          const dimension = check.dataset.dimension;
+          if (dimension) counts[dimension] = (counts[dimension] ?? 0) + 1;
+          return counts;
+        }, {});
+      }
+
+      function currentResult(score, dimensionCounts = currentDimensionCounts()) {
+        if (score >= 5 && ((dimensionCounts.data ?? 0) <= 1 || (dimensionCounts.risk ?? 0) <= 1)) {
+          return boundaryFirstResult;
+        }
+        return resultLevels.reduce((selected, level) => (score >= level.min ? level : selected), resultLevels[0]);
+      }
+
+      function updateResult() {
+        const score = checks.filter((check) => check.checked).length;
+        const dimensionCounts = currentDimensionCounts();
+        const result = currentResult(score, dimensionCounts);
+        dimensionScoreEls.forEach((scoreEl) => {
+          const dimension = scoreEl instanceof HTMLElement ? scoreEl.dataset.dimensionScore : '';
+          const count = dimension ? (dimensionCounts[dimension] ?? 0) : 0;
+          if (scoreEl) scoreEl.textContent = String(count);
+        });
+        if (scoreEl) scoreEl.textContent = String(score);
+        if (titleEl) titleEl.textContent = result.title;
+        if (copyEl) copyEl.textContent = result.copy;
+        if (primaryAction instanceof HTMLAnchorElement) {
+          primaryAction.textContent = result.actionLabel;
+          primaryAction.href = result.actionHref;
+        }
+        if (copyStatus) copyStatus.textContent = '';
+      }
+
+      async function copyResult() {
+        const score = checks.filter((check) => check.checked).length;
+        const dimensionCounts = currentDimensionCounts();
+        const result = currentResult(score, dimensionCounts);
+        const selected = checks
+          .filter((check) => check.checked)
+          .map((check) => check.parentElement?.innerText.trim())
+          .filter(Boolean);
+        const dimensions = dimensionScoreEls
+          .map((scoreEl) => {
+            if (!(scoreEl instanceof HTMLElement)) return '';
+            const label = scoreEl.closest('.dimension-card')?.querySelector('span')?.textContent?.trim();
+            const value = scoreEl.textContent?.trim();
+            return label && value ? `${label}${value}/3` : '';
+          })
+          .filter(Boolean);
+        const text = [
+          `AI 落地自测：${score}/12`,
+          `建议路径：${result.path}`,
+          `建议下一步：${result.intent}`,
+          `四维度：${dimensions.length ? dimensions.join('；') : '尚未生成'}`,
+          `我勾选的情况：${selected.length ? selected.join('；') : '还没有勾选具体项'}`,
+          '我已准备或需要补的资料卡：AI 工具路线 / Skill 需求模板 / 知识库自查 / 内容商业化画布',
+          '我想先聊的一个流程：',
+        ].join('\n');
+
+        try {
+          await navigator.clipboard.writeText(text);
+          if (copyStatus) copyStatus.textContent = '已复制，可以发给老明。';
+        } catch {
+          if (copyStatus) copyStatus.textContent = '浏览器不允许复制时，可以手动截图或直接发分数。';
+        }
+      }
+
+      checks.forEach((check) => check.addEventListener('change', updateResult));
+      copyButton?.addEventListener('click', copyResult);
+      updateResult();
+    </script>
+  </body>
+</html>
+
+<style>
+  main {
+    width: 1080px;
+  }
+
+  .hero {
+    display: grid;
+    grid-template-columns: minmax(0, 1.35fr) minmax(280px, 0.65fr);
+    gap: 1.5rem;
+    align-items: center;
+    padding: 3.8rem 0 2.2rem;
+  }
+
+  .eyebrow {
+    margin: 0 0 0.7rem;
+    color: var(--accent);
+    font-size: 0.84rem;
+    font-weight: 800;
+  }
+
+  h1 {
+    margin: 0;
+    font-size: 2.8rem;
+  }
+
+  .tagline {
+    max-width: 780px;
+    margin: 1rem 0 0;
+    color: rgb(var(--gray));
+    font-size: 1.08rem;
+  }
+
+  .hero-actions,
+  .result-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-top: 1.4rem;
+  }
+
+  .btn,
+  .result-actions a,
+  .result-actions button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 44px;
+    padding: 0.65rem 1rem;
+    border-radius: 8px;
+    border: 1px solid rgba(var(--black), 0.12);
+    font: inherit;
+    font-weight: 800;
+    cursor: pointer;
+  }
+
+  .primary,
+  .result-actions button {
+    background: var(--accent);
+    color: #fff;
+  }
+
+  .secondary,
+  .result-actions a {
+    background: #fff;
+    color: rgb(var(--black));
+  }
+
+  .result-actions a.recommended {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #fff;
+  }
+
+	  .privacy-note,
+	  .prep-assets-panel,
+	  .diagnosis-panel,
+	  .dimension-panel,
+	  .path-matrix,
+	  .how-to-use {
+	    border: 1px solid rgba(var(--black), 0.08);
+	    border-radius: 8px;
+	    background: #fff;
+	    box-shadow: var(--box-shadow);
+	  }
+
+  .privacy-note {
+    padding: 1.2rem;
+  }
+
+  .prep-assets-panel {
+    margin: 0 0 1.5rem;
+    padding: 1.25rem;
+    background: #fbfff8;
+    border-color: rgba(17, 154, 128, 0.18);
+  }
+
+  .prep-assets-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 0.85rem;
+    margin-top: 1rem;
+  }
+
+  .prep-assets-grid article {
+    padding: 0.95rem;
+    background: #fff;
+    border: 1px solid rgba(var(--black), 0.08);
+    border-radius: 8px;
+  }
+
+  .prep-assets-grid h3 {
+    margin: 0 0 0.55rem;
+    color: rgb(var(--black));
+    font-size: 1rem;
+    line-height: 1.35;
+  }
+
+  .prep-assets-grid p {
+    margin: 0;
+    color: rgb(var(--gray));
+    font-size: 0.9rem;
+    line-height: 1.65;
+  }
+
+  .prep-assets-grid a {
+    display: inline-flex;
+    min-height: 36px;
+    align-items: center;
+    justify-content: center;
+    margin-top: 0.75rem;
+    padding: 0.45rem 0.65rem;
+    color: var(--accent);
+    background: #fff;
+    border: 1px solid rgba(0, 102, 255, 0.2);
+    border-radius: 8px;
+    font-size: 0.84rem;
+    font-weight: 800;
+    text-decoration: none;
+  }
+
+  .privacy-note strong {
+    display: block;
+    color: rgb(var(--black));
+    font-size: 1.1rem;
+  }
+
+  .privacy-note p {
+    margin: 0.55rem 0 0;
+    color: rgb(var(--gray));
+    font-size: 0.95rem;
+  }
+
+  .diagnosis-panel {
+    padding: 1.25rem;
+  }
+
+  .panel-head {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    align-items: center;
+    margin-bottom: 1rem;
+  }
+
+	  .panel-head h2,
+	  .result-card h2,
+	  .section-head h2,
+	  .how-to-use h2 {
+	    margin: 0;
+	    font-size: 1.55rem;
+	  }
+
+	  .section-head p:last-child {
+	    max-width: 760px;
+	    margin: 0.6rem 0 0;
+	    color: rgb(var(--gray));
+	    line-height: 1.7;
+	  }
+
+  .score-box {
+    display: inline-flex;
+    align-items: baseline;
+    justify-content: center;
+    min-width: 92px;
+    padding: 0.55rem 0.75rem;
+    border-radius: 8px;
+    background: #101828;
+    color: #fff;
+  }
+
+  .score-box span {
+    font-size: 2rem;
+    font-weight: 800;
+    line-height: 1;
+  }
+
+  .score-box small {
+    margin-left: 0.15rem;
+    color: rgba(255, 255, 255, 0.72);
+    font-weight: 700;
+  }
+
+  .checklist-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1rem;
+  }
+
+  fieldset {
+    min-width: 0;
+    margin: 0;
+    padding: 1rem;
+    border: 1px solid rgba(var(--black), 0.08);
+    border-radius: 8px;
+    background: rgba(var(--gray-light), 0.45);
+  }
+
+  legend {
+    padding: 0 0.35rem;
+    color: rgb(var(--black));
+    font-size: 1rem;
+    font-weight: 800;
+  }
+
+  label {
+    display: grid;
+    grid-template-columns: 1.2rem minmax(0, 1fr);
+    gap: 0.6rem;
+    align-items: start;
+    margin-top: 0.8rem;
+    color: rgb(var(--gray-dark));
+    font-size: 0.95rem;
+    line-height: 1.65;
+    cursor: pointer;
+  }
+
+  input[type='checkbox'] {
+    width: 1.1rem;
+    height: 1.1rem;
+    margin-top: 0.22rem;
+    accent-color: var(--accent);
+  }
+
+  .result-card {
+    margin-top: 1rem;
+    padding: 1.1rem;
+    border-radius: 8px;
+    background: #f7fbff;
+    border: 1px solid rgba(0, 102, 255, 0.18);
+  }
+
+  .result-kicker {
+    margin: 0 0 0.4rem;
+    color: #157347;
+    font-size: 0.82rem;
+    font-weight: 800;
+  }
+
+  .result-card p {
+    color: rgb(var(--gray));
+  }
+
+	  .copy-status {
+	    min-height: 1.4rem;
+	    margin: 0.65rem 0 0;
+	    color: #157347;
+	    font-size: 0.92rem;
+	    font-weight: 700;
+	  }
+
+	  .dimension-panel,
+	  .path-matrix {
+	    margin: 1.5rem 0 0;
+	    padding: 1.25rem;
+	  }
+
+	  .dimension-grid,
+	  .path-card-grid {
+	    display: grid;
+	    grid-template-columns: repeat(4, minmax(0, 1fr));
+	    gap: 0.85rem;
+	    margin-top: 1rem;
+	  }
+
+	  .dimension-card,
+	  .path-card-grid article {
+	    padding: 0.95rem;
+	    border: 1px solid rgba(var(--black), 0.08);
+	    border-radius: 8px;
+	    background: #f7fbff;
+	  }
+
+	  .dimension-card:nth-child(2n),
+	  .path-card-grid article:nth-child(2n) {
+	    background: #fbfff8;
+	  }
+
+	  .dimension-card div {
+	    display: flex;
+	    align-items: center;
+	    justify-content: space-between;
+	    gap: 0.8rem;
+	  }
+
+	  .dimension-card span,
+	  .path-card-grid span {
+	    color: var(--accent);
+	    font-size: 0.82rem;
+	    font-weight: 800;
+	  }
+
+	  .dimension-card strong {
+	    color: rgb(var(--black));
+	    font-size: 1.05rem;
+	  }
+
+	  .dimension-card p,
+	  .path-card-grid p {
+	    margin: 0.7rem 0 0;
+	    color: rgb(var(--gray));
+	    font-size: 0.9rem;
+	    line-height: 1.65;
+	  }
+
+	  .path-card-grid h3 {
+	    margin: 0.45rem 0 0;
+	    color: rgb(var(--black));
+	    font-size: 1.05rem;
+	  }
+
+	  .path-card-grid strong {
+	    display: block;
+	    margin-top: 0.75rem;
+	    color: rgb(var(--black));
+	    font-size: 0.9rem;
+	  }
+
+  .how-to-use {
+    display: grid;
+    grid-template-columns: minmax(220px, 0.45fr) minmax(0, 1fr);
+    gap: 1rem;
+    margin: 1.5rem 0 0;
+    padding: 1.25rem;
+  }
+
+  .how-to-use ol {
+    margin: 0;
+    color: rgb(var(--gray));
+  }
+
+  @media (max-width: 820px) {
+    main {
+      width: 100%;
+    }
+
+	    .hero,
+	    .prep-assets-grid,
+	    .checklist-grid,
+	    .dimension-grid,
+	    .path-card-grid,
+	    .how-to-use {
+	      grid-template-columns: 1fr;
+	    }
+
+    h1 {
+      font-size: 2.15rem;
+    }
+
+    .panel-head {
+      align-items: flex-start;
+      flex-direction: column;
+    }
+
+    .score-box {
+      width: 100%;
+      justify-content: flex-start;
+    }
+
+    .btn,
+    .result-actions a,
+    .result-actions button {
+      width: 100%;
+    }
+  }
+</style>

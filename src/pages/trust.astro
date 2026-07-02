@@ -1,0 +1,608 @@
+---
+import BaseHead from '../components/BaseHead.astro';
+import ConversionCTA from '../components/ConversionCTA.astro';
+import FAQSection from '../components/FAQSection.astro';
+import Footer from '../components/Footer.astro';
+import Header from '../components/Header.astro';
+import TrustBoundary from '../components/TrustBoundary.astro';
+import { WECHAT } from '../consts';
+
+const safeInputs = [
+  {
+    title: '脱敏样例',
+    body: '保留任务结构、字段类型、失败现象和目标格式，遮掉姓名、编号、金额、联系人和截图里的个人标识。',
+  },
+  {
+    title: '目录截图',
+    body: '只展示文件层级、命名问题和资料类型；本地路径、账号、二维码、聊天头像和团队信息先打码。',
+  },
+  {
+    title: '公开链接',
+    body: '可以发公开文章、公开网页、公开产品说明、开源仓库或你自己允许公开引用的材料。',
+  },
+  {
+    title: '目标输出',
+    body: '说明最后想得到页面、SOP、脚本、表格、模板、诊断路线图，还是一次线下交流后的下一步清单。',
+  },
+  {
+    title: '验收标准',
+    body: '列出哪些点错了必须返工、哪些地方必须人工确认、哪些内容只需要方向判断。',
+  },
+  {
+    title: '禁区说明',
+    body: '直接写清不能公开、不能上传、不能进入长期记忆、不能被复用展示的内容范围。',
+  },
+];
+
+const blockedInputs = [
+  {
+    title: '账号、密钥、验证码',
+    body: '不要发送登录信息、API Key、支付口令、后台截图或任何可直接进入系统的凭据。',
+  },
+  {
+    title: '证件、合同、票据原件',
+    body: '第一次沟通不需要完整原件。若必须讨论格式问题，先发遮挡版、样例版或字段说明。',
+  },
+  {
+    title: '私人聊天原文',
+    body: '不要把未经同意的聊天记录直接发来。只需要总结沟通目的、冲突点和希望输出。',
+  },
+  {
+    title: '未授权业务材料',
+    body: '没有公开授权的内部文件、交易材料、人员名单、邮件附件和完整表格，不进入第一次判断。',
+  },
+  {
+    title: '可识别联系人',
+    body: '电话、微信二维码、邮箱、地址、头像、群名和备注名先遮挡，再讨论流程问题。',
+  },
+  {
+    title: '要求绕规的目标',
+    body: '伪造、隐藏事实、规避平台规则、批量骚扰、替代专业责任的需求不进入合作。',
+  },
+];
+
+const handlingRules = [
+  {
+    label: '01',
+    title: '不提交表单',
+    body: '这个站点的咨询入口以复制模板和微信沟通为主，不新增表单采集。',
+  },
+  {
+    label: '02',
+    title: '不上传、不存储',
+    body: '公开页面不要求你上传资料，也不在网页端存储访客输入。',
+  },
+  {
+    label: '03',
+    title: '第一次只发脱敏材料',
+    body: '先用脱敏材料判断问题是否值得做、适合哪种合作方式、需要哪些人工确认点。',
+  },
+  {
+    label: '04',
+    title: '本地优先处理',
+    body: '能在本地资料、公开页面和可复查样例中判断的问题，优先本地处理。',
+  },
+  {
+    label: '05',
+    title: '高风险需求不接',
+    body: '风险无法界定、资料来源不清、需要替代专业责任或目标本身不合规时，直接暂停。',
+  },
+  {
+    label: '06',
+    title: '公开前二次脱敏',
+    body: '任何公开展示只保留方法、结构、流程和可复用经验，不展示未授权细节。',
+  },
+];
+
+const boundaryRows = [
+  {
+    item: '公开页面可以出现',
+    detail: '方法框架、页面结构、脱敏样例、模拟指标、公开文章、工具路线、合作边界。',
+  },
+  {
+    item: '公开页面不出现',
+    detail: '联系人、完整原件、本地路径、账号凭据、未确认报价、私人聊天、未授权材料。',
+  },
+  {
+    item: '第一次沟通可以看',
+    detail: '脱敏样例、目录截图遮挡版、需求描述、失败现象、目标输出、不可公开范围。',
+  },
+  {
+    item: '需要确认后再判断',
+    detail: '原始上下文、完整项目资料、涉及多人协作的材料、可能影响专业责任的内容。',
+  },
+];
+
+const privacyChecklist = [
+  '我想咨询的主题是：AI 工作流 / Skill-SOP / 知识库 / Coffee Chat / 其他',
+  '我能先提供的脱敏材料是：',
+  '这些内容绝不能公开或复用展示：',
+  '这些内容不能上传到第三方工具：',
+  '需要人工确认的专业边界是：',
+  '预算意向：轻量诊断 / 单流程小项目 / 阶段陪跑 / 暂不确定',
+  '期望启动时间：本周 / 本月 / 先预沟通',
+  '是否接受先诊断再项目：是 / 否 / 需要先了解',
+  '隐私边界：第一次只发脱敏材料，不直接发送原始敏感材料。',
+];
+
+const privacyCopy = [
+  `微信号：${WECHAT}`,
+  '备注：隐私边界确认',
+  '来源：ailaoming.com/trust',
+  '线索类型：AI 咨询隐私边界 / 脱敏材料准备',
+  ...privacyChecklist,
+].join('\n');
+
+const trustFaqs = [
+  {
+    question: '第一次咨询必须发材料吗？',
+    answer: '不必须。可以先发一段脱敏描述、目录截图遮挡版或公开链接。目标是判断问题类型和边界，不是让你一上来交出完整资料。',
+  },
+  {
+    question: '脱敏到什么程度才够？',
+    answer: '能看出任务结构、字段类型、失败点和目标输出即可。姓名、联系人、金额、编号、二维码、账号、完整原件和私人聊天标识都应先遮挡。',
+  },
+  {
+    question: '公开样例会不会暴露我的项目？',
+    answer: '不会默认公开。公开页面只展示方法、结构和可复用经验；任何能识别主体、联系人、路径、原始内容的细节都不进入公开展示。',
+  },
+  {
+    question: '如果后续确实需要看原始上下文怎么办？',
+    answer: '先确认用途、范围、人工确认点和公开禁区，再决定是否继续。无法明确边界的内容，不进入项目交付。',
+  },
+];
+
+const trustStructuredData = {
+  '@context': 'https://schema.org',
+  '@type': 'WebPage',
+  '@id': 'https://ailaoming.com/trust/#trust-center',
+  name: 'AI 咨询信任与隐私边界',
+  alternateName: 'Trust Center',
+  url: 'https://ailaoming.com/trust/',
+  inLanguage: 'zh-CN',
+  description: 'AI干货家老明的咨询信任边界：第一次只发脱敏材料、不提交表单、不上传、不存储，并明确公开展示边界。',
+  about: ['AI 咨询', '脱敏材料准备', '公开展示边界', 'AI 项目交付'],
+};
+---
+
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <BaseHead
+      title="AI 咨询信任与隐私边界"
+      description="AI干货家老明的 Trust Center：第一次只发脱敏材料，不提交表单、不上传、不存储，先明确可以发什么、不要发什么和公开展示边界。"
+    />
+    <script type="application/ld+json" set:html={JSON.stringify(trustStructuredData)}></script>
+  </head>
+  <body>
+    <Header />
+    <main>
+      <section class="hero">
+        <div class="hero-copy">
+          <p class="eyebrow">Trust Center</p>
+          <h1>AI 咨询信任与隐私边界</h1>
+          <p class="tagline">
+            你不需要一开始就交出完整资料。第一次沟通只发脱敏材料，先把用途、范围、人工确认点和公开展示边界说清楚，再判断适合 Coffee Chat、诊断、小项目还是暂缓。
+          </p>
+          <div class="hero-actions">
+            <a class="btn primary" href="#privacy-card">复制隐私边界卡</a>
+            <a class="btn secondary" href="#safe-inputs">看可以先发什么</a>
+          </div>
+        </div>
+        <aside class="hero-panel" aria-label="隐私边界摘要">
+          <strong>默认边界</strong>
+          <p>不提交表单，不上传、不存储网页输入；第一次只发脱敏材料；公开前二次脱敏；高风险需求不接。</p>
+          <a href="/delivery">看项目交付流程</a>
+          <a href="/coffee-chat">带脱敏问题约 Coffee Chat</a>
+        </aside>
+      </section>
+
+      <section id="safe-inputs" class="section" aria-label="可以先发什么">
+        <div class="section-head">
+          <p class="eyebrow">Safe Inputs</p>
+          <h2>可以先发什么</h2>
+          <p>第一次只需要能说明问题，不需要完整原件。下面这些材料足够判断大部分 AI 咨询入口。</p>
+        </div>
+        <div class="card-grid">
+          {safeInputs.map((item) => (
+            <article>
+              <h3>{item.title}</h3>
+              <p>{item.body}</p>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      <section class="section blocked-section" aria-label="不要直接发送什么">
+        <div class="section-head">
+          <p class="eyebrow">Do Not Send First</p>
+          <h2>不要直接发送什么</h2>
+          <p>这些内容不是永远不能讨论，而是不能在第一次判断时直接裸发。先遮挡、概括、替换成样例，再谈下一步。</p>
+        </div>
+        <div class="card-grid blocked-grid">
+          {blockedInputs.map((item) => (
+            <article>
+              <h3>{item.title}</h3>
+              <p>{item.body}</p>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      <section class="section handling-section" aria-label="材料处理规则">
+        <div class="section-head">
+          <p class="eyebrow">Handling Rules</p>
+          <h2>我如何处理材料</h2>
+          <p>这套规则用来降低第一次沟通的心理成本，也用来筛掉边界不清的需求。</p>
+        </div>
+        <div class="rule-grid">
+          {handlingRules.map((item) => (
+            <article>
+              <span>{item.label}</span>
+              <h3>{item.title}</h3>
+              <p>{item.body}</p>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      <section class="section matrix-section" aria-label="公开展示边界">
+        <div class="section-head">
+          <p class="eyebrow">Public Boundary</p>
+          <h2>公开展示边界</h2>
+          <p>公开站点是获客和学习入口，不是资料仓库。能公开的是结构化经验，不能公开的是可识别的原始细节。</p>
+        </div>
+        <div class="boundary-table">
+          {boundaryRows.map((row) => (
+            <div class="boundary-row">
+              <strong>{row.item}</strong>
+              <span>{row.detail}</span>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <section id="privacy-card" class="section privacy-card-section" aria-label="脱敏材料准备卡">
+        <div>
+          <p class="eyebrow">Privacy Brief</p>
+          <h2>脱敏材料准备卡</h2>
+          <p>
+            复制下面这张隐私边界卡，发微信 <code>{WECHAT}</code>。它会自动带上 来源：ailaoming.com/trust 和 线索类型：AI 咨询隐私边界 / 脱敏材料准备。
+          </p>
+        </div>
+        <div class="privacy-card">
+          <ol>
+            {privacyChecklist.map((item) => <li>{item}</li>)}
+          </ol>
+          <button type="button" class="copy-privacy-card" data-copy={privacyCopy}>复制隐私边界卡</button>
+          <p class="copy-privacy-status" aria-live="polite"></p>
+        </div>
+      </section>
+
+      <TrustBoundary
+        compact={true}
+        eyebrow="信任边界"
+        title="隐私边界说不清，就先不进入深度交付"
+        intro="AI 项目越贴近真实流程，越需要先把资料来源、公开范围、人工确认点和不可做事项写清楚。边界稳定，后面的诊断、报价和交付才稳定。"
+      />
+
+      <FAQSection title="信任与隐私常见问题" items={trustFaqs} />
+
+      <ConversionCTA
+        title="先用脱敏材料判断是否值得继续"
+        note="如果你担心资料边界，先复制隐私边界卡，不需要直接发原始材料。我会先判断适合 Coffee Chat、诊断、Skill/SOP 小项目，还是应该暂停。"
+        remark="AI 咨询隐私边界"
+        briefItems={[
+          '我担心的隐私边界是：',
+          '我能先发的脱敏材料是：',
+          '我希望下一步是：Coffee Chat / 诊断 / 小项目 / 暂缓',
+        ]}
+        primaryHref="/brief"
+        primaryLabel="复制需求卡"
+        secondaryHref="/delivery"
+        secondaryLabel="看交付流程"
+        briefHref="/skill-sop"
+        briefLabel="看 Skill/SOP 小项目"
+      />
+    </main>
+    <Footer />
+  </body>
+</html>
+
+<script>
+  document.querySelectorAll('.copy-privacy-card').forEach((button) => {
+    button.addEventListener('click', async () => {
+      const trigger = button instanceof HTMLElement ? button : null;
+      const text = trigger?.dataset.copy ?? '';
+      const panel = trigger?.closest('.privacy-card');
+      const status = panel?.querySelector('.copy-privacy-status');
+
+      try {
+        if (!navigator.clipboard || !text) throw new Error('Clipboard unavailable');
+        await navigator.clipboard.writeText(text);
+        if (status) status.textContent = '已复制，可直接粘贴到微信';
+      } catch {
+        if (status) status.textContent = '复制失败，请手动复制上面的清单';
+      }
+    });
+  });
+</script>
+
+<style>
+  main {
+    width: 1080px;
+  }
+
+  .hero {
+    display: grid;
+    grid-template-columns: minmax(0, 1.32fr) minmax(260px, 0.68fr);
+    gap: 1.2rem;
+    align-items: stretch;
+    padding: 3.6rem 0 2.4rem;
+  }
+
+  .eyebrow {
+    margin: 0 0 0.65rem;
+    color: var(--accent);
+    font-size: 0.82rem;
+    font-weight: 800;
+  }
+
+  h1 {
+    margin: 0;
+    font-size: 2.65rem;
+    line-height: 1.14;
+  }
+
+  .tagline {
+    max-width: 780px;
+    margin: 1rem 0 0;
+    color: rgb(var(--gray));
+    font-size: 1.06rem;
+  }
+
+  .hero-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.8rem;
+    margin-top: 1.35rem;
+  }
+
+  .btn {
+    display: inline-flex;
+    min-height: 42px;
+    align-items: center;
+    justify-content: center;
+    padding: 0.62rem 0.9rem;
+    border-radius: 8px;
+    font-weight: 800;
+    text-decoration: none;
+  }
+
+  .btn.primary {
+    color: #fff;
+    background: var(--accent);
+  }
+
+  .btn.secondary {
+    color: rgb(var(--black));
+    background: #fff;
+    border: 1px solid rgba(var(--black), 0.12);
+  }
+
+  .hero-panel,
+  .card-grid article,
+  .rule-grid article,
+  .privacy-card {
+    background: #fff;
+    border: 1px solid rgba(var(--black), 0.08);
+    border-radius: 8px;
+    box-shadow: var(--box-shadow);
+  }
+
+  .hero-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    padding: 1.15rem;
+  }
+
+  .hero-panel strong {
+    color: rgb(var(--black));
+  }
+
+  .hero-panel p {
+    margin: 0;
+    color: rgb(var(--gray));
+    line-height: 1.7;
+  }
+
+  .hero-panel a {
+    width: fit-content;
+    color: var(--accent);
+    font-weight: 800;
+  }
+
+  .section {
+    margin: 3rem 0;
+  }
+
+  .section-head {
+    max-width: 760px;
+    margin-bottom: 1.2rem;
+  }
+
+  .section-head h2,
+  .privacy-card-section h2 {
+    margin: 0;
+    font-size: 1.72rem;
+  }
+
+  .section-head p:last-child,
+  .privacy-card-section p {
+    margin: 0.65rem 0 0;
+    color: rgb(var(--gray));
+  }
+
+  .card-grid,
+  .rule-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.9rem;
+  }
+
+  .card-grid article,
+  .rule-grid article {
+    min-width: 0;
+    padding: 1rem;
+  }
+
+  .card-grid h3,
+  .rule-grid h3 {
+    margin: 0 0 0.45rem;
+    color: rgb(var(--black));
+    font-size: 1rem;
+    line-height: 1.35;
+  }
+
+  .card-grid p,
+  .rule-grid p,
+  .privacy-card li,
+  .boundary-row span {
+    margin: 0;
+    color: rgb(var(--gray));
+    font-size: 0.92rem;
+    line-height: 1.65;
+  }
+
+  .blocked-section,
+  .handling-section,
+  .matrix-section,
+  .privacy-card-section {
+    padding: 1rem;
+    background: #f7fbff;
+    border: 1px solid rgba(0, 102, 255, 0.1);
+    border-radius: 8px;
+  }
+
+  .blocked-grid article {
+    border-color: rgba(184, 28, 28, 0.12);
+  }
+
+  .rule-grid span {
+    display: inline-flex;
+    min-width: 2.4rem;
+    min-height: 2rem;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 0.75rem;
+    color: var(--accent);
+    background: rgba(0, 102, 255, 0.07);
+    border: 1px solid rgba(0, 102, 255, 0.16);
+    border-radius: 8px;
+    font-size: 0.78rem;
+    font-weight: 900;
+  }
+
+  .boundary-table {
+    display: grid;
+    gap: 0.65rem;
+  }
+
+  .boundary-row {
+    display: grid;
+    grid-template-columns: minmax(120px, 0.28fr) minmax(0, 1fr);
+    gap: 0.85rem;
+    align-items: start;
+    padding: 0.9rem;
+    background: #fff;
+    border: 1px solid rgba(var(--black), 0.08);
+    border-radius: 8px;
+  }
+
+  .boundary-row strong {
+    color: rgb(var(--black));
+    font-size: 0.95rem;
+  }
+
+  .privacy-card-section {
+    display: grid;
+    grid-template-columns: minmax(0, 0.85fr) minmax(300px, 1.15fr);
+    gap: 1rem;
+    align-items: start;
+  }
+
+  .privacy-card {
+    padding: 1rem;
+  }
+
+  .privacy-card ol {
+    margin: 0;
+    padding-left: 1.15rem;
+  }
+
+  .privacy-card li + li {
+    margin-top: 0.35rem;
+  }
+
+  .copy-privacy-card {
+    width: 100%;
+    min-height: 42px;
+    margin-top: 1rem;
+    padding: 0.6rem 0.8rem;
+    color: var(--accent);
+    font: inherit;
+    font-weight: 900;
+    background: #fff;
+    border: 1px solid rgba(0, 102, 255, 0.2);
+    border-radius: 8px;
+    cursor: pointer;
+  }
+
+  .copy-privacy-status {
+    min-height: 1.2rem;
+    margin: 0.45rem 0 0 !important;
+    color: #157347 !important;
+    font-size: 0.84rem;
+    font-weight: 800;
+  }
+
+  @media (max-width: 900px) {
+    .hero,
+    .privacy-card-section {
+      grid-template-columns: 1fr;
+    }
+
+    .card-grid,
+    .rule-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (max-width: 620px) {
+    main {
+      width: calc(100% - 1.5rem);
+    }
+
+    .hero {
+      padding-top: 2.2rem;
+    }
+
+    h1 {
+      font-size: 2.1rem;
+    }
+
+    .card-grid,
+    .rule-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .boundary-row {
+      grid-template-columns: 1fr;
+    }
+
+    .hero-actions a {
+      width: 100%;
+    }
+  }
+</style>

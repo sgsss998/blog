@@ -6,6 +6,8 @@ heroImage: /images/blog/cursor-global-rule-protocol.jpg
 keywords: [Cursor, Cursor Rule, AI编程, 全局规则, 操作协议, Cursor配置, AI开发工具, 代码助手]
 ---
 
+> **站内原创整理**：这篇是老明基于个人 Cursor 使用经验整理的公开技术笔记。
+
 给大家介绍我的 cursor 根目录下的全局 rule.md文件。
 
 起因是 cursor 的自主性太强了，经常在还没有得到我明确指令的情况下去执行任务，所以我就强制给他注入了我的全局规则，给他定义了一套严格的操作协议——一共分为五个模式，研究模式，创新模式，计划模式，执行模式，回顾模式，并且只有在得到我明确指令的情况下才能切换模式。

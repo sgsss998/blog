@@ -1,0 +1,171 @@
+{
+  "updated": "2026-07-01",
+  "description": "Public-safe placeholder images that must not be replaced by original screenshots without a fresh manual privacy review.",
+  "items": [
+    {
+      "path": "public/images/blog/codex-pro-200-dollar-how-i-use-it-wechat-01.png",
+      "reason": "Codex Pro article screenshot with private local system context",
+      "sha256": "f7dd1a16b502876ebcbfae1fcdd1ef2c61f1e8f43e8b7b14ab14bc10a819976a"
+    },
+    {
+      "path": "public/images/blog/codex-pro-200-dollar-how-i-use-it-wechat-03.jpg",
+      "reason": "Codex Pro article screenshot with private local system context",
+      "sha256": "6e0384835dfff295d44e1cdc20634723dac4d3e8b1f43c31c664344226e87ee3"
+    },
+    {
+      "path": "public/images/blog/codex-pro-200-dollar-how-i-use-it-wechat-04.jpg",
+      "reason": "Codex Pro article screenshot with private local system context",
+      "sha256": "d02bb5d34eb72253e0613d229733ce39159ec62cab86ba0969b7cfbd88daf78b"
+    },
+    {
+      "path": "public/images/blog/zhipu-is-terrifying-wechat-02.png",
+      "reason": "private billing screenshot",
+      "sha256": "ece9e53e3861c1dd5de331c3ee9bcd093ccdfdd9df4bd073c2f480459c56465e"
+    },
+    {
+      "path": "public/images/blog/openclaw-multi-wechat-phones.jpg",
+      "reason": "private WeChat multi-agent workflow screenshot",
+      "sha256": "f40bfef7039d42625ab1ec746b74be073566eaeee1e04ffeea4baa3830548526"
+    },
+    {
+      "path": "public/images/blog/scold-ai-rl-de-ai-flavor-compare-wechat-04.png",
+      "reason": "emotional/private comparison screenshot",
+      "sha256": "fbb39ce4f19749960d9cd2e790c615e7462caf5ac72e06719e1807e5f0294282"
+    },
+    {
+      "path": "public/images/blog/plain-prompt-export-ai-memories-wechat-02.png",
+      "reason": "AI memory export screenshot with local paths and personal context",
+      "sha256": "83bdd28660ad92913394e86f5554b7aff2cd7164430d1378a6ffd76876c717be"
+    },
+    {
+      "path": "public/images/blog/plain-prompt-export-ai-memories-wechat-03.png",
+      "reason": "AI memory export screenshot with session records",
+      "sha256": "95290098778e768a4a63a286d0dfa50923c076015eda1ce65a5c3ce0fbb53c94"
+    },
+    {
+      "path": "public/images/blog/plain-prompt-export-ai-memories-wechat-04.png",
+      "reason": "AI memory export screenshot with personal knowledge index",
+      "sha256": "0bdaabe8cf8d62bffd209b94fcc229db562b6289bec8374ad0fcb48bd1812878"
+    },
+    {
+      "path": "public/images/blog/plain-prompt-export-ai-memories-wechat-05.png",
+      "reason": "AI memory export screenshot with private context",
+      "sha256": "6ff86d5524236a754c491137101c4fb5cbdaf87d51b20523de0b353e7db23c63"
+    },
+    {
+      "path": "public/images/blog/ai-money-series-01-reimburse-skill-wechat-02.png",
+      "reason": "expense workflow screenshot with work-material risk",
+      "sha256": "1b1010b8303baff029c05cb22acfadb3508ea52d9cb69adb7134f8f3eeb55ca3"
+    },
+    {
+      "path": "public/images/blog/ai-money-series-01-reimburse-skill-wechat-03.png",
+      "reason": "expense workflow screenshot with document and amount risk",
+      "sha256": "b20e2951e30b84f54a8b8966d4673f5ff5c1f22a1ebbca38b46ffb8ee7b50c82"
+    },
+    {
+      "path": "public/images/blog/ai-money-series-01-reimburse-skill-wechat-04.jpg",
+      "reason": "expense workflow screenshot with receipt and payment risk",
+      "sha256": "b631c0f80b38ba25d7374dc5f2449bac6842a8af946ad17fccb4e3aa71c73b09"
+    },
+    {
+      "path": "public/images/blog/ai-money-series-01-reimburse-skill-wechat-05.png",
+      "reason": "expense workflow public sample screenshot",
+      "sha256": "d5f5b6f08ce7f7c851c9b84a73db3b55f1afcb13170c598f5e3f7c3f9a8819f9"
+    },
+    {
+      "path": "public/images/blog/openclaw-practical-notes-collection-01-wechat-05.png",
+      "reason": "old pricing screenshot",
+      "sha256": "c213a7afc5080dc00bba22cfb222d9e81fedd8a2cd11edbe245b8cd68e5d6c52"
+    },
+    {
+      "path": "public/images/blog/openclaw-practical-notes-collection-01-wechat-06.png",
+      "reason": "old pricing screenshot",
+      "sha256": "54d5f49a4e3d9c4dee39905bb195137e52e233f657aed1b698e32120fd1790b9"
+    },
+    {
+      "path": "public/images/blog/openclaw-practical-notes-collection-01-wechat-07.png",
+      "reason": "old usage and plan screenshot",
+      "sha256": "e32c67efaf1f246a2c9ff370efccf620de6ccb3d0d1bde56598eb226cf836ab2"
+    },
+    {
+      "path": "public/images/blog/openclaw-practical-notes-collection-01-wechat-11.jpg",
+      "reason": "token incident screenshot",
+      "sha256": "3a3015edf7aebaf1fec8f6169fcb01a083b049a3e9fd14e08d450af5e465b42c"
+    },
+    {
+      "path": "public/images/blog/openclaw-practical-notes-collection-01-wechat-16.png",
+      "reason": "old group QR code",
+      "sha256": "58cd5b3d009c842faa70c6344fc0ac3c0141afd2327dca40ec8f7fd4157d55b9"
+    },
+    {
+      "path": "public/images/blog/ai-narrative-self-reflection-02.png",
+      "reason": "third-party social screenshot",
+      "sha256": "9fadd4e0e81155e12a83f5ec2b1d152c3ce7f1dca887834736c86d5a12c2f003"
+    },
+    {
+      "path": "public/images/blog/ai-narrative-self-reflection-03.jpg",
+      "reason": "third-party social screenshot",
+      "sha256": "ba7e36b2087f3aa853afddeeb307e15e911b0974e6f887fc901f606780541423"
+    },
+    {
+      "path": "public/images/blog/ai-narrative-self-reflection-04.jpg",
+      "reason": "chat and QR screenshot",
+      "sha256": "23f5832f7863a4349fc9ced4b31170b71b5ea28486203a09c3bfcab486a48269"
+    },
+    {
+      "path": "public/images/blog/openclaw-multi-wechat-cover.jpg",
+      "reason": "private WeChat multi-agent workflow hero",
+      "sha256": "26a7a5aea0e37c07a4e5a4558e3d6c18ddd7959a7c00343497bced01b25001af"
+    },
+    {
+      "path": "public/images/blog/openclaw-one-stop-body-01.jpg",
+      "reason": "old bounty screenshot",
+      "sha256": "1e591c054a684de31cacf3ed67bc9dd2649ee3d6de73c5e2347e25495e538fb6"
+    },
+    {
+      "path": "public/images/blog/openclaw-one-stop-body-02.jpg",
+      "reason": "private practice record screenshot",
+      "sha256": "4c9975747a773d1f3451ac8058e28780f7f7cb8940279e36c934417135540136"
+    },
+    {
+      "path": "public/images/blog/openclaw-one-stop-body-03.jpg",
+      "reason": "private iteration screenshot",
+      "sha256": "53268a250d2024f5e9722f74526c476a388a468be3398eb3c9d795321aa70aa7"
+    },
+    {
+      "path": "public/images/blog/openclaw-one-stop-body-04.jpg",
+      "reason": "capability screenshot with privacy risk",
+      "sha256": "94b6a901325a8001fe0fa26bf07cee29beb629690d2abe64a222ddf6c971fadc"
+    },
+    {
+      "path": "public/images/blog/openclaw-one-stop-body-05.png",
+      "reason": "account and app traces screenshot",
+      "sha256": "7acdf95fb6c96ecc3490687425c93bac8a086a5ac0ec8c81184ba6816717b32d"
+    },
+    {
+      "path": "public/images/blog/openclaw-one-stop-body-06.png",
+      "reason": "private agent setup screenshot",
+      "sha256": "d5421aa7e38ce969ca6704672bd679b8196e0fd00b3981f40386c33240c26b21"
+    },
+    {
+      "path": "public/images/blog/openclaw-one-stop-body-07.jpg",
+      "reason": "workflow screenshot with privacy risk",
+      "sha256": "9404e6dca5fa1b56da2304628161f1cf269193ea30fbef565979d2e397c85b70"
+    },
+    {
+      "path": "public/images/blog/zhipu-is-terrifying-wechat-04.jpg",
+      "reason": "resale screenshot",
+      "sha256": "ff399effe914527b4e31ac980b07e79a7955ba155e806edf20cd1865ec52582e"
+    },
+    {
+      "path": "public/images/blog/zhipu-is-terrifying-wechat-05.jpg",
+      "reason": "account transaction screenshot",
+      "sha256": "72066d496231923c6b2060d3d9ffb9abd74afb1eb9d82f700255ae7ed5d29e18"
+    },
+    {
+      "path": "public/images/blog/ai-era-liberal-arts-myth-wechat-01.jpg",
+      "reason": "brand-risk cover image",
+      "sha256": "c018bfd13741f1556f8ab8fa919a73d9e5592e6c2f36969db68d2f3740fe8c82"
+    }
+  ]
+}

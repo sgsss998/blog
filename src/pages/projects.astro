@@ -1,0 +1,965 @@
+---
+import Layout from '../layouts/BlogPost.astro';
+import ConversionCTA from '../components/ConversionCTA.astro';
+
+const projectTracks = [
+  {
+    label: 'Writing',
+    title: 'AI 网文生产流水线',
+    status: '持续写作中',
+    stage: '从单篇辅助写作进入长篇项目管理',
+    progress: 72,
+    evidenceLevel: 'L2 公开文章',
+    evidenceType: '长篇复盘',
+    publicScope: '公开创作方法、章节管理和复盘框架。',
+    verifiedResult: '已完成长篇写作实践复盘，能转成连续内容生产方法。',
+    cadence: '按章节、设定、复盘和修订记录滚动推进',
+    publicEvidence: '公开文章：102 天 AI 写作四十万字复盘',
+    href: '/blog/ai-novel-102-days-400k-35yuan/',
+    next: '把大纲、章节账本、爽点复盘和更新节奏整理成公开方法论。',
+    canConsult: '适合想用 AI 做长文、网文、课程稿或连续内容生产的人。',
+    boundary: '不公开未发布全文、私密素材、平台后台敏感数据和个人写作底稿。',
+  },
+  {
+    label: 'Exam',
+    title: 'AI 法考备考系统',
+    status: '学习系统化',
+    stage: '从解释知识点转向刷题陪练与错题复盘',
+    progress: 45,
+    evidenceLevel: 'L2 公开文章',
+    evidenceType: '学习陪练样例',
+    publicScope: '只公开学习流程、题目处理方法和错题复盘结构。',
+    verifiedResult: '已补齐考点速通、刷题纠错、错题回收的公开流程样例。',
+    cadence: '围绕考点、题眼、错因、再测和记忆回收做小闭环',
+    publicEvidence: '公开文章：AI 学习陪练公开样例',
+    href: '/blog/ai-exam-coach-template-law-exam/',
+    next: '继续把学习陪练模板沉淀成可复制的错题回收资料卡。',
+    canConsult: '适合想把考试、证书、课程学习拆成 AI 陪练系统的人。',
+    boundary: '不公开付费课件、真题解析原文、个人备考隐私和未授权资料。',
+  },
+  {
+    label: 'Research',
+    title: 'AI 投研与投资复盘助手',
+    status: '长期记录',
+    stage: '从零散观点记录转向可回看的研究库',
+    progress: 50,
+    evidenceLevel: 'L2 公开文章',
+    evidenceType: '研究日志样例',
+    publicScope: '公开研究记录结构，不公开组合、交易和账户信息。',
+    verifiedResult: '已补齐观点、证据、风险、复盘和下次检查的公开日志样例。',
+    cadence: '按投资假设、估值变化、复盘问题和风险提示持续沉淀',
+    publicEvidence: '公开文章：AI 投研复盘公开样例',
+    href: '/blog/ai-investment-research-journal-template/',
+    next: '继续把研究日志模板沉淀成可复制的资料库整理入口。',
+    canConsult: '适合想把长期研究、读书笔记、行业观察做成可查询资料库的人。',
+    boundary: '不公开账户、金额、交易时间、私人截图和具体标的建议；不构成投资建议。',
+  },
+  {
+    label: 'Memory OS',
+    title: 'Git 版长期记忆库 OS',
+    status: '架构迭代中',
+    stage: '从散落记忆导出进入版本化治理',
+    progress: 68,
+    evidenceLevel: 'L3 站点事实',
+    evidenceType: '公开治理样例',
+    publicScope: '公开分层架构、准入规则、隐私边界、评测指标和服务路径。',
+    verifiedResult: '已把长期上下文治理从聊天记录推进到 Git 版分层记忆系统。',
+    cadence: '用 Git 管理规则、事实、项目上下文、SOP、决策日志、索引和评测报告',
+    publicEvidence: '公开页面：AI 长期记忆库 OS',
+    href: '/memory-os',
+    next: '继续补齐可复跑的评测、隐私审计和知识库治理交付口径。',
+    canConsult: '适合想给自己或团队搭建长期 AI 上下文、知识库和规则系统的人。',
+    boundary: '不公开真实记忆内容、联系人、聊天记录、私有仓库密钥和本地路径。',
+  },
+  {
+    label: 'RAG',
+    title: '个人 AI 外脑与本地 RAG',
+    status: '产品化中',
+    stage: '从能检索转向可解释、可追溯、可维护',
+    progress: 76,
+    evidenceLevel: 'L2 公开文章',
+    evidenceType: '技术方法',
+    publicScope: '公开 RAG 架构、检索策略和资料治理口径。',
+    verifiedResult: '已形成从资料治理到可解释检索的服务化方向。',
+    cadence: '围绕切片、混合检索、Reranker、权重和过滤规则持续验证',
+    publicEvidence: '公开文章：RAG 数据库搭建方法详解',
+    href: '/blog/rag-database-method-open-source/',
+    next: '把本地资料治理、索引入口和 AI 引用口径包装成诊断服务。',
+    canConsult: '适合资料很多、检索不稳、AI 经常答非所问的个人或小团队。',
+    boundary: '不公开私有知识库内容、敏感目录、个人关系网络和未脱敏资料源。',
+  },
+  {
+    label: 'Content',
+    title: '公众号 / 小红书 AI 内容流水线',
+    status: '运营迭代中',
+    stage: '从单篇发布进入文章、网站、资料包和咨询入口联动',
+    progress: 82,
+    evidenceLevel: 'L3 站点事实',
+    evidenceType: '内容系统',
+    publicScope: '公开文章库、产品库、服务入口和转化路径。',
+    verifiedResult: '已把 AI 内容、资料入口、服务页和 Coffee Chat 形成闭环。',
+    cadence: '选题、正文、封面、站点归档、SEO、资料领取和转化路径同步迭代',
+    publicEvidence: '入口：AI 技术文章库与产品库',
+    href: '/blog/',
+    next: '把文章库继续收敛成可咨询的问题入口和资料包候补。',
+    canConsult: '适合想用 AI 做内容生产、个人品牌、资料包和轻咨询获客的人。',
+    boundary: '不公开未发布商业策略、合作人信息、私域聊天和平台后台敏感数据。',
+  },
+  {
+    label: 'Site',
+    title: 'ailaoming.com 商业获客站',
+    status: '站点运营中',
+    stage: '从文章归档站升级为 AI 服务转化系统',
+    progress: 88,
+    evidenceLevel: 'L3 站点事实',
+    evidenceType: '获客系统',
+    publicScope: '公开站点结构、发布校验、运营审计和审批摘要。',
+    verifiedResult: '已从文章归档升级到首页、服务、自测、项目、AI 获客站诊断、Coffee Chat 和工作坊的获客闭环。',
+    cadence: '围绕首页、服务、自测、Skills、项目、AI 获客站诊断、Coffee Chat、工作坊、产品库和文章做闭环',
+    publicEvidence: '当前站点已建立发布校验、运营审计和审批摘要',
+    href: '/ai-acquisition',
+    next: '继续补充脱敏案例、Coffee Chat 复盘、资料领取和商业转化实验。',
+    canConsult: '适合想把内容库、个人能力和服务承接整合成网站获客系统的人。',
+    boundary: '不公开私域聊天、未确认报价、未授权原始材料和内部运营细节。',
+  },
+];
+
+const operatingRules = [
+  '公开方法，不公开未脱敏原始资料',
+  '公开进度，不公开私人后台和敏感数据',
+  '公开系统结构，不公开密钥、路径和聊天记录',
+  '公开投资记录方法，不给个股建议',
+];
+
+const evidenceLevels = [
+  {
+    level: 'L1 方法框架',
+    meaning: '已经形成结构化做法，但公开证据主要是方法和边界。',
+  },
+  {
+    level: 'L2 公开文章',
+    meaning: '有公开文章、复盘或方法论，可以直接跳转查看。',
+  },
+  {
+    level: 'L3 站点事实',
+    meaning: '已经体现在当前网站结构、校验脚本或公开页面里。',
+  },
+  {
+    level: 'L4 可复跑流程',
+    meaning: '后续补齐脱敏输入、执行步骤、输出样例和验收记录后再标记。',
+  },
+];
+
+const monthlyMilestones = [
+  {
+    label: '已上线',
+    title: 'AI-only 站点收敛',
+    detail: '文章库、导航、服务页和项目页已经统一收敛到 AI 落地主题，非 AI 内容不再进入主站。',
+    route: '/blog/',
+    action: '看文章库',
+  },
+  {
+    label: '已上线',
+    title: 'Coffee Chat 复盘模板',
+    detail: '把上海线下交流拆成主题、边界、共性问题、公开结论和下一步动作，方便活动后沉淀。',
+    route: '/blog/shanghai-ai-coffee-chat-recap-template/',
+    action: '看模板',
+  },
+  {
+    label: '进行中',
+    title: 'Git 版长期记忆库 OS',
+    detail: '继续把长期上下文、规则、事实和项目复盘做成版本化治理样例，只展示结构，不展示私密内容。',
+    route: '/memory-os',
+    action: '看 Memory OS',
+  },
+  {
+    label: '下一步',
+    title: 'AI 学习陪练模板',
+    detail: '先从法考备考方法抽象出考点速通、刷题纠错和错题回收，不搬运付费资料和题库原文。',
+    route: '/blog/ai-exam-coach-template-law-exam/',
+    action: '看公开样例',
+  },
+];
+
+const opsUpdates = [
+  {
+    lane: 'AI 网文生产流水线',
+    status: '公开复盘已完成',
+    latest: '102 天长篇写作复盘已经进入文章库，公开层只保留生产方法、章节管理和复盘框架。',
+    nextCheck: '检查章节账本、爽点复盘和更新节奏能否沉淀成内容连续生产模板。',
+    serviceEntry: '内容连续生产诊断',
+    href: '/products',
+    action: '看内容资料入口',
+    pause: '未发布正文、平台后台、私密素材和个人底稿不进入公开站点。',
+  },
+  {
+    lane: 'AI 法考备考系统',
+    status: '学习样例已上线',
+    latest: '考点速通、刷题纠错和错题回收已经整理成公开安全样例。',
+    nextCheck: '把错题回收资料卡做成可复制模板，继续避开题库原文和付费课件。',
+    serviceEntry: '学习陪练工作流',
+    href: '/blog/ai-exam-coach-template-law-exam/',
+    action: '看学习样例',
+    pause: '不展示题库原文、标准答案、付费材料和个人备考隐私。',
+  },
+  {
+    lane: 'AI 投研复盘助手',
+    status: '研究日志已上线',
+    latest: '观点、证据、风险、复盘和下次检查已经抽象成公开研究日志模板。',
+    nextCheck: '继续把研究日志模板接入知识库整理入口，只讲方法，不讲操作建议。',
+    serviceEntry: '长期研究资料库整理',
+    href: '/blog/ai-investment-research-journal-template/',
+    action: '看投研样例',
+    pause: '不公开账户、交易、收益、金额、私人截图和具体标的建议。',
+  },
+  {
+    lane: 'Git 版长期记忆库 OS',
+    status: '架构公开中',
+    latest: '分层架构、准入规则、状态规则、隐私边界和模拟评测指标已经进入公开页。',
+    nextCheck: '补齐 Git 记忆仓库的公开验收口径：索引、决策日志、过期扫描和隐私审计。',
+    serviceEntry: 'AI 长期记忆库治理',
+    href: '/memory-os',
+    action: '看 Memory OS',
+    pause: '不展示真实记忆条目、私人聊天、联系人、本地路径、私有仓库和密钥。',
+  },
+  {
+    lane: '个人 AI 外脑与本地 RAG',
+    status: '方法持续沉淀',
+    latest: 'RAG 架构、检索策略、资料治理和引用口径已经形成公开文章链路。',
+    nextCheck: '把 RAG 预诊断和资料入口盘点做成更稳定的服务前置问题。',
+    serviceEntry: '知识库治理 / RAG 预诊断',
+    href: '/services#knowledge-base',
+    action: '看知识库服务',
+    pause: '不公开私有知识库内容、敏感目录、关系网络和未脱敏资料源。',
+  },
+  {
+    lane: '公众号 / 小红书 AI 内容流水线',
+    status: '转化链路已接入',
+    latest: '文章库、产品库、服务入口、Coffee Chat 和需求卡已经形成站内闭环。',
+    nextCheck: '继续把高频文章主题沉淀成资料领取、诊断问题和小项目入口。',
+    serviceEntry: '内容自动化起步包',
+    href: '/products',
+    action: '看产品库',
+    pause: '不公开未发布商业策略、私域聊天、合作人信息和平台后台数据。',
+  },
+  {
+    lane: 'ailaoming.com 商业获客站',
+    status: '本地验证运行中',
+    latest: '首页、服务、自测、样例、项目、AI 获客站诊断、Coffee Chat、工作坊、审批包和运营审计已经串成发布前闭环。',
+    nextCheck: '每次公开 push 前更新发布审批包、运营审计和项目公开更新记录。',
+    serviceEntry: 'AI 获客站诊断',
+    href: '/ai-acquisition',
+    action: '看获客站诊断',
+    pause: '不公开未确认报价、未授权原始材料、内部运营细节和私人沟通。',
+  },
+];
+
+const serviceMaps = [
+  {
+    source: '写作 / 内容流水线',
+    externalProblem: '有公众号、小红书、课程稿或长文项目，但选题、草稿、复盘和转化入口没有形成闭环。',
+    entry: '内容自动化起步包',
+    href: '/products',
+    deliverable: '选题库、草稿流程、发布清单、复盘模板和下一步转化路径。',
+  },
+  {
+    source: '知识库 / 本地 RAG',
+    externalProblem: '资料很多，AI 找不到上下文，或者回答无法追溯到可检查的原始资料。',
+    entry: '知识库整理自查表',
+    href: '/products',
+    deliverable: '资料入口清单、命名规则、权限边界、检索问题和首批整理优先级。',
+  },
+  {
+    source: '办公 Skill / SOP',
+    externalProblem: '重复处理 Word、会议纪要、归档、报表或材料整理，希望做成可复跑流程。',
+    entry: 'Skill 首次需求模板',
+    href: '/products',
+    deliverable: '输入材料、执行步骤、异常处理、人工确认点和验收标准。',
+  },
+  {
+    source: 'AI 获客站 / Coffee Chat',
+    externalProblem: '有文章、有项目、有个人能力，但网站还不能自然承接咨询和线下交流。',
+    entry: 'AI 获客站诊断',
+    href: '/ai-acquisition',
+    deliverable: '首页定位、证据资产、服务路径、资料领取、Coffee Chat 和工作坊转化链路。',
+  },
+];
+---
+
+<Layout
+  title="AI 项目进度"
+  description="AI干货家老明正在推进的公开 AI 项目：AI 小说、法考学习、股票投资记录、长期记忆库 OS、内容自动化和个人网站。"
+  pubDate={new Date('2026-07-01')}
+  heroImage={undefined}
+  showMeta={false}
+  showEngagement={false}
+>
+  <section class="project-hero">
+    <p class="eyebrow">Project OS</p>
+    <h2>项目看板</h2>
+    <p>
+      这里展示我正在用 AI 长期推进的公开项目。它不是简历式罗列，而是一个持续运行的项目组合：写作、学习、投研、记忆、RAG、内容系统和本站获客，每条线都只展示脱敏后的方法、进度和可复用经验。
+    </p>
+    <div class="project-summary" aria-label="项目组合摘要">
+      <div>
+        <strong>{projectTracks.length}</strong>
+        <span>公开项目线</span>
+      </div>
+      <div>
+        <strong>4</strong>
+        <span>证据等级</span>
+      </div>
+      <div>
+        <strong>AI-only</strong>
+        <span>站点主题</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="rules-panel" aria-label="公开边界">
+    <h2>项目公开规则</h2>
+    <ul>
+      {operatingRules.map((rule) => <li>{rule}</li>)}
+    </ul>
+  </section>
+
+  <section class="evidence-panel" aria-label="证据等级说明">
+    <h2>证据等级说明</h2>
+    <div class="evidence-levels">
+      {evidenceLevels.map((item) => (
+        <article>
+          <strong>{item.level}</strong>
+          <p>{item.meaning}</p>
+        </article>
+      ))}
+    </div>
+  </section>
+
+  <section class="milestone-panel" aria-label="本月公开里程碑">
+    <div class="panel-head">
+      <p class="eyebrow">Monthly Build</p>
+      <h2>本月公开里程碑</h2>
+      <p>这些不是内部工作记录，而是可以公开展示的站点资产：文章、模板、样例库和自测入口。</p>
+    </div>
+    <div class="milestone-grid">
+      {monthlyMilestones.map((milestone) => (
+        <article>
+          <span>{milestone.label}</span>
+          <h3>{milestone.title}</h3>
+          <p>{milestone.detail}</p>
+          <a href={milestone.route}>{milestone.action}</a>
+        </article>
+      ))}
+    </div>
+  </section>
+
+  <section class="ops-panel" aria-label="公开运营看板">
+    <div class="panel-head">
+      <p class="eyebrow">Public Operations</p>
+      <h2>公开运营看板</h2>
+      <p>
+        项目进度要能持续维护。这里不展示内部任务，只记录最近公开更新、下一次检查点、服务入口和暂缓边界，让读者能判断这些项目如何转成可咨询问题。
+      </p>
+    </div>
+    <div class="ops-grid">
+      {opsUpdates.map((item) => (
+        <article class="ops-card">
+          <div class="ops-card-head">
+            <h3>{item.lane}</h3>
+            <span>{item.status}</span>
+          </div>
+          <dl>
+            <div>
+              <dt>最近公开更新</dt>
+              <dd>{item.latest}</dd>
+            </div>
+            <div>
+              <dt>下次检查点</dt>
+              <dd>{item.nextCheck}</dd>
+            </div>
+            <div>
+              <dt>服务入口</dt>
+              <dd><a href={item.href}>{item.serviceEntry}</a></dd>
+            </div>
+            <div>
+              <dt>暂缓边界</dt>
+              <dd>{item.pause}</dd>
+            </div>
+          </dl>
+          <a class="ops-action" href={item.href}>{item.action}</a>
+        </article>
+      ))}
+    </div>
+  </section>
+
+  <section class="track-grid" aria-label="AI 项目进度看板">
+    {projectTracks.map((project) => (
+      <article>
+        <div class="track-head">
+          <p class="track-label">{project.label}</p>
+          <span>{project.status}</span>
+        </div>
+        <h3>{project.title}</h3>
+        <p class="stage">{project.stage}</p>
+
+        <div class="progress-block" aria-label={`${project.title} 进度 ${project.progress}%`}>
+          <div class="progress-meta">
+            <span>公开进度</span>
+            <strong>{project.progress}%</strong>
+          </div>
+          <div class="progress-track">
+            <span style={`width: ${project.progress}%`}></span>
+          </div>
+        </div>
+
+        <dl>
+          <div>
+            <dt>证据等级</dt>
+            <dd>{project.evidenceLevel} / {project.evidenceType}</dd>
+          </div>
+          <div>
+            <dt>可公开范围</dt>
+            <dd>{project.publicScope}</dd>
+          </div>
+          <div>
+            <dt>已验证成果</dt>
+            <dd>{project.verifiedResult}</dd>
+          </div>
+          <div>
+            <dt>推进节奏</dt>
+            <dd>{project.cadence}</dd>
+          </div>
+          <div>
+            <dt>公开证据</dt>
+            <dd><a href={project.href}>{project.publicEvidence}</a></dd>
+          </div>
+          <div>
+            <dt>下一步</dt>
+            <dd>{project.next}</dd>
+          </div>
+          <div>
+            <dt>可咨询方向</dt>
+            <dd>{project.canConsult}</dd>
+          </div>
+          <div>
+            <dt>不公开</dt>
+            <dd>{project.boundary}</dd>
+          </div>
+        </dl>
+
+        <div class="track-actions" aria-label={`${project.title} 下一步`}>
+          <a href={project.href}>查看公开证据</a>
+          <a href="/diagnosis">带类似问题自测</a>
+        </div>
+      </article>
+    ))}
+  </section>
+
+  <section class="service-map-panel" aria-label="项目到服务映射">
+    <div class="panel-head">
+      <p class="eyebrow">From Project To Offer</p>
+      <h2>项目到服务映射</h2>
+      <p>我把自己的 AI 项目当作公开实验场。外部需求不照搬我的项目，而是抽取其中可复用的流程、验收标准和边界。</p>
+    </div>
+    <div class="service-map-grid">
+      {serviceMaps.map((item) => (
+        <article>
+          <h3>{item.source}</h3>
+          <dl>
+            <div>
+              <dt>外部类似问题</dt>
+              <dd>{item.externalProblem}</dd>
+            </div>
+            <div>
+              <dt>推荐入口</dt>
+              <dd><a href={item.href}>{item.entry}</a></dd>
+            </div>
+            <div>
+              <dt>可交付结果</dt>
+              <dd>{item.deliverable}</dd>
+            </div>
+          </dl>
+        </article>
+      ))}
+    </div>
+  </section>
+
+  <section class="system-note">
+    <h2>为什么把这些项目放在一起</h2>
+    <p>
+      因为 AI 能不能创造价值，不看概念，看它有没有持续参与真实任务。这些项目分别对应写作、学习、投资研究、记忆治理、知识管理、内容商业化和网站获客，组合起来就是一套个人 AI 操作系统。
+    </p>
+    <p>
+      股票投研内容只展示方法和复盘框架，不构成投资建议。所有项目都只展示脱敏后的流程、架构和公开成果；真实工作、客户、内部资料、私人聊天、账号密钥、账户和交易细节不会进入网站。
+    </p>
+  </section>
+
+  <ConversionCTA
+    title="看完项目，看你的流程能不能落地"
+    note="如果你对其中某个项目方向感兴趣，不需要先准备完整方案。带一个具体流程、资料现状或想验证的 AI 场景来，我先判断它适合交流、诊断还是做成小项目。"
+    remark="项目看板"
+    briefItems={[
+      '我感兴趣的项目方向是：',
+      '我自己的类似场景是：',
+      '我想先交流 / 诊断 / 做成小项目：',
+    ]}
+    primaryHref="/diagnosis"
+    primaryLabel="AI 落地自测"
+    secondaryHref="/services"
+    secondaryLabel="看服务方案"
+  />
+</Layout>
+
+<style>
+  .project-hero {
+    margin-bottom: 1.6rem;
+  }
+
+  .eyebrow,
+  .track-label {
+    margin: 0 0 0.55rem;
+    color: var(--accent);
+    font-size: 0.82rem;
+    font-weight: 800;
+    letter-spacing: 0;
+  }
+
+  .project-hero h2 {
+    margin: 0;
+  }
+
+  .project-hero p {
+    color: rgb(var(--gray));
+  }
+
+  .project-summary {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.8rem;
+    margin: 1.2rem 0 0;
+  }
+
+  .project-summary div,
+  .evidence-panel,
+  .milestone-panel,
+  .ops-panel,
+  .rules-panel,
+  .service-map-panel,
+  .track-grid article,
+  .system-note {
+    background: #fff;
+    border: 1px solid rgba(var(--black), 0.08);
+    border-radius: 8px;
+    box-shadow: var(--box-shadow);
+  }
+
+  .project-summary div {
+    padding: 1rem;
+  }
+
+  .project-summary strong {
+    display: block;
+    color: rgb(var(--black));
+    font-size: 1.35rem;
+    line-height: 1.1;
+  }
+
+  .project-summary span {
+    color: rgb(var(--gray));
+    font-size: 0.9rem;
+  }
+
+  .rules-panel {
+    margin: 1.4rem 0 1.6rem;
+    padding: 1.1rem;
+    background: #f7fbff;
+    border-color: rgba(0, 102, 255, 0.14);
+  }
+
+  .evidence-panel {
+    margin: 1.4rem 0 1.6rem;
+    padding: 1.1rem;
+  }
+
+  .milestone-panel,
+  .ops-panel,
+  .service-map-panel {
+    margin: 1.4rem 0 1.6rem;
+    padding: 1.15rem;
+  }
+
+  .rules-panel h2,
+  .evidence-panel h2,
+  .panel-head h2,
+  .system-note h2 {
+    margin-top: 0;
+    font-size: 1.35rem;
+  }
+
+  .panel-head p:last-child {
+    margin: 0.35rem 0 0;
+    color: rgb(var(--gray));
+  }
+
+  .rules-panel ul {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.65rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .rules-panel li {
+    padding: 0.75rem;
+    color: rgb(var(--gray-dark));
+    font-size: 0.92rem;
+    font-weight: 700;
+    background: #fff;
+    border: 1px solid rgba(0, 102, 255, 0.12);
+    border-radius: 8px;
+  }
+
+  .evidence-levels {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 0.65rem;
+  }
+
+  .milestone-grid,
+  .ops-grid,
+  .service-map-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 0.75rem;
+    margin-top: 1rem;
+  }
+
+  .evidence-levels article {
+    padding: 0.75rem;
+    background: #f7fbff;
+    border: 1px solid rgba(0, 102, 255, 0.12);
+    border-radius: 8px;
+  }
+
+  .milestone-grid article,
+  .ops-card,
+  .service-map-grid article {
+    padding: 0.85rem;
+    background: #f7fbff;
+    border: 1px solid rgba(0, 102, 255, 0.12);
+    border-radius: 8px;
+  }
+
+  .ops-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .ops-card {
+    display: flex;
+    min-width: 0;
+    flex-direction: column;
+  }
+
+  .ops-card-head {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 0.75rem;
+  }
+
+  .ops-card-head h3 {
+    margin: 0;
+    font-size: 1.02rem;
+    line-height: 1.35;
+  }
+
+  .ops-card-head span {
+    flex: 0 0 auto;
+    max-width: 46%;
+    padding: 0.25rem 0.5rem;
+    color: var(--accent);
+    font-size: 0.76rem;
+    font-weight: 800;
+    text-align: center;
+    background: #fff;
+    border: 1px solid rgba(0, 102, 255, 0.14);
+    border-radius: 999px;
+  }
+
+  .ops-card dl {
+    display: grid;
+    gap: 0.62rem;
+    margin: 0.75rem 0 0;
+  }
+
+  .ops-card dl div {
+    padding-top: 0.62rem;
+    border-top: 1px solid rgba(0, 102, 255, 0.12);
+  }
+
+  .ops-card dt {
+    color: rgb(var(--black));
+    font-size: 0.76rem;
+    font-weight: 800;
+  }
+
+  .ops-card dd {
+    margin: 0.22rem 0 0;
+    color: rgb(var(--gray));
+    font-size: 0.88rem;
+    line-height: 1.6;
+  }
+
+  .ops-action {
+    display: inline-flex;
+    width: fit-content;
+    min-height: 36px;
+    align-items: center;
+    justify-content: center;
+    margin-top: auto;
+    padding: 0.45rem 0.7rem;
+    color: #fff;
+    font-size: 0.84rem;
+    font-weight: 800;
+    background: var(--accent);
+    border-radius: 8px;
+  }
+
+  .milestone-grid span {
+    color: var(--accent);
+    font-size: 0.78rem;
+    font-weight: 800;
+  }
+
+  .milestone-grid h3,
+  .service-map-grid h3 {
+    margin: 0.4rem 0 0;
+    font-size: 1rem;
+  }
+
+  .milestone-grid p {
+    margin: 0.45rem 0 0;
+    color: rgb(var(--gray));
+    font-size: 0.88rem;
+    line-height: 1.6;
+  }
+
+  .milestone-grid a,
+  .service-map-grid a {
+    display: inline-flex;
+    margin-top: 0.65rem;
+    font-size: 0.86rem;
+    font-weight: 800;
+  }
+
+  .evidence-levels strong {
+    color: var(--accent);
+    font-size: 0.82rem;
+  }
+
+  .evidence-levels p {
+    margin: 0.35rem 0 0;
+    color: rgb(var(--gray));
+    font-size: 0.86rem;
+    line-height: 1.55;
+  }
+
+  .track-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1rem;
+    margin: 1.5rem 0 2.2rem;
+  }
+
+  .track-grid article {
+    display: flex;
+    min-width: 0;
+    flex-direction: column;
+    padding: 1.15rem;
+  }
+
+  .track-head {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 0.8rem;
+  }
+
+  .track-head span {
+    flex: 0 0 auto;
+    padding: 0.25rem 0.55rem;
+    color: var(--accent);
+    font-size: 0.78rem;
+    font-weight: 800;
+    background: rgba(0, 102, 255, 0.07);
+    border: 1px solid rgba(0, 102, 255, 0.14);
+    border-radius: 999px;
+  }
+
+  .track-grid h3 {
+    margin: 0;
+    font-size: 1.2rem;
+  }
+
+  .stage {
+    margin: 0.55rem 0 0;
+    color: rgb(var(--gray));
+    font-size: 0.95rem;
+  }
+
+  .progress-block {
+    margin: 1rem 0;
+  }
+
+  .progress-meta {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 0.4rem;
+    color: rgb(var(--gray));
+    font-size: 0.84rem;
+    font-weight: 800;
+  }
+
+  .progress-meta strong {
+    color: rgb(var(--black));
+  }
+
+  .progress-track {
+    height: 8px;
+    overflow: hidden;
+    background: rgba(var(--gray-light), 0.9);
+    border-radius: 999px;
+  }
+
+  .progress-track span {
+    display: block;
+    height: 100%;
+    background: var(--accent);
+    border-radius: inherit;
+  }
+
+  .track-grid dl {
+    display: grid;
+    gap: 0.72rem;
+    margin: 0;
+  }
+
+  .track-grid dl div {
+    padding-top: 0.72rem;
+    border-top: 1px solid rgba(var(--black), 0.07);
+  }
+
+  .track-grid dt {
+    color: rgb(var(--black));
+    font-size: 0.78rem;
+    font-weight: 800;
+  }
+
+  .track-grid dd {
+    margin: 0.25rem 0 0;
+    color: rgb(var(--gray));
+    font-size: 0.9rem;
+    line-height: 1.65;
+  }
+
+  .track-grid dd a {
+    font-weight: 800;
+  }
+
+  .track-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+    margin-top: auto;
+    padding-top: 1rem;
+  }
+
+  .track-actions a {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 38px;
+    padding: 0.45rem 0.75rem;
+    font-size: 0.86rem;
+    font-weight: 800;
+    border: 1px solid rgba(0, 102, 255, 0.16);
+    border-radius: 8px;
+  }
+
+  .track-actions a:first-child {
+    color: #fff;
+    background: var(--accent);
+  }
+
+  .track-actions a:last-child {
+    color: var(--accent);
+    background: #fff;
+  }
+
+  .service-map-grid dl {
+    display: grid;
+    gap: 0.65rem;
+    margin: 0.65rem 0 0;
+  }
+
+  .service-map-grid dl div {
+    padding-top: 0.65rem;
+    border-top: 1px solid rgba(0, 102, 255, 0.12);
+  }
+
+  .service-map-grid dt {
+    color: rgb(var(--black));
+    font-size: 0.76rem;
+    font-weight: 800;
+  }
+
+  .service-map-grid dd {
+    margin: 0.22rem 0 0;
+    color: rgb(var(--gray));
+    font-size: 0.88rem;
+    line-height: 1.6;
+  }
+
+  .system-note {
+    margin: 1.5rem 0 0;
+    padding: 1.2rem;
+  }
+
+  .system-note p {
+    color: rgb(var(--gray));
+  }
+
+  @media (max-width: 760px) {
+    .project-summary,
+    .evidence-levels,
+    .milestone-grid,
+    .ops-grid,
+    .rules-panel ul,
+    .service-map-grid,
+    .track-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .track-head {
+      align-items: stretch;
+      flex-direction: column;
+    }
+
+    .track-head span {
+      width: max-content;
+      max-width: 100%;
+    }
+
+    .ops-card-head {
+      align-items: stretch;
+      flex-direction: column;
+    }
+
+    .ops-card-head span {
+      width: max-content;
+      max-width: 100%;
+    }
+  }
+</style>

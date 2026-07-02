@@ -1,0 +1,596 @@
+---
+import BaseHead from '../components/BaseHead.astro';
+import ConversionCTA from '../components/ConversionCTA.astro';
+import FAQSection from '../components/FAQSection.astro';
+import Footer from '../components/Footer.astro';
+import Header from '../components/Header.astro';
+import TrustBoundary from '../components/TrustBoundary.astro';
+import { WECHAT } from '../consts';
+
+const engagementModels = [
+  {
+    id: 'coffee-chat',
+    label: '轻量判断',
+    title: 'Coffee Chat / 预诊断',
+    budget: '低成本试探，不直接承诺系统交付。',
+    start: '问题还散，但已经有一个真实卡点，适合先判断方向。',
+    material: '一个场景、当前尝试过的方法、希望聊完得到什么。',
+    output: '方向清单、暂缓事项、是否值得进入诊断或小项目的判断。',
+    upgrade: '能说清资料、频率、边界和验收后，再进入诊断。',
+    pause: '只想泛泛聊趋势，或没有任何具体流程。',
+    href: '/coffee-chat',
+    action: '看 Coffee Chat',
+  },
+  {
+    id: 'workshop',
+    label: '小班共创',
+    title: 'AI 小型工作坊',
+    budget: '按主题和人数确认，适合 3-8 人同题拆解，不直接承诺通用培训课。',
+    start: '同一主题的小团队或小组，已经有共同流程、共同卡点或共同内容商业化问题。',
+    material: '工作坊主题、预计人数、参与者背景、共同卡点、可公开或可脱敏样例。',
+    output: '流程图、资料清单、Skill 草图、内容转化路径或下一步项目范围。',
+    upgrade: '现场主题跑通后，再进入工作流诊断、Skill/SOP 小项目或阶段陪跑。',
+    pause: '主题太分散、只想听概念，或不愿说明材料边界。',
+    href: '/workshop',
+    action: '看工作坊预审',
+  },
+  {
+    id: 'diagnosis',
+    label: '单次诊断',
+    title: 'AI 工作流诊断',
+    budget: '按诊断范围报价，重点买判断、路线图和优先级。',
+    start: '已经有重复流程，但工具、人机边界和优先级不清。',
+    material: '当前做法、1 个脱敏样例、失败标准或返工原因。',
+    output: '流程拆解、工具分工、优先级和第一批可落地任务。',
+    upgrade: '输入、输出和验收稳定后，再升级 Skill/SOP 小项目。',
+    pause: '无法提供样例，或希望 AI 替代最终责任人。',
+    href: '/workflow-diagnosis',
+    action: '看诊断服务',
+  },
+  {
+    id: 'skill-sop',
+    label: '小项目',
+    title: 'Skill / SOP 小项目',
+    budget: '按单个流程报价，先跑通一类任务，不承诺万能系统。',
+    start: '输入、输出、验收方式基本稳定，且重复频率足够高。',
+    material: '模板、规则说明、脱敏样例、目标输出格式。',
+    output: '可复用 Skill/SOP、输入要求、执行步骤和验收清单。',
+    upgrade: '同类流程跑稳后，再扩展到知识库或系统陪跑。',
+    pause: '需求每天都变，或不接受人工核验。',
+    href: '/skill-sop',
+    action: '看 Skill/SOP',
+  },
+  {
+    id: 'system-retainer',
+    label: '阶段陪跑',
+    title: 'AI 系统阶段陪跑',
+    budget: '按阶段报价，先定义第一个可验收闭环。',
+    start: '涉及多工具、多资料源、长期维护和持续迭代。',
+    material: '目标边界、现有仓库或工具栈、负责人确认机制。',
+    output: '阶段目标、原型、验证脚本、维护清单和迭代节奏。',
+    upgrade: '第一个闭环跑通后，再扩展到更多流程和团队协作。',
+    pause: '希望一次做成万能系统，或没有负责人确认。',
+    href: '/projects',
+    action: '看项目看板',
+  },
+];
+
+const decisionRules = [
+  {
+    title: '先轻后重',
+    body: '只要需求还不清楚，就不建议直接上小项目。先 Coffee Chat、需求卡或诊断，确认边界后再报价。',
+  },
+  {
+    title: '先小闭环',
+    body: '所有项目都优先从一个可验收流程开始，不做“全公司 AI 化”“一次搭好万能系统”这种口号型交付。',
+  },
+  {
+    title: '先脱敏样例',
+    body: '第一次只看脱敏样例、目录结构和问题描述；原始敏感材料必须先确认边界。',
+  },
+  {
+    title: '先验收口径',
+    body: '没有输入要求、输出标准和人工接管点，就不进入正式交付。',
+  },
+];
+
+const scopeFactors = [
+  '资料规模：是一个样例、一个目录，还是跨多个工具和历史项目。',
+  '流程稳定度：输入、输出、验收是否稳定，需求是否每天变化。',
+  '风险边界：是否涉及公司、客户、财务、法律、医疗、投资或私人聊天。',
+  '交付形态：是一次判断、一份路线图、一个 Skill/SOP，还是阶段性系统陪跑。',
+  '协作成本：是否需要线下沟通、反复迭代、多人确认或长期维护。',
+];
+
+const copyItems = [
+  '我当前想选的合作方式是：Coffee Chat / AI 小型工作坊 / AI 获客站诊断 / 工作流诊断 / Skill-SOP 小项目 / 阶段陪跑 / 暂不确定',
+  '我现在最具体的一个流程是：',
+  '我可以提供的脱敏样例是：',
+  '我希望本次输出是：方向判断 / 路线图 / Skill 草图 / 可复用 SOP / 系统闭环',
+  '预算意向：轻量判断 / 单次诊断 / 单流程小项目 / 阶段陪跑 / 暂不确定',
+  '期望启动时间：本周 / 本月 / 先预沟通',
+  '是否接受先诊断再项目：是 / 否 / 需要先了解',
+  '隐私边界：我先提供脱敏描述，不直接发送原始敏感材料。',
+];
+
+const pricingCopy = [
+  `微信号：${WECHAT}`,
+  '备注：合作方式判断',
+  '来源：ailaoming.com/pricing',
+  '线索类型：AI 合作方式 / 预算口径',
+  ...copyItems,
+].join('\n');
+
+const pricingFaqs = [
+  {
+    question: '为什么公开页面不写死价格？',
+    answer: '因为 AI 落地服务的成本主要取决于资料规模、流程复杂度、隐私边界和验收标准。直接写死价格容易把不同难度的问题混在一起，反而不利于判断是否值得做。',
+  },
+  {
+    question: '最小合作可以从哪里开始？',
+    answer: '最小可以从 Coffee Chat、需求卡、工作坊预审、AI 获客站诊断或一次工作流诊断开始。只要需求还不清楚，就不建议直接进入 Skill/SOP 或阶段陪跑。',
+  },
+  {
+    question: '什么情况会建议暂缓？',
+    answer: '没有样例、没有重复流程、不接受人工确认、希望 AI 替代专业责任人，或需求每天都变，都会建议先暂缓。先把资料和边界说清，比直接开项目更重要。',
+  },
+  {
+    question: '线下 Coffee Chat 会自动转成付费项目吗？',
+    answer: '不会。Coffee Chat 的目标是判断方向和下一步；只有样例、边界、验收口径和预算意向都清楚，才会继续讨论诊断或小项目。',
+  },
+];
+
+const pricingStructuredData = {
+  '@context': 'https://schema.org',
+  '@type': 'OfferCatalog',
+  '@id': 'https://ailaoming.com/pricing/#offer-catalog',
+  name: 'AI 合作方式与预算口径',
+  url: 'https://ailaoming.com/pricing/',
+  inLanguage: 'zh-CN',
+  description: 'AI 工作流诊断、Skill/SOP 小项目、知识库整理、系统阶段陪跑和上海 Coffee Chat 的合作方式与预算口径说明。',
+  itemListElement: engagementModels.map((model) => ({
+    '@type': 'Offer',
+    name: model.title,
+    category: model.label,
+    description: `${model.budget} ${model.output}`,
+    availability: 'https://schema.org/InStock',
+    url: `https://ailaoming.com${model.href}`,
+  })),
+};
+---
+
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <BaseHead
+      title="AI 合作方式与预算口径"
+      description="AI干货家老明的合作方式说明：Coffee Chat、AI 工作流诊断、Skill/SOP 小项目、系统阶段陪跑的进入门槛、交付物和暂缓信号。"
+    />
+    <script type="application/ld+json" set:html={JSON.stringify(pricingStructuredData)}></script>
+  </head>
+  <body>
+    <Header />
+    <main>
+      <section class="hero">
+        <div>
+          <p class="eyebrow">Pricing Logic</p>
+          <h1>AI 合作方式与预算口径</h1>
+          <p class="tagline">
+            这里不是固定价目表，而是合作方式筛选页。先判断你的问题适合轻量交流、单次诊断、单流程小项目，还是阶段陪跑，再根据资料规模、流程复杂度和隐私边界确认报价。
+          </p>
+          <div class="hero-actions">
+            <a class="btn primary" href="#engagement-models">看合作档位</a>
+            <a class="btn secondary" href="/roi-calculator">先估算 ROI</a>
+            <a class="btn secondary" href="/ai-acquisition">看获客诊断</a>
+            <a class="btn secondary" href="/workshop">看工作坊预审</a>
+            <a class="btn secondary" href="/delivery">看交付流程</a>
+            <a class="btn secondary" href="#pricing-brief">复制合作判断卡</a>
+          </div>
+          <p class="hero-note">公开页面不写死价格；真实报价只在需求、样例和验收边界清楚后确认。</p>
+        </div>
+        <aside class="hero-panel" aria-label="报价原则">
+          <strong>报价前先确认四件事</strong>
+          <ol>
+            <li>是否有真实流程</li>
+            <li>是否有脱敏样例</li>
+            <li>是否能写清验收标准</li>
+            <li>是否接受先诊断再项目</li>
+          </ol>
+        </aside>
+      </section>
+
+      <section class="section rule-panel" aria-label="合作原则">
+        <div class="section-head">
+          <p class="eyebrow">Principles</p>
+          <h2>先筛选，再报价</h2>
+          <p>如果问题本身还没有收束，最贵的不是报价，而是把错误问题做成项目。</p>
+        </div>
+        <div class="rule-grid">
+          {decisionRules.map((rule) => (
+            <article>
+              <h3>{rule.title}</h3>
+              <p>{rule.body}</p>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      <section id="engagement-models" class="section" aria-label="合作方式">
+        <div class="section-head">
+          <p class="eyebrow">Engagement Models</p>
+          <h2>五档合作方式</h2>
+          <p>越靠后，越需要稳定样例、明确边界、可验收输出和负责人确认。</p>
+        </div>
+        <div class="model-grid">
+          {engagementModels.map((model) => (
+            <article id={model.id}>
+              <p class="model-label">{model.label}</p>
+              <h3>{model.title}</h3>
+              <dl>
+                <div>
+                  <dt>预算口径</dt>
+                  <dd>{model.budget}</dd>
+                </div>
+                <div>
+                  <dt>启动条件</dt>
+                  <dd>{model.start}</dd>
+                </div>
+                <div>
+                  <dt>首次材料</dt>
+                  <dd>{model.material}</dd>
+                </div>
+                <div>
+                  <dt>本次交付</dt>
+                  <dd>{model.output}</dd>
+                </div>
+                <div>
+                  <dt>升级条件</dt>
+                  <dd>{model.upgrade}</dd>
+                </div>
+                <div>
+                  <dt>暂缓信号</dt>
+                  <dd>{model.pause}</dd>
+                </div>
+              </dl>
+              <a href={model.href}>{model.action}</a>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      <section class="section factor-panel" aria-label="报价影响因素">
+        <div>
+          <p class="eyebrow">Scope Factors</p>
+          <h2>真实报价取决于哪些因素</h2>
+          <p>同样叫“做一个 AI 工作流”，难度可能差很多。报价前先看这些变量，而不是只看工具名。</p>
+        </div>
+        <ul>
+          {scopeFactors.map((factor) => <li>{factor}</li>)}
+        </ul>
+      </section>
+
+      <section id="pricing-brief" class="section pricing-brief" aria-label="合作判断卡">
+        <div>
+          <p class="eyebrow">Qualified Brief</p>
+          <h2>复制合作判断卡</h2>
+          <p>
+            这段话会带上 来源：ailaoming.com/pricing 和 线索类型：AI 合作方式 / 预算口径，方便先判断合作方式，不需要提交表单。还没判断值不值得做时，先用 <a href="/roi-calculator">AI ROI 估算器</a>；准备进入项目时，可以继续看 <a href="/delivery">AI 项目交付流程</a>。
+          </p>
+        </div>
+        <div class="brief-box">
+          <ol>
+            {copyItems.map((item) => <li>{item}</li>)}
+          </ol>
+          <button type="button" class="copy-pricing-brief" data-copy={pricingCopy}>复制合作判断卡</button>
+          <p class="copy-pricing-status" aria-live="polite"></p>
+        </div>
+      </section>
+
+      <TrustBoundary
+        compact={true}
+        eyebrow="合作边界"
+        title="报价不代表承诺接任何需求"
+        intro="不接伪造材料、绕过规则、批量骚扰和替代专业责任的需求。涉及公司、客户、私人聊天、财务、法律、医疗、投资等内容时，先说清不可公开范围和人工确认点。"
+      />
+
+      <FAQSection title="合作方式常见问题" items={pricingFaqs} />
+
+      <ConversionCTA
+        title="先判断合作方式，再谈报价"
+        note="把合作判断卡和一个脱敏样例发来，我会先判断这件事适合 Coffee Chat、AI 小型工作坊、AI 获客站诊断、工作流诊断、Skill/SOP 小项目，还是阶段陪跑。"
+        remark="合作方式判断"
+        briefItems={[
+          '我想选的合作方式是：Coffee Chat / AI 小型工作坊 / AI 获客站诊断 / 工作流诊断 / Skill-SOP / 阶段陪跑',
+          '我现在最具体的流程是：',
+          '我希望本次输出是：',
+        ]}
+        primaryHref="/brief"
+        primaryLabel="复制需求卡"
+        secondaryHref="/services"
+        secondaryLabel="看服务方案"
+      />
+    </main>
+    <Footer />
+
+    <script>
+      document.querySelectorAll('.copy-pricing-brief').forEach((button) => {
+        button.addEventListener('click', async () => {
+          const trigger = button instanceof HTMLElement ? button : null;
+          const text = trigger?.dataset.copy ?? '';
+          const panel = trigger?.closest('.pricing-brief');
+          const status = panel?.querySelector('.copy-pricing-status');
+
+          try {
+            if (!navigator.clipboard || !text) throw new Error('Clipboard unavailable');
+            await navigator.clipboard.writeText(text);
+            if (status) status.textContent = '已复制，可直接粘贴到微信补充';
+          } catch {
+            if (status) status.textContent = '复制失败，请手动复制上面的内容';
+          }
+        });
+      });
+    </script>
+  </body>
+</html>
+
+<style>
+  main {
+    width: 1080px;
+    max-width: calc(100% - 2rem);
+    margin: 0 auto;
+    padding: 2rem 0 4rem;
+  }
+
+  .hero {
+    display: grid;
+    grid-template-columns: minmax(0, 1.2fr) minmax(280px, 0.8fr);
+    gap: 1.2rem;
+    align-items: stretch;
+    padding: 2.4rem 0 1.4rem;
+  }
+
+  .eyebrow,
+  .model-label {
+    margin: 0 0 0.6rem;
+    color: var(--accent);
+    font-size: 0.82rem;
+    font-weight: 800;
+    letter-spacing: 0;
+  }
+
+  h1 {
+    margin: 0;
+    color: rgb(var(--black));
+    font-size: clamp(2.1rem, 7vw, 3.7rem);
+    line-height: 1.03;
+    letter-spacing: 0;
+  }
+
+  h2,
+  h3 {
+    color: rgb(var(--black));
+    letter-spacing: 0;
+  }
+
+  .tagline {
+    max-width: 760px;
+    margin: 1rem 0 0;
+    color: rgb(var(--gray));
+    font-size: 1.05rem;
+    line-height: 1.8;
+  }
+
+  .hero-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.7rem;
+    margin-top: 1.2rem;
+  }
+
+  .btn,
+  .model-grid a,
+  .copy-pricing-brief {
+    display: inline-flex;
+    min-height: 42px;
+    align-items: center;
+    justify-content: center;
+    padding: 0.65rem 0.9rem;
+    border-radius: 8px;
+    font: inherit;
+    font-weight: 800;
+    line-height: 1.2;
+    text-decoration: none;
+  }
+
+  .btn.primary,
+  .copy-pricing-brief {
+    color: #fff;
+    background: var(--accent);
+    border: 1px solid var(--accent);
+    cursor: pointer;
+  }
+
+  .btn.secondary,
+  .model-grid a {
+    color: rgb(var(--black));
+    background: #fff;
+    border: 1px solid rgba(var(--black), 0.12);
+  }
+
+  .hero-note,
+  .section-head p,
+  .rule-grid p,
+  .model-grid dd,
+  .factor-panel p,
+  .factor-panel li,
+  .pricing-brief p,
+  .brief-box li,
+  .hero-panel li {
+    color: rgb(var(--gray));
+    line-height: 1.68;
+  }
+
+  .hero-note {
+    margin: 0.8rem 0 0;
+    font-size: 0.92rem;
+  }
+
+  .hero-panel,
+  .rule-grid article,
+  .model-grid article,
+  .factor-panel,
+  .pricing-brief,
+  .brief-box {
+    background: #fff;
+    border: 1px solid rgba(var(--black), 0.08);
+    border-radius: 8px;
+    box-shadow: 0 14px 32px rgba(20, 20, 20, 0.05);
+  }
+
+  .hero-panel {
+    padding: 1rem;
+    background: #f7fbff;
+    border-color: rgba(0, 102, 255, 0.14);
+  }
+
+  .hero-panel strong {
+    display: block;
+    margin-bottom: 0.65rem;
+    color: rgb(var(--black));
+  }
+
+  .hero-panel ol,
+  .brief-box ol {
+    margin: 0;
+    padding-left: 1.1rem;
+  }
+
+  .section {
+    margin: 2.8rem 0;
+  }
+
+  .section-head {
+    max-width: 780px;
+    margin-bottom: 1rem;
+  }
+
+  .section-head h2,
+  .factor-panel h2,
+  .pricing-brief h2 {
+    margin: 0 0 0.65rem;
+    font-size: 1.55rem;
+  }
+
+  .section-head p,
+  .factor-panel p,
+  .pricing-brief p {
+    margin: 0;
+  }
+
+  .rule-grid,
+  .model-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 1rem;
+  }
+
+  .rule-grid article,
+  .model-grid article {
+    padding: 1rem;
+  }
+
+  .rule-grid h3,
+  .model-grid h3 {
+    margin: 0 0 0.5rem;
+    font-size: 1.05rem;
+    line-height: 1.35;
+  }
+
+  .model-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .model-grid dl {
+    display: grid;
+    gap: 0.65rem;
+    margin: 0.8rem 0 1rem;
+  }
+
+  .model-grid dl div {
+    padding-top: 0.65rem;
+    border-top: 1px solid rgba(var(--black), 0.07);
+  }
+
+  .model-grid dt {
+    color: rgb(var(--black));
+    font-size: 0.78rem;
+    font-weight: 800;
+  }
+
+  .model-grid dd {
+    margin: 0.25rem 0 0;
+    font-size: 0.94rem;
+  }
+
+  .factor-panel,
+  .pricing-brief {
+    display: grid;
+    grid-template-columns: minmax(0, 0.82fr) minmax(300px, 1.18fr);
+    gap: 1rem;
+    padding: 1rem;
+    background: #f7fbff;
+    border-color: rgba(0, 102, 255, 0.14);
+  }
+
+  .factor-panel ul {
+    margin: 0;
+    padding-left: 1.1rem;
+  }
+
+  .factor-panel li + li,
+  .brief-box li + li,
+  .hero-panel li + li {
+    margin-top: 0.35rem;
+  }
+
+  .brief-box {
+    padding: 1rem;
+  }
+
+  .brief-box li {
+    font-size: 0.93rem;
+  }
+
+  .copy-pricing-brief {
+    width: 100%;
+    margin-top: 0.9rem;
+  }
+
+  .copy-pricing-status {
+    min-height: 1.2rem;
+    margin-top: 0.5rem !important;
+    color: #157347 !important;
+    font-size: 0.86rem;
+    font-weight: 800;
+  }
+
+  @media (max-width: 820px) {
+    main {
+      max-width: calc(100% - 1rem);
+      padding-top: 1rem;
+    }
+
+    .hero,
+    .rule-grid,
+    .model-grid,
+    .factor-panel,
+    .pricing-brief {
+      grid-template-columns: 1fr;
+    }
+
+    .hero-actions a,
+    .copy-pricing-brief {
+      width: 100%;
+    }
+  }
+</style>

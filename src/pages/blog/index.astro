@@ -2,40 +2,437 @@
 import { Image } from 'astro:assets';
 import { getCollection } from 'astro:content';
 import BaseHead from '../../components/BaseHead.astro';
+import ConversionCTA from '../../components/ConversionCTA.astro';
 import Footer from '../../components/Footer.astro';
 import FormattedDate from '../../components/FormattedDate.astro';
 import Header from '../../components/Header.astro';
-import { SITE_DESCRIPTION, SITE_TITLE, WECHAT_COVER_HEIGHT, WECHAT_COVER_WIDTH } from '../../consts';
+import { SITE_TITLE, WECHAT_COVER_HEIGHT, WECHAT_COVER_WIDTH } from '../../consts';
 
+const BLOG_TITLE = 'AI 技术文章';
+const BLOG_DESCRIPTION = 'AI干货家老明的 AI 技术文章库，按问题、学习路径和项目方向组织，聚焦 RAG、OpenClaw、Codex、Claude Code、办公 Skills、AI 写作和自动化工作流。';
+const readingRoutes = [
+	{
+		label: '资料很多，用不起来',
+		title: '先看 RAG 与长期记忆',
+		href: '/blog/rag-database-method-open-source/',
+		copy: '适合想把本地资料、Obsidian、聊天记录和项目材料变成可检索资产的人。',
+	},
+	{
+		label: '文档反复返工',
+		title: '先看 Word 与办公 Skill',
+		href: '/blog/ai-word-edit-sop-elegant/',
+		copy: '适合经常处理正式 Word、纪要、模板和报销材料的人。',
+	},
+	{
+		label: '想做内容自动化',
+		title: '先看文章到漫画 / 写作流程',
+		href: '/blog/article-to-comic-skill/',
+		copy: '适合公众号、小红书、长文和多平台内容生产。',
+	},
+	{
+		label: '网站有内容，不转化',
+		title: '先看 AI 获客站改造',
+		href: '/blog/ai-website-acquisition-system-2026/',
+		copy: '适合已经有文章、项目或个人品牌，但还没串起服务、诊断和线下交流入口的人。',
+	},
+	{
+		label: '想找老明聊',
+		title: '先看 Coffee Chat 复盘模板',
+		href: '/blog/shanghai-ai-coffee-chat-recap-template/',
+		copy: '适合想线下聊，但还不确定该带什么问题、怎样把交流沉淀成下一步的人。',
+	},
+];
 const posts = (await getCollection('blog')).sort(
 	(a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
 );
+const shortExcerpt = (value: string | undefined, maxLength = 96) => {
+	if (!value) return '';
+	const normalized = value.replace(/\s+/g, ' ').trim();
+	if (normalized.length <= maxLength) return normalized;
+	return `${normalized.slice(0, maxLength).replace(/[，。；：、,\s]+$/, '')}...`;
+};
+const postBySlug = new Map(posts.map((post) => [post.id, post]));
+const pickPosts = (slugs: string[]) => slugs.map((slug) => postBySlug.get(slug)).filter(Boolean);
+const learningTracks = [
+	{
+		kicker: '路线 01',
+		title: '先搭个人 AI 工作台',
+		copy: '适合刚开始把 Codex、Claude Code、Cursor、Gemini CLI 和国产模型接进日常工作的人。',
+		outcome: '读完能判断自己该先补工具环境、账号体系，还是先找一个具体流程试跑。',
+		nextLabel: '带一个流程做自测',
+		nextHref: '/diagnosis',
+		slugs: [
+			'claude-code-mac-glm-2026',
+			'gemini-cli-installation-guide',
+			'cursor-global-rule-protocol',
+			'codex-pro-200-dollar-how-i-use-it',
+		],
+	},
+	{
+		kicker: '路线 02',
+		title: '把资料变成长期记忆',
+		copy: '围绕本地 RAG、OpenClaw 记忆、Claude Code 记忆和资料治理，把零散材料变成可复用资产。',
+		outcome: '读完能画出自己的资料入口、索引层、检索层和安全边界。',
+		nextLabel: '看知识库整理',
+		nextHref: '/services#knowledge-base',
+		slugs: [
+			'why-we-need-ai-memory-library',
+			'rag-database-method-open-source',
+			'local-rag-database-practice',
+			'reflection-on-rag-design',
+			'plain-prompt-export-ai-memories',
+			'claude-code-memory-claude-md-basic',
+		],
+	},
+	{
+		kicker: '路线 03',
+		title: '把办公流程沉淀成 Skill',
+		copy: '从 Word、报销、PPT 到会议转写，重点不是炫技，而是把重复劳动拆成可验收的 SOP。',
+		outcome: '读完能判断一个流程是否适合做成 Skill，以及交付时应该验收什么。',
+		nextLabel: '看 Skill 定制',
+		nextHref: '/skill-sop',
+		slugs: [
+			'ai-word-edit-sop-elegant',
+			'recommend-ai-word-skill',
+			'reimburse-skill-28-versions-open-source',
+			'ai-money-series-01-reimburse-skill',
+			'recommend-frontend-slides-skill',
+			'mac-mini-local-audio-transcription-save-1056',
+		],
+	},
+	{
+		kicker: '路线 04',
+		title: '内容自动化与 AI 商业化',
+		copy: '把 AI 写作、去 AI 味、文章转漫画、网文实验和内容产品化放在一条线上看。',
+		outcome: '读完能区分什么适合公开内容，什么适合沉淀成服务或资料包。',
+		nextLabel: '看公开样例库',
+		nextHref: '/cases',
+		slugs: [
+			'shanghai-ai-coffee-chat-recap-template',
+			'ai-website-acquisition-system-2026',
+			'de-ai-flavor-writing-skill-sop',
+			'scold-ai-rl-de-ai-flavor-compare',
+			'article-to-comic-skill',
+			'ai-novel-102-days-400k-35yuan',
+			'ai-money-series-02-tomato-novel',
+			'ai-writing-progress-three-years',
+		],
+	},
+	{
+		kicker: '路线 05',
+		title: 'OpenClaw 落地与风控',
+		copy: '从安装、微信入口、多 Agent 到本地 Embedding 和风险控制，适合准备上手长期 Agent 系统的人。',
+		outcome: '读完能判断 OpenClaw 是先试用、局部落地，还是直接做一站式部署。',
+		nextLabel: '看系统陪跑',
+		nextHref: '/services#automation',
+		slugs: [
+			'openclaw-one-stop-solution-service',
+			'openclaw-practical-notes-collection-01',
+			'openclaw-wechat-integration-done',
+			'openclaw-multi-wechat-independent-agents',
+			'openclaw-local-embedding-tip',
+			'openclaw-risk-control',
+		],
+	},
+].map((track) => ({ ...track, posts: pickPosts(track.slugs) }));
+const featuredSeries = [
+	{
+		title: 'RAG 与长期记忆',
+		copy: '从为什么要建记忆库，到本地检索、OpenClaw 设计取舍和 Claude Code 记忆复用。',
+		href: '/blog/why-we-need-ai-memory-library/',
+		items: ['私有化记忆系统', 'RAG 架构', '检索与风控'],
+	},
+	{
+		title: '办公 Skill 与 SOP',
+		copy: '把 Word、报销、PPT、转写这些高频办公动作，变成能复跑、能验收的 AI 流程。',
+		href: '/skills',
+		items: ['Word 保格式', '报销材料整理', '演示文稿生成'],
+	},
+	{
+		title: 'AI 内容生产',
+		copy: '关注 AI 写作质量、去 AI 味、文章转漫画、网文生产和内容商业化实验。',
+		href: '/projects',
+		items: ['写作流程', '内容复用', '项目进度'],
+	},
+];
+const nextSteps = [
+	{
+		title: '只想系统学习',
+		copy: '从上面的文章学习路径开始，先按自己的问题选一条路线，不必按时间倒序硬读。',
+		href: '#learning-paths',
+		label: '看学习路径',
+	},
+	{
+		title: '已经有具体流程',
+		copy: '先做 AI 落地自测，把资料源、重复动作和交付标准说清楚，再判断是否适合服务。',
+		href: '/diagnosis',
+		label: '做 AI 自测',
+	},
+	{
+		title: '想线下交流',
+		copy: '上海可约 Coffee Chat，适合带着一个真实问题来聊工具、知识库、Skill 或内容自动化。',
+		href: '/coffee-chat',
+		label: '看 Coffee Chat',
+	},
+];
 ---
 
 <!doctype html>
-<html lang="zh-CN">
-	<head>
-		<BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
-		<style>
-			main {
-				width: 960px;
-			}
-			ul {
-				display: flex;
-				flex-wrap: wrap;
+	<html lang="zh-CN">
+		<head>
+			<BaseHead title={`${BLOG_TITLE} | ${SITE_TITLE}`} description={BLOG_DESCRIPTION} />
+			<style>
+				main {
+					width: min(1080px, calc(100% - 2rem));
+				}
+				.blog-head {
+					margin-bottom: 2rem;
+				}
+				.blog-head p {
+					max-width: 680px;
+					color: rgb(var(--gray));
+				}
+				.head-actions,
+				.next-grid {
+					display: flex;
+					flex-wrap: wrap;
+					gap: 0.7rem;
+					margin-top: 1.2rem;
+				}
+				.head-actions a,
+				.next-card a {
+					display: inline-flex;
+					align-items: center;
+					justify-content: center;
+					min-height: 40px;
+					padding: 0.55rem 0.85rem;
+					border-radius: 8px;
+					font-size: 0.92rem;
+					font-weight: 800;
+				}
+				.head-actions .primary {
+					color: #fff;
+					background: var(--accent);
+				}
+				.head-actions .secondary,
+				.next-card a {
+					color: rgb(var(--black));
+					background: #fff;
+					border: 1px solid rgba(var(--black), 0.12);
+				}
+				.section-head {
+					max-width: 760px;
+					margin: 0 0 1rem;
+				}
+				.section-head h2 {
+					margin: 0;
+					font-size: 1.72rem;
+				}
+				.section-head p {
+					margin: 0.6rem 0 0;
+					color: rgb(var(--gray));
+					line-height: 1.7;
+				}
+					.route-grid {
+						display: grid;
+						grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+						gap: 0.8rem;
+						margin: 0 0 3rem;
+					}
+				.route-grid a {
+					display: grid;
+					gap: 0.35rem;
+					padding: 1rem;
+					color: inherit;
+					background: #fff;
+					border: 1px solid rgba(var(--black), 0.08);
+					border-radius: 8px;
+					box-shadow: 0 14px 30px rgba(20, 20, 20, 0.045);
+				}
+				.route-grid span {
+					color: var(--accent);
+					font-size: 0.78rem;
+					font-weight: 800;
+				}
+				.route-grid strong {
+					color: rgb(var(--black));
+					font-size: 0.98rem;
+				}
+				.route-grid p {
+					margin: 0;
+					color: rgb(var(--gray));
+					font-size: 0.86rem;
+					line-height: 1.55;
+				}
+				.learning-paths {
+					margin: 0 0 3rem;
+				}
+				.track-grid {
+					display: grid;
+					grid-template-columns: repeat(2, minmax(0, 1fr));
+					gap: 1rem;
+				}
+				.track-card {
+					display: grid;
+					gap: 0.85rem;
+					padding: 1.1rem;
+					background: #fff;
+					border: 1px solid rgba(var(--black), 0.08);
+					border-radius: 8px;
+					box-shadow: 0 16px 34px rgba(20, 20, 20, 0.045);
+				}
+				.track-card:nth-child(3n + 2) {
+					background: #fbfff8;
+				}
+				.track-card:nth-child(3n) {
+					background: #fffaf2;
+				}
+				.track-card header {
+					display: grid;
+					gap: 0.4rem;
+				}
+				.track-card span,
+				.series-card span,
+				.next-card span,
+				.boundary-label {
+					color: var(--accent);
+					font-size: 0.78rem;
+					font-weight: 800;
+				}
+				.track-card h3,
+				.series-card h3,
+				.next-card h3 {
+					margin: 0;
+					color: rgb(var(--black));
+					font-size: 1.08rem;
+					line-height: 1.35;
+				}
+				.track-card p,
+				.series-card p,
+				.next-card p,
+				.public-boundary p {
+					margin: 0;
+					color: rgb(var(--gray));
+					line-height: 1.65;
+				}
+				.track-outcome {
+					padding: 0.75rem;
+					background: rgba(0, 102, 255, 0.06);
+					border: 1px solid rgba(0, 102, 255, 0.12);
+					border-radius: 8px;
+					font-size: 0.9rem;
+				}
+				.track-posts {
+					display: grid;
+					gap: 0.45rem;
+				}
+				.track-posts a {
+					display: grid;
+					grid-template-columns: 6.5rem minmax(0, 1fr);
+					gap: 0.65rem;
+					align-items: baseline;
+					color: rgb(var(--black));
+					font-size: 0.92rem;
+					font-weight: 700;
+				}
+				.track-posts time {
+					color: rgb(var(--gray));
+					font-size: 0.78rem;
+					font-weight: 700;
+				}
+				.track-action {
+					display: inline-flex;
+					align-items: center;
+					justify-content: center;
+					width: fit-content;
+					min-height: 38px;
+					margin-top: auto;
+					padding: 0.5rem 0.75rem;
+					color: #fff;
+					background: var(--accent);
+					border-radius: 8px;
+					font-size: 0.88rem;
+					font-weight: 800;
+					line-height: 1.2;
+				}
+				.series-grid {
+					display: grid;
+					grid-template-columns: repeat(3, minmax(0, 1fr));
+					gap: 0.9rem;
+					margin: 0 0 3rem;
+				}
+				.series-card {
+					display: grid;
+					gap: 0.75rem;
+					padding: 1rem;
+					background: #fff;
+					border: 1px solid rgba(var(--black), 0.08);
+					border-radius: 8px;
+				}
+				.series-card ul {
+					display: grid;
+					gap: 0.35rem;
+					margin: 0;
+					padding-left: 1.05rem;
+					color: rgb(var(--gray));
+					list-style: disc;
+				}
+				.series-card li {
+					width: auto;
+				}
+				.series-card a {
+					color: var(--accent);
+					font-weight: 800;
+				}
+				.public-boundary {
+					display: grid;
+					grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+					gap: 1rem;
+					margin: 0 0 3rem;
+					padding: 1.1rem;
+					background: #f7fbff;
+					border: 1px solid rgba(0, 102, 255, 0.14);
+					border-radius: 8px;
+				}
+				.next-step-section {
+					margin: 0 0 3rem;
+				}
+				.next-grid {
+					display: grid;
+					grid-template-columns: repeat(3, minmax(0, 1fr));
+				}
+				.next-card {
+					display: grid;
+					gap: 0.7rem;
+					padding: 1rem;
+					background: #fff;
+					border: 1px solid rgba(var(--black), 0.08);
+					border-radius: 8px;
+				}
+				.all-posts {
+					margin-top: 1rem;
+				}
+				.count {
+					color: var(--accent);
+					font-size: 0.9rem;
+					font-weight: 700;
+				}
+				ul {
+					display: flex;
+					flex-wrap: wrap;
 				gap: 2rem;
 				list-style-type: none;
 				margin: 0;
 				padding: 0;
 			}
-			ul li {
+			.post-list li {
 				width: calc(50% - 1rem);
 			}
-			ul li * {
+			.post-list li * {
 				text-decoration: none;
 				transition: 0.2s ease;
 			}
-			ul li:first-child {
+			.post-list li:first-child {
 				width: 100%;
 				margin-bottom: 1rem;
 				text-align: center;
@@ -53,10 +450,10 @@ const posts = (await getCollection('blog')).sort(
 				object-fit: cover;
 				object-position: center;
 			}
-			ul li:first-child .title {
+			.post-list li:first-child .title {
 				font-size: 2.369rem;
 			}
-			ul li a {
+			.post-list li a {
 				display: block;
 			}
 			.title {
@@ -68,40 +465,159 @@ const posts = (await getCollection('blog')).sort(
 				margin: 0;
 				color: rgb(var(--gray));
 			}
-			.view-count {
-				margin: 0.25em 0 0 0;
+			.excerpt {
+				margin: 0.55rem 0 0;
 				color: rgb(var(--gray));
-				font-size: 0.85em;
+				font-size: 0.92rem;
+				line-height: 1.62;
 			}
-			ul li a:hover h4,
-			ul li a:hover .date {
+			.post-list li a:hover h4,
+			.post-list li a:hover .date,
+			.track-posts a:hover,
+			.series-card a:hover,
+			.next-card a:hover {
 				color: rgb(var(--accent));
 			}
-			ul a:hover .cover {
-				box-shadow: var(--box-shadow);
-			}
-			@media (max-width: 720px) {
-				ul {
-					gap: 0.5em;
+				ul a:hover .cover {
+					box-shadow: var(--box-shadow);
 				}
-				ul li {
+				@media (max-width: 900px) {
+					.route-grid,
+					.track-grid,
+					.series-grid,
+					.next-grid,
+					.public-boundary {
+						grid-template-columns: 1fr;
+					}
+				}
+				@media (max-width: 720px) {
+					ul {
+						gap: 0.5em;
+					}
+				.post-list li {
 					width: 100%;
-					text-align: center;
 				}
-				ul li:first-child {
+				.post-list li:first-child {
 					margin-bottom: 0;
 				}
-				ul li:first-child .title {
+				.post-list li:first-child .title {
 					font-size: 1.563em;
+				}
+				.track-posts a {
+					grid-template-columns: 1fr;
+					gap: 0.2rem;
+				}
+				.head-actions a {
+					width: 100%;
 				}
 			}
 		</style>
 	</head>
 	<body>
-		<Header />
-		<main>
-			<section>
-				<ul>
+			<Header />
+			<main>
+				<section class="blog-head">
+						<p class="count">{posts.length} 篇 AI 相关内容</p>
+						<h1>{BLOG_TITLE}</h1>
+						<p>
+							这里不是按时间倒序堆文章，而是把 AI 工具、RAG、OpenClaw、Codex、Claude Code、办公 Skills、AI 写作和自动化工作流，整理成可以顺着读、顺着落地的文章库。
+						</p>
+						<div class="head-actions">
+							<a class="primary" href="#learning-paths">从学习路径开始</a>
+							<a class="secondary" href="/diagnosis">先做 AI 落地自测</a>
+							<a class="secondary" href="/coffee-chat">上海 Coffee Chat</a>
+						</div>
+					</section>
+					<div class="section-head">
+						<h2>按场景阅读</h2>
+						<p>如果你不是来刷文章，而是想解决一个具体问题，先从下面这些入口走。</p>
+					</div>
+				<section class="route-grid" aria-label="按场景阅读">
+					{readingRoutes.map((route) => (
+						<a href={route.href}>
+							<span>{route.label}</span>
+							<strong>{route.title}</strong>
+							<p>{route.copy}</p>
+						</a>
+					))}
+				</section>
+				<section id="learning-paths" class="learning-paths" aria-label="文章学习路径">
+					<div class="section-head">
+						<h2>文章学习路径</h2>
+						<p>每条路径都按“能不能上手、能不能复用、能不能转成项目”的顺序组织。你可以只读一条，也可以把它当成自己的 AI 工作流路线图。</p>
+					</div>
+					<div class="track-grid">
+						{learningTracks.map((track) => (
+							<article class="track-card">
+								<header>
+									<span>{track.kicker}</span>
+									<h3>{track.title}</h3>
+									<p>{track.copy}</p>
+								</header>
+								<p class="track-outcome">{track.outcome}</p>
+								<div class="track-posts">
+									{track.posts.map((post) => (
+										<a href={`/blog/${post.id}/`}>
+											<time><FormattedDate date={post.data.pubDate} /></time>
+											<strong>{post.data.title}</strong>
+										</a>
+									))}
+								</div>
+								<a class="track-action" href={track.nextHref}>{track.nextLabel}</a>
+							</article>
+						))}
+					</div>
+				</section>
+				<section aria-label="精选系列">
+					<div class="section-head">
+						<h2>精选系列</h2>
+						<p>这三组内容更接近站点的长期主线：个人 AI 系统、办公自动化 Skill、内容生产和商业化。</p>
+					</div>
+					<div class="series-grid">
+						{featuredSeries.map((series) => (
+							<article class="series-card">
+								<span>精选系列</span>
+								<h3>{series.title}</h3>
+								<p>{series.copy}</p>
+								<ul>
+									{series.items.map((item) => <li>{item}</li>)}
+								</ul>
+								<a href={series.href}>进入这一组</a>
+							</article>
+						))}
+					</div>
+				</section>
+				<section class="public-boundary" aria-label="公开文章边界">
+					<div>
+						<p class="boundary-label">公开文章边界</p>
+						<h2>只展示方法，不展示不该公开的细节</h2>
+					</div>
+					<p>
+						站内文章只保留脱敏方法、抽象流程和可复用经验；涉及私人资料、未授权截图、内部文件和真实敏感材料的部分，不进入公开展示。这样既能让读者看懂做法，也不把内容库变成风险源。
+					</p>
+				</section>
+				<section class="next-step-section" aria-label="从文章到下一步">
+					<div class="section-head">
+						<h2>从文章到下一步</h2>
+						<p>内容是入口，真正有价值的是把你的问题拆成一个能跑通的小闭环。</p>
+					</div>
+					<div class="next-grid">
+						{nextSteps.map((step) => (
+							<article class="next-card">
+								<span>{step.label}</span>
+								<h3>{step.title}</h3>
+								<p>{step.copy}</p>
+								<a href={step.href}>{step.label}</a>
+							</article>
+						))}
+					</div>
+				</section>
+				<section class="all-posts" aria-label="全部 AI 文章">
+					<div class="section-head">
+						<h2>全部 AI 文章</h2>
+						<p>保留时间线视图，方便按最新内容继续阅读。</p>
+					</div>
+					<ul class="post-list">
 					{
 						posts.map((post) => (
 							<li>
@@ -120,42 +636,29 @@ const posts = (await getCollection('blog')).sort(
 									<p class="date">
 										<FormattedDate date={post.data.pubDate} />
 									</p>
-									<p class="view-count" data-page-url={`/blog/${post.id}/`}>
-										👁️ <span class="busuanzi-value">-</span> 次阅读
-									</p>
+									{post.data.description && <p class="excerpt">{shortExcerpt(post.data.description)}</p>}
 								</a>
 							</li>
 						))
 					}
 				</ul>
 			</section>
+			<ConversionCTA
+				eyebrow="读完文章之后"
+				title="把你的问题拆成一个能落地的小项目"
+				note="如果你已经有资料、流程、内容生产或 AI Agent 方面的具体问题，可以直接带着样例来做诊断，也可以报名上海 Coffee Chat。"
+				remark="文章库 / AI 自测 / Coffee Chat"
+				primaryHref="/diagnosis"
+				primaryLabel="做 AI 落地自测"
+				secondaryHref="/coffee-chat"
+				secondaryLabel="上海 Coffee Chat"
+				briefItems={[
+					'我刚看完的文章或路径是：',
+					'我现在想解决的 AI 流程是：',
+					'我希望先线上诊断 / 上海线下聊 / 做成 Skill：',
+				]}
+			/>
 		</main>
 		<Footer />
-		<script>
-			// 获取每篇文章的阅读量
-			document.addEventListener('DOMContentLoaded', function() {
-				const viewCountElements = document.querySelectorAll('.view-count');
-
-				viewCountElements.forEach(function(el) {
-					const pageUrl = el.getAttribute('data-page-url');
-					if (!pageUrl) return;
-
-					// 使用 JSONP 获取阅读量
-					const callbackName = 'busuanzi_callback_' + Math.random().toString(36).substr(2, 9);
-
-					window[callbackName] = function(data) {
-						const valueSpan = el.querySelector('.busuanzi-value');
-						if (valueSpan && data && data.page_pv !== undefined) {
-							valueSpan.textContent = data.page_pv;
-						}
-						delete window[callbackName];
-					};
-
-					const script = document.createElement('script');
-					script.src = 'https://busuanzi.ibruce.info/busuanzi?jsonpCallback=' + callbackName + '&uriPath=' + encodeURIComponent(pageUrl);
-					document.body.appendChild(script);
-				});
-			});
-		</script>
 	</body>
 </html>
